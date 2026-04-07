@@ -1,0 +1,9 @@
+@import './base.css';
+
+@font-face {
+  font-family: 'Alfabilder';
+  src: url('./fonts/Alfabilder.ttf') format('truetype');
+}
+.font-symbol {
+  font-family: 'Alfabilder', sans-serif;
+}
