@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { FoundWord } from '@/composables/useGameLogic'
+import type { GameItem } from '@/composables/GameItem'
 
 interface Props {
-    foundWords: FoundWord[]
+    historyItems: GameItem[]
     onReset: () => void
     title?: string
 }
@@ -13,21 +13,21 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <v-card class="mt-5 mb-5" v-if="foundWords.length > 0">
+    <v-card class="mt-5 mb-5" v-if="historyItems.length > 0">
         <v-card-title class="text-h6 font-weight-medium">
             {{ title }}
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
             <v-list lines="two" density="comfortable">
-                <v-list-item v-for="(found, index) in foundWords" :key="index" :title="found.word" :subtitle="`temps : ${found.timeSpent}s | ${new Date(found.date).toLocaleDateString('fr-FR', {
+                <v-list-item v-for="(item, index) in historyItems" :key="index" :title="item.name" :subtitle="`temps : ${item.timeSpent}s | ${new Date(item.date).toLocaleDateString('fr-FR', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric'
                 })}`">
                     <template v-slot:prepend>
-                        <v-icon :icon="found.success ? 'mdi-check-circle' : 'mdi-close-circle'"
-                            :color="found.success ? 'success' : 'error'"></v-icon>
+                        <v-icon :icon="item.success ? 'mdi-check-circle' : 'mdi-close-circle'"
+                            :color="item.success ? 'success' : 'error'"></v-icon>
                     </template>
                 </v-list-item>
             </v-list>

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { useGameLogic } from '@/composables/useGameLogic'
+import { useWordGameLogic } from '@/composables/useWordGameLogic'
 
 type AlertType = 'info' | 'success' | 'warning' | 'error'
 
@@ -39,7 +39,7 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     wordFound,
     setFocusCallback,
     cancelGame,
-    resetFoundWords,
+    resethistoryItems,
     initGame,
     getLetterColor,
     checkGuess,
@@ -49,8 +49,8 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     getWordToGuessLetter,
     typeAlert,
     baseHue,
-    foundWords,
-  } = useGameLogic(initCallback, 'anagramFoundWords')
+    historyItems,
+  } = useWordGameLogic(initCallback, 'anagramhistoryItems')
 
   return {
     wordToGuess,
@@ -63,7 +63,7 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     wordFound,
     setFocusCallback,
     cancelGame,
-    resetFoundWords,
+    resethistoryItems,
     initGame,
     getLetterColor,
     checkGuess,
@@ -73,6 +73,6 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     getWordToGuessLetter,
     typeAlert,
     baseHue,
-    foundWords,
+    historyItems,
   }
 })

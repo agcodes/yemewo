@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import('../views/AnagramView.vue'),
     },
     {
+      path: '/flags-quiz',
+      name: 'flags-quiz',
+      component: () => import('../views/FlagsQuizView.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

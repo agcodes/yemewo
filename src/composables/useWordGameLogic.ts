@@ -3,19 +3,14 @@ import { fetchRandomWord } from '@/services/wordService'
 
 type AlertType = 'info' | 'success' | 'warning' | 'error'
 
-export interface FoundWord {
-  word: string
-  timeSpent: number
-  date: string
-  success: boolean
-}
+import type { GameItem } from '@/composables/GameItem'
 
 export interface WordLetter {
   letter: string
   found: boolean
 }
 
-export function useGameLogic(
+export function useWordGameLogic(
   initCallback: (word: string, category: string) => void,
   storageKey: string,
 ) {
@@ -25,7 +20,7 @@ export function useGameLogic(
   const message = ref<string>('')
   const typeAlert = ref<AlertType>('warning')
   const isLoading = ref<boolean>(false)
-  const foundWords = ref<FoundWord[]>([])
+  const historyItems = ref<GameItem[]>([])
   const wordLetters = ref<WordLetter[]>([])
   const userLetters = ref<WordLetter[]>([])
 
@@ -176,38 +171,38 @@ export function useGameLogic(
     initGame()
   }
 
-  function loadFoundWords() {
+  function loadhistoryItems() {
     const saved = localStorage.getItem(storageKey)
     if (saved) {
-      foundWords.value = JSON.parse(saved)
+      historyItems.value = JSON.parse(saved)
     }
   }
 
-  function resetFoundWords() {
-    foundWords.value = []
-    saveFoundWords()
+  function resethistoryItems() {
+    historyItems.value = []
+    savehistoryItems()
   }
 
-  function saveFoundWords() {
+  function savehistoryItems() {
     // Garde uniquement les 15 premiers éléments
-    if (foundWords.value.length > 15) {
-      foundWords.value = foundWords.value.slice(0, 15)
+    if (historyItems.value.length > 15) {
+      historyItems.value = historyItems.value.slice(0, 15)
     }
-    localStorage.setItem(storageKey, JSON.stringify(foundWords.value))
+    localStorage.setItem(storageKey, JSON.stringify(historyItems.value))
   }
 
   function addToHistory(word: string, success: boolean) {
     const timeSpent = Math.floor((Date.now() - startTime) / 1000)
-    foundWords.value.unshift({
-      word: word,
+    historyItems.value.unshift({
+      name: word,
       timeSpent,
       date: new Date().toISOString(),
       success: success,
     })
-    saveFoundWords()
+    savehistoryItems()
   }
 
-  loadFoundWords()
+  loadhistoryItems()
 
   return {
     wordToGuess,
@@ -222,7 +217,7 @@ export function useGameLogic(
     setFocusCallback,
     cancelGame,
     discardWord,
-    resetFoundWords,
+    resethistoryItems,
     initGame,
     getLetterColor,
     checkGuess,
@@ -233,6 +228,6 @@ export function useGameLogic(
     validateGuess,
     typeAlert,
     baseHue,
-    foundWords,
+    historyItems,
   }
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useGameLogic } from '@/composables/useGameLogic'
+import { useWordGameLogic } from '@/composables/useWordGameLogic'
 
 export const useGameStore = defineStore('guessWordGame', () => {
   const initCallback = () => {
@@ -16,7 +16,7 @@ export const useGameStore = defineStore('guessWordGame', () => {
     loadingNewGame,
     setFocusCallback,
     cancelGame,
-    resetFoundWords,
+    resethistoryItems,
     initGame,
     getLetterColor,
     checkGuess,
@@ -27,8 +27,8 @@ export const useGameStore = defineStore('guessWordGame', () => {
     wordFound,
     typeAlert,
     baseHue,
-    foundWords,
-  } = useGameLogic(initCallback, 'foundWords')
+    historyItems,
+  } = useWordGameLogic(initCallback, 'historyItems')
 
   return {
     wordToGuess,
@@ -39,7 +39,7 @@ export const useGameStore = defineStore('guessWordGame', () => {
     loadingNewGame,
     setFocusCallback,
     cancelGame,
-    resetFoundWords,
+    resethistoryItems,
     initGame,
     getLetterColor,
     checkGuess,
@@ -50,6 +50,6 @@ export const useGameStore = defineStore('guessWordGame', () => {
     checkGuessOnInput,
     typeAlert,
     baseHue,
-    foundWords,
+    historyItems,
   }
 })

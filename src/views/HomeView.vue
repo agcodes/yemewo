@@ -13,6 +13,10 @@ const goToGuessWordLetters = () => {
 const goToAnagram = () => {
   router.push('/anagram')
 }
+
+const goToFlagsQuiz = () => {
+  router.push('/flags-quiz')
+}
 </script>
 
 <template>
@@ -37,6 +41,10 @@ const goToAnagram = () => {
                 prepend-icon="mdi mdi-alphabetical-variant" class="justify-start p-4   mb-4">
                 Pendu
               </v-btn>
+              <v-btn size="large" color="success" @click="goToFlagsQuiz" prepend-icon="mdi-flag"
+                class="justify-start p-4   mb-4">
+                Quiz des drapeaux
+              </v-btn>
             </div>
 
           </v-card-text>
@@ -44,7 +52,9 @@ const goToAnagram = () => {
 
         <v-alert type="info" class="text-left">
           <strong>Devinette de mots :</strong> Devinez le mot caché grâce aux couleurs des lettres.<br>
-          <strong>Anagrammes :</strong> Réarrangez les lettres mélangées pour former le mot correct.
+          <strong>Anagrammes :</strong> Réarrangez les lettres mélangées pour former le mot correct.<br>
+          <strong>Pendu :</strong> Devinez le mot lettre par lettre avant que le pendu ne soit complet.<br>
+          <strong>Quiz des drapeaux :</strong> Devinez le pays à partir de son drapeau.
         </v-alert>
       </v-col>
     </v-row>

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useGameLogic, type WordLetter } from '@/composables/useGameLogic'
+import { useWordGameLogic, type WordLetter } from '@/composables/useWordGameLogic'
 import { ref } from 'vue'
 
 export const useGameStore = defineStore('guessWordLettersGame', () => {
@@ -69,7 +69,7 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     setFocusCallback,
     cancelGame,
     discardWord,
-    resetFoundWords,
+    resethistoryItems,
     initGame,
     getLetterColor,
     checkGuess,
@@ -80,8 +80,8 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     wordFound,
     typeAlert,
     baseHue,
-    foundWords,
-  } = useGameLogic(initCallback, 'guesswordlettersfoundWords')
+    historyItems,
+  } = useWordGameLogic(initCallback, 'guesswordlettershistoryItems')
 
   return {
     wordToGuess,
@@ -95,7 +95,7 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     userLetters,
     setFocusCallback,
     cancelGame,
-    resetFoundWords,
+    resethistoryItems,
     initGame,
     getLetterColor,
     checkGuess,
@@ -107,6 +107,6 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     checkGuessOnInput,
     typeAlert,
     baseHue,
-    foundWords,
+    historyItems,
   }
 })
