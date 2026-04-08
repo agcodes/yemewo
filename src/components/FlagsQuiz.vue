@@ -3,7 +3,7 @@
         <v-card v-if="game.savedCountry" class="mt-5 mb-5 pa-4">
             <v-card-title class="mb-2 mt-1 text-center">Trouver le bon drapeau | {{ game.userPts }}
                 points</v-card-title>
-            <v-card-text class="pa-3" v-if="game.isLoading">
+            <v-card-text class="pa-3" v-if="!game.isLoading">
                 <h2 class="mb-5">{{ game.savedCountry.localName }}</h2>
                 <v-radio-group v-model="selected">
                     <v-radio class="mb-1" @change="submit" v-for="choice in choices" :key="choice.value"
@@ -23,7 +23,7 @@
             </v-card-text>
         </v-card>
 
-        <v-alert v-else type="error">Failed to load quiz.</v-alert>
+        <v-alert v-else-if="!game.isLoading" type="error">Failed to load quiz.</v-alert>
 
         <div>
             <div v-if="game.previousCountry">
@@ -60,12 +60,13 @@ let autoNextTimer = ref<number | null>(null)
 
 async function loadQuiz() {
     try {
+        game.isLoading = true
         game.defineNewGame(5);
         choices.value = game.currentCountries.map((country) => ({
             label: country.localName,
             value: country.flagSvg,
         }))
-        game.isLoading = true
+        game.isLoading = false
     } catch (error) {
         console.error(error)
     }

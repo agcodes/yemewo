@@ -10,16 +10,41 @@
 
 .flag-border {
   padding: 1px;
+  transition: all 0.3s ease;
   background-color: hsl(0, 0%, 95%);
   border: 8px dotted transparent;
 }
 
-.flag-border.good {
-  background-color: transparent;
-  border-color: hsl(122, 39%, 49%);
+/* Effet au survol (optionnel) */
+.flag-border:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* État "Bonne réponse" */
+.flag-border.good {
+  background-color: transparent;
+  border-color: rgb(var(--v-theme-success));
+  box-shadow: 0 0 0 2px rgb(var(--v-theme-success));
+  animation: pulse-green 1.5s ease;
+}
+
+
+/* État "Mauvaise réponse" */
 .flag-border.bad {
   background-color: transparent;
-  border-color: hsl(36, 100%, 50%);
+  border-color: rgb(230, 122, 80);
+  box-shadow: 0 0 0 2px rgb(var(--v-theme-error));
+  animation: pulse-red 1.5s ease;
+}
+/* Animations pour les feedbacks */
+@keyframes pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(var(--v-theme-success), 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(var(--v-theme-success), 0); }
+  100% { box-shadow: 0 0 0 0  transparent; }
+}
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(var(--v-theme-error), 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(var(--v-theme-error), 0); }
+  100% { box-shadow: 0 0 0 0  transparent; }
 }
