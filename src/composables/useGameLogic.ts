@@ -1,0 +1,59 @@
+import { ref } from 'vue'
+import type { GameItem } from '@/composables/GameItem'
+
+export function useGameLogic(storageKey: string) {
+  const historyItems = ref<GameItem[]>([])
+  const userPts = ref<number>(0)
+  const nbGames = ref<number>(0)
+  const nbRounds = ref<number>(0)
+
+  let startTime = 0
+
+  function startTimer() {
+    startTime = Date.now()
+  }
+
+  function addPts(points: number) {
+    userPts.value += points
+  }
+
+  function loadHistory() {
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      historyItems.value = JSON.parse(saved)
+    }
+  }
+
+  function saveHistory() {
+    if (historyItems.value.length > 15) {
+      historyItems.value = historyItems.value.slice(0, 15)
+    }
+    localStorage.setItem(storageKey, JSON.stringify(historyItems.value))
+  }
+
+  function resetHistory() {
+    historyItems.value = []
+    saveHistory()
+  }
+
+  function addToHistory(name: string, success: boolean) {
+    const timeSpent = Math.floor((Date.now() - startTime) / 1000)
+    historyItems.value.unshift({
+      name,
+      timeSpent,
+      date: new Date().toISOString(),
+      success,
+    })
+    saveHistory()
+  }
+
+  return {
+    historyItems,
+    startTimer,
+    addToHistory,
+    loadHistory,
+    resetHistory,
+    addPts,
+    userPts: userPts,
+  }
+}

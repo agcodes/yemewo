@@ -2,13 +2,17 @@ class Country {
   name: string
   localName: string
   capitals: string[]
-  flag: string
+  flagPng: string
+  flagSvg: string
+  flagDescription: string
 
   constructor(data: any) {
     this.name = data.name?.common || ''
     this.localName = data.translations?.fra.common || ''
     this.capitals = data.capital || []
-    this.flag = data.flags?.png || ''
+    this.flagPng = data.flags?.png || ''
+    this.flagSvg = data.flags?.svg || ''
+    this.flagDescription = data.flags?.alt || ''
   }
 }
 

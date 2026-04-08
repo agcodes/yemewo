@@ -1,40 +1,48 @@
 <template>
     <v-container>
-
-        <v-card v-if="game.savedCountry" class="mb-3">
-            <v-card-text class="pa-4">
-                <h1 class="card-title mb-3">Trouver le bon drapeau</h1>
-                <h2 class="mb-3">{{ game.savedCountry.localName }}</h2>
+        <v-card v-if="game.savedCountry" class="mt-5 mb-5 pa-4">
+            <v-card-title class="mb-2 mt-1 text-center">Trouver le bon drapeau | {{ game.userPts }}
+                points</v-card-title>
+            <v-card-text class="pa-3" v-if="game.isLoading">
+                <h2 class="mb-5">{{ game.savedCountry.localName }}</h2>
                 <v-radio-group v-model="selected">
-                    <v-radio @change="submit" v-for="choice in choices" :key="choice.value" :value="choice.value"
-                        color="primary">
+                    <v-radio class="mb-1" @change="submit" v-for="choice in choices" :key="choice.value"
+                        :value="choice.value" color="primary">
                         <template v-slot:label>
-                            <v-img :src="choice.value" width="70" height="70" max-width="70" max-height="70"
-                                eager></v-img>
+                            <v-img :src="choice.value" class="flag-border rounded mb-2" :class="{
+                                good: game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
+                                bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg
+                            }" width="100" height="auto" max-width="100"></v-img>
+
+                            <span class="ml-3" v-if="game.isSubmitted && choice.value === game.savedCountry.flagSvg">{{
+                                game.savedCountry.localName }}</span>
                         </template>
+
                     </v-radio>
                 </v-radio-group>
             </v-card-text>
         </v-card>
+
         <v-alert v-else type="error">Failed to load quiz.</v-alert>
 
         <div>
-            <v-card class="mb-3">
-                <v-card-text class="pa-4" v-if="game.previousCountry">
-                    <h2 class="mb-3">{{ game.previousCountry.localName }}</h2>
-                    <div v-if="game.isGood" class="pa-3 mb-2 bg-success text-white">
-                        Bonne réponse !
-                    </div>
-                    <div v-else class="pa-3 mb-2 bg-error text-white">
-                        Mauvaise réponse.
-                        La réponse était : <v-img :src="game.previousCountry.flag" width="70" height="70" max-width="70"
-                            max-height="70" eager></v-img>
-                    </div>
-                </v-card-text>
-            </v-card>
+            <div v-if="game.previousCountry">
+                <v-alert v-if="game.isGood" type="success" class="mb-5">
+                    Bonne réponse !
+                </v-alert>
+                <v-alert v-else type="error" class="mb-5">
+                    Mauvaise réponse.
+                </v-alert>
+            </div>
+            <div v-else>
+                <v-alert type="info" class="mb-5">
+                    Devinez le pays à partir de son drapeau !
+                </v-alert>
+
+            </div>
         </div>
 
-        <GuessHistory :historyItems="game.historyItems" :onReset="game.resethistoryItems" title="Historique des mots" />
+        <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique des mots" />
     </v-container>
 </template>
 
@@ -55,14 +63,16 @@ async function loadQuiz() {
         game.defineNewGame(5);
         choices.value = game.currentCountries.map((country) => ({
             label: country.localName,
-            value: country.flag,
+            value: country.flagSvg,
         }))
+        game.isLoading = true
     } catch (error) {
         console.error(error)
     }
 }
 
 function submit() {
+    if (game.isSubmitted) return
     game.submit(selected.value)
 
     autoNextTimer.value = setTimeout(() => {
@@ -71,16 +81,13 @@ function submit() {
 }
 
 function newQuiz() {
-    game.savedCountry = null
     choices.value = []
     selected.value = ''
-    game.isSubmitted = false
-    game.isGood = false
-    game.previousCountry = null
     loadQuiz()
 }
 
 onMounted(() => {
+    game.isLoading = true
     game.loadCountries().then(() => {
         loadQuiz()
     })

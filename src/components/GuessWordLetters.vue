@@ -82,5 +82,5 @@ const displayNewWord = () => {
         </v-card-text>
     </v-card>
 
-    <GuessHistory :historyItems="game.historyItems" :onReset="game.resethistoryItems" title="Historique des mots" />
+    <GuessHistory :historyItems="game.historyItems" :onReset="game.resethistory" title="Historique des mots" />
 </template>

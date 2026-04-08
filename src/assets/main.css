@@ -7,3 +7,19 @@
 .font-symbol {
   font-family: 'Alfabilder', sans-serif;
 }
+
+.flag-border {
+  padding: 1px;
+  background-color: hsl(0, 0%, 95%);
+  border: 8px dotted transparent;
+}
+
+.flag-border.good {
+  background-color: transparent;
+  border-color: hsl(122, 39%, 49%);
+}
+
+.flag-border.bad {
+  background-color: transparent;
+  border-color: hsl(36, 100%, 50%);
+}

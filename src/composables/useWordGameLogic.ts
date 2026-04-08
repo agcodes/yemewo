@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { fetchRandomWord } from '@/services/wordService'
+import { useGameLogic } from '@/composables/useGameLogic'
 
 type AlertType = 'info' | 'success' | 'warning' | 'error'
 
@@ -14,13 +15,15 @@ export function useWordGameLogic(
   initCallback: (word: string, category: string) => void,
   storageKey: string,
 ) {
+  const { historyItems, startTimer, addToHistory, resetHistory, loadHistory, addPts, userPts } =
+    useGameLogic(storageKey)
+
   const wordToGuess = ref<string>('')
   const hintGuess = ref<string>('')
   const userGuess = ref<string>('')
   const message = ref<string>('')
   const typeAlert = ref<AlertType>('warning')
   const isLoading = ref<boolean>(false)
-  const historyItems = ref<GameItem[]>([])
   const wordLetters = ref<WordLetter[]>([])
   const userLetters = ref<WordLetter[]>([])
 
@@ -135,6 +138,7 @@ export function useWordGameLogic(
       message.value = 'Bravo ! Vous avez trouvé le mot. Nouveau mot dans 3 secondes...'
       typeAlert.value = 'success'
       wordFound.value = true
+      addPts(10)
       addToHistory(wordToGuess.value, true)
       timeOutNewWord()
       return true
@@ -171,38 +175,7 @@ export function useWordGameLogic(
     initGame()
   }
 
-  function loadhistoryItems() {
-    const saved = localStorage.getItem(storageKey)
-    if (saved) {
-      historyItems.value = JSON.parse(saved)
-    }
-  }
-
-  function resethistoryItems() {
-    historyItems.value = []
-    savehistoryItems()
-  }
-
-  function savehistoryItems() {
-    // Garde uniquement les 15 premiers éléments
-    if (historyItems.value.length > 15) {
-      historyItems.value = historyItems.value.slice(0, 15)
-    }
-    localStorage.setItem(storageKey, JSON.stringify(historyItems.value))
-  }
-
-  function addToHistory(word: string, success: boolean) {
-    const timeSpent = Math.floor((Date.now() - startTime) / 1000)
-    historyItems.value.unshift({
-      name: word,
-      timeSpent,
-      date: new Date().toISOString(),
-      success: success,
-    })
-    savehistoryItems()
-  }
-
-  loadhistoryItems()
+  loadHistory()
 
   return {
     wordToGuess,
@@ -217,7 +190,7 @@ export function useWordGameLogic(
     setFocusCallback,
     cancelGame,
     discardWord,
-    resethistoryItems,
+    resetHistory,
     initGame,
     getLetterColor,
     checkGuess,

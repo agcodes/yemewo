@@ -7,10 +7,13 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
   function submit(selected: string) {
     if (!savedCountry.value) return
 
-    isGood.value = selected === savedCountry.value.flag
     isSubmitted.value = true
+    isGood.value = selected === savedCountry.value.flagSvg
     previousCountry.value = savedCountry.value
 
+    if (isGood.value) {
+      addPts(10)
+    }
     addToHistory(savedCountry.value.localName, isGood.value)
   }
 
@@ -21,11 +24,14 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     previousCountry,
     currentCountries,
     historyItems,
-    resethistoryItems,
+    resetHistory,
     addToHistory,
     loadCountries,
+    isLoading,
+    userPts,
+    addPts,
     defineNewGame,
-  } = useCountryGameLogic(initCallback, 'fagHistoryItems')
+  } = useCountryGameLogic('fagHistoryItems')
 
   return {
     isGood,
@@ -35,8 +41,10 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     previousCountry,
     currentCountries,
     historyItems,
-    resethistoryItems,
+    resetHistory,
     loadCountries,
     defineNewGame,
+    isLoading,
+    userPts,
   }
 })
