@@ -12,8 +12,9 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     previousCountry.value = savedCountry.value
 
     if (isGood.value) {
-      addPts(10)
+      addPts(1)
     }
+    incNbGames();
     addToHistory(savedCountry.value.localName, isGood.value)
   }
 
@@ -28,6 +29,9 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     addToHistory,
     loadCountries,
     isLoading,
+    nbGames,
+    incNbGames,
+    initRound,
     userPts,
     addPts,
     defineNewGame,
@@ -44,6 +48,8 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     resetHistory,
     loadCountries,
     defineNewGame,
+    nbGames,
+    initRound,
     isLoading,
     userPts,
   }

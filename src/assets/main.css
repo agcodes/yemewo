@@ -4,6 +4,13 @@
   font-family: 'Alfabilder';
   src: url('./fonts/Alfabilder.ttf') format('truetype');
 }
+
+
+body {
+  background: hsl(211, 71%, 3%);
+  }
+
+  
 .font-symbol {
   font-family: 'Alfabilder', sans-serif;
 }
@@ -26,7 +33,7 @@
   background-color: transparent;
   border-color: rgb(var(--v-theme-success));
   box-shadow: 0 0 0 2px rgb(var(--v-theme-success));
-  animation: pulse-green 1.5s ease;
+  animation: pulse-green 3s ease;
 }
 
 
@@ -35,16 +42,36 @@
   background-color: transparent;
   border-color: rgb(230, 122, 80);
   box-shadow: 0 0 0 2px rgb(var(--v-theme-error));
-  animation: pulse-red 1.5s ease;
+  animation: pulse-red 3s ease;
 }
+
 /* Animations pour les feedbacks */
 @keyframes pulse-green {
   0% { box-shadow: 0 0 0 0 rgba(var(--v-theme-success), 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(var(--v-theme-success), 0); }
+  70% { box-shadow: 0 0 0 12px rgba(var(--v-theme-success), 0); }
   100% { box-shadow: 0 0 0 0  transparent; }
 }
 @keyframes pulse-red {
   0% { box-shadow: 0 0 0 0 rgba(var(--v-theme-error), 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(var(--v-theme-error), 0); }
+  70% { box-shadow: 0 0 0 12px rgba(var(--v-theme-error), 0); }
   100% { box-shadow: 0 0 0 0  transparent; }
+}
+
+
+/* Animation pour les alertes */
+.alert-transition-enter-active,
+.alert-transition-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.alert-transition-enter-from,
+.alert-transition-leave-to {
+  opacity: 0;
+  transform: translateY(-7px);
+}
+
+.alert-transition-enter-to,
+.alert-transition-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }

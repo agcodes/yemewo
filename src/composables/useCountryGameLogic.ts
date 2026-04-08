@@ -3,7 +3,7 @@ import { useGameLogic } from '@/composables/useGameLogic'
 import { Country, RestCountriesService } from '@/services/restCountriesService'
 
 export function useCountryGameLogic(storageKey: string) {
-  const { historyItems, startTimer, addToHistory, resetHistory, loadHistory, addPts, userPts } =
+  const { historyItems, startTimer, addToHistory, resetHistory, loadHistory, addPts, incNbGames, initRound, nbGames, userPts } =
     useGameLogic(storageKey)
 
   const isSubmitted = ref(false)
@@ -59,6 +59,9 @@ export function useCountryGameLogic(storageKey: string) {
     loadCountries,
     defineNewGame,
     addPts,
+    incNbGames,
+    initRound,
     userPts,
+    nbGames
   }
 }

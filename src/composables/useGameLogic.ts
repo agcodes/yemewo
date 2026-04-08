@@ -13,6 +13,10 @@ export function useGameLogic(storageKey: string) {
     startTime = Date.now()
   }
 
+  function incNbGames() {
+    nbGames.value += 1
+  }
+
   function addPts(points: number) {
     userPts.value += points
   }
@@ -36,6 +40,11 @@ export function useGameLogic(storageKey: string) {
     saveHistory()
   }
 
+  function initRound(){
+    nbGames.value = 0;
+    userPts.value = 0;
+  }
+
   function addToHistory(name: string, success: boolean) {
     const timeSpent = Math.floor((Date.now() - startTime) / 1000)
     historyItems.value.unshift({
@@ -54,6 +63,9 @@ export function useGameLogic(storageKey: string) {
     loadHistory,
     resetHistory,
     addPts,
+    incNbGames,
+    nbGames,
+    initRound,
     userPts: userPts,
   }
 }
