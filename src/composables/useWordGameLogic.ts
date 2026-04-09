@@ -33,7 +33,6 @@ export function useWordGameLogic(
 
   let autoNextTimer = ref<number | null>(null)
   let inputTry = 0
-  let startTime = 0
   let focusCallback: (() => void) | null = null
 
   // calculate the color for a letter based on its position in the alphabet and the base hue
@@ -65,9 +64,9 @@ export function useWordGameLogic(
       userGuess.value = ''
 
       inputTry = 0
-      startTime = Date.now()
       typeAlert.value = 'info'
       baseHue.value = Math.floor(Math.random() * 360)
+      startTimer()
 
       initCallback(randomWord.name, randomWord.categorie)
 
@@ -175,7 +174,7 @@ export function useWordGameLogic(
     initGame()
   }
 
-  loadHistory()
+  loadHistory(8)
 
   return {
     wordToGuess,

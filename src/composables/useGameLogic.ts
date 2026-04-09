@@ -6,6 +6,7 @@ export function useGameLogic(storageKey: string) {
   const userPts = ref<number>(0)
   const nbGames = ref<number>(0)
   const nbRounds = ref<number>(0)
+  const historyLimit = ref<number>(10)
 
   let startTime = 0
 
@@ -21,10 +22,15 @@ export function useGameLogic(storageKey: string) {
     userPts.value += points
   }
 
-  function loadHistory() {
+  function loadHistory(nb: number) {
+    historyLimit.value = nb
+
     const saved = localStorage.getItem(storageKey)
     if (saved) {
       historyItems.value = JSON.parse(saved)
+      if (nb !== undefined) {
+        historyItems.value = historyItems.value.slice(0, nb)
+      }
     }
   }
 
@@ -40,9 +46,9 @@ export function useGameLogic(storageKey: string) {
     saveHistory()
   }
 
-  function initRound(){
-    nbGames.value = 0;
-    userPts.value = 0;
+  function initRound() {
+    nbGames.value = 0
+    userPts.value = 0
   }
 
   function addToHistory(name: string, success: boolean) {
@@ -53,7 +59,7 @@ export function useGameLogic(storageKey: string) {
       date: new Date().toISOString(),
       success,
     })
-    saveHistory()
+    historyItems.value = historyItems.value.slice(0, historyLimit.value)
   }
 
   return {

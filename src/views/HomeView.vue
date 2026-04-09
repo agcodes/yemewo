@@ -25,7 +25,7 @@ const goToFlagsQuiz = () => {
       <v-col cols="12">
         <h1 class="text-h3 mb-8">Bienvenue sur Yumewo</h1>
 
-        <v-card class="pa-6 mb-6" elevation="4">
+        <v-card rounded="lg" class="pa-6 mb-6" elevation="4">
           <v-card-title class="text-h5 mb-4">Jeux disponibles</v-card-title>
           <v-card-text>
             <div class="d-flex flex-column gap-6">
@@ -43,10 +43,9 @@ const goToFlagsQuiz = () => {
               </v-btn>
               <v-btn size="large" color="success" @click="goToFlagsQuiz" prepend-icon="mdi-flag"
                 class="justify-start p-4   mb-4">
-                Quiz des drapeaux
+                Trouver le drapeau
               </v-btn>
             </div>
-
           </v-card-text>
         </v-card>
 

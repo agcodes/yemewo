@@ -9,5 +9,13 @@ export default createVuetify({
   directives,
   theme: {
     defaultTheme: 'light',
+
+    themes: {
+      light: {
+        colors: {
+          background: 'hsl(216, 51%, 97%)',
+        },
+      },
+    },
   },
 })

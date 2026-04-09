@@ -3,8 +3,18 @@ import { useGameLogic } from '@/composables/useGameLogic'
 import { Country, RestCountriesService } from '@/services/restCountriesService'
 
 export function useCountryGameLogic(storageKey: string) {
-  const { historyItems, startTimer, addToHistory, resetHistory, loadHistory, addPts, incNbGames, initRound, nbGames, userPts } =
-    useGameLogic(storageKey)
+  const {
+    historyItems,
+    startTimer,
+    addToHistory,
+    resetHistory,
+    loadHistory,
+    addPts,
+    incNbGames,
+    initRound,
+    nbGames,
+    userPts,
+  } = useGameLogic(storageKey)
 
   const isSubmitted = ref(false)
   const isGood = ref(false)
@@ -36,6 +46,7 @@ export function useCountryGameLogic(storageKey: string) {
     isGood.value = false
     previousCountry.value = null
     savedCountry.value = null
+    startTimer()
 
     if (countries.value.length > 0) {
       const shuffled = [...countries.value].sort(() => 0.5 - Math.random())
@@ -45,7 +56,8 @@ export function useCountryGameLogic(storageKey: string) {
     }
   }
 
-  loadHistory()
+  loadHistory(4)
+
   return {
     isSubmitted,
     previousCountry,
@@ -62,6 +74,6 @@ export function useCountryGameLogic(storageKey: string) {
     incNbGames,
     initRound,
     userPts,
-    nbGames
+    nbGames,
   }
 }

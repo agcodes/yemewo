@@ -2,8 +2,6 @@ import { defineStore } from 'pinia'
 import { useCountryGameLogic } from '@/composables/useCountryGameLogic'
 
 export const useFlagCountryStore = defineStore('flagCountryGame', () => {
-  const initCallback = (name: string, category: string) => {}
-
   function submit(selected: string) {
     if (!savedCountry.value) return
 
@@ -14,7 +12,7 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     if (isGood.value) {
       addPts(1)
     }
-    incNbGames();
+    incNbGames()
     addToHistory(savedCountry.value.localName, isGood.value)
   }
 

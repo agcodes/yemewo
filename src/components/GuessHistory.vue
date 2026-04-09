@@ -13,7 +13,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <v-card class="mt-5 mb-5" v-if="historyItems.length > 0">
+    <v-card rounded="lg" class="mt-5 mb-5" v-if="historyItems.length > 0">
         <v-card-title class="text-h6 font-weight-medium">
             {{ title }}
         </v-card-title>
