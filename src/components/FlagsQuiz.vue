@@ -19,7 +19,7 @@
                 <template v-slot:prepend>
                   <v-icon>mdi-check-circle</v-icon>
                 </template>
-                Bonne réponse !
+                Bonne réponse ! Chargement d'un nouveau pays...
               </v-alert>
 
               <v-alert v-else-if="game.previousCountry && !game.isGood" type="error" class="mb-2" variant="tonal"
@@ -27,7 +27,7 @@
                 <template v-slot:prepend>
                   <v-icon>mdi-close-circle</v-icon>
                 </template>
-                Mauvaise réponse
+                Mauvaise réponse. Chargement d'un nouveau pays...
               </v-alert>
 
               <v-alert v-else-if="!game.isLoading" type="info" class="mb-2" variant="tonal" density="comfortable">
@@ -56,18 +56,13 @@
               </v-radio>
             </v-radio-group>
           </v-card-text>
-
         </v-card>
 
         <v-alert v-else-if="!game.isLoading" type="error">Failed to load quiz.</v-alert>
       </v-col>
 
       <v-col cols="12" md="4">
-
         <v-card rounded="lg" v-if="game.savedCountry" class="mt-5 mb-5 pa-4">
-
-
-
           <div>
             {{ game.userPts }} / {{ game.nbGames }}
           </div>
@@ -75,8 +70,6 @@
         <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
       </v-col>
     </v-row>
-
-
   </v-container>
 </template>
 

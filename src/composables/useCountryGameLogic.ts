@@ -49,8 +49,11 @@ export function useCountryGameLogic(storageKey: string) {
     startTimer()
 
     if (countries.value.length > 0) {
+      // Shuffle the countries and take the first 'nb' countries for the current game
       const shuffled = [...countries.value].sort(() => 0.5 - Math.random())
       currentCountries.value = shuffled.slice(0, nb)
+
+      // Save the first country of the current game to display its flag and use it for validation
       savedCountry.value = currentCountries.value[0]!
       currentCountries.value = [...currentCountries.value].sort(() => 0.5 - Math.random())
     }

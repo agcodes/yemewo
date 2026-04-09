@@ -46,3 +46,26 @@ npm run build
 ```sh
 npm run test:unit
 ```
+
+\*\*\* todo
+
+ne pas réutiliser un pays
+mettre adresse API en paramètres
+pendu : régler problème input
+trouver un autre nom à pendu
+
+gérer transitions
+
+mode dark
+
+enlever Jeux disponibles
+
+afficher timer
+
+afficher score sur tous les jeux
+
+historique des scores
+
+trophées
+
+sauvegarde local des scores

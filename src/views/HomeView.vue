@@ -48,13 +48,6 @@ const goToFlagsQuiz = () => {
             </div>
           </v-card-text>
         </v-card>
-
-        <v-alert type="info" class="text-left">
-          <strong>Devinette de mots :</strong> Devinez le mot caché grâce aux couleurs des lettres.<br>
-          <strong>Anagrammes :</strong> Réarrangez les lettres mélangées pour former le mot correct.<br>
-          <strong>Pendu :</strong> Devinez le mot lettre par lettre avant que le pendu ne soit complet.<br>
-          <strong>Quiz des drapeaux :</strong> Devinez le pays à partir de son drapeau.
-        </v-alert>
       </v-col>
     </v-row>
   </v-container>

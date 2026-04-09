@@ -5,6 +5,7 @@ class Country {
   flagPng: string
   flagSvg: string
   flagDescription: string
+  alreadyUsed?: boolean
 
   constructor(data: any) {
     this.name = data.name?.common || ''
@@ -13,6 +14,7 @@ class Country {
     this.flagPng = data.flags?.png || ''
     this.flagSvg = data.flags?.svg || ''
     this.flagDescription = data.flags?.alt || ''
+    this.alreadyUsed = false
   }
 }
 
