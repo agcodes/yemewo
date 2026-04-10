@@ -13,7 +13,7 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
-          background: 'hsl(216, 51%, 97%)',
+          background: '#f8f5ff', // Couleur de base, le dégradé sera dans main.css
         },
       },
     },

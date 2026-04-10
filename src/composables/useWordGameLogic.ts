@@ -4,8 +4,6 @@ import { useGameLogic } from '@/composables/useGameLogic'
 
 type AlertType = 'info' | 'success' | 'warning' | 'error'
 
-import type { GameItem } from '@/composables/GameItem'
-
 export interface WordLetter {
   letter: string
   found: boolean
@@ -31,7 +29,7 @@ export function useWordGameLogic(
   const wordFound = ref<boolean>(false)
   const loadingNewGame = ref<boolean>(false)
 
-  let autoNextTimer = ref<number | null>(null)
+  let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
   let inputTry = 0
   let focusCallback: (() => void) | null = null
 

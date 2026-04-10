@@ -38,7 +38,6 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
       .map((wl) => wl.letter)
       .join('')
 
-    console.log('wordLettersString', wordLettersString)
     if (wordLettersString === wordToGuess.value.toLowerCase()) {
       validateGuess(wordLettersString)
       return true
@@ -69,7 +68,7 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     setFocusCallback,
     cancelGame,
     discardWord,
-    resethistory,
+    resetHistory,
     initGame,
     getLetterColor,
     checkGuess,
@@ -95,7 +94,7 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     userLetters,
     setFocusCallback,
     cancelGame,
-    resethistory,
+    resetHistory,
     initGame,
     getLetterColor,
     checkGuess,

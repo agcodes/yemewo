@@ -1,12 +1,36 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
-    // Extra safety for array and object lookups, but may have false positives.
+    // Target ES2020 to align with Vite
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    
+    // Vue specific options
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    
+    // Module settings
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
+    
+    // Strictness
+    "strict": true,
+    "noImplicitThis": true,
     "noUncheckedIndexedAccess": true,
+    
+    // Other settings
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "noEmit": true,
 
-    // Path mapping for cleaner imports.
+    // Path mapping for cleaner imports
     "paths": {
       "@/*": ["./src/*"]
     },

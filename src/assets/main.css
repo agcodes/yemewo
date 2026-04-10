@@ -14,9 +14,74 @@
   font-family: 'Exo2-Thin';
   src: url('./fonts/Exo2-Thin.ttf') format('truetype');
 }
+:root {
+  --gradient-background: linear-gradient(135deg, hsl(235, 95.00%, 98.00%) 0%, hsl(240, 100.00%, 93.90%) 100%);
+}
+
+html[theme='dark'] {
+  --gradient-background: linear-gradient(135deg, hsl(235, 30%, 15%) 0%, hsl(240, 30%, 10%) 100%);
+}
+
+/* Style de fond personnalisé - spécificité naturelle */
+.v-application .v-card.bg-highlight,
+.v-application .v-radio.bg-highlight,
+.v-application .v-img.bg-highlight,
+.v-application div.bg-highlight {
+  background-color: hsl(235, 100%, 97%);
+}
+
+html[theme='dark'] .v-application .v-card.bg-highlight,
+html[theme='dark'] .v-application .v-radio.bg-highlight,
+html[theme='dark'] .v-application .v-img.bg-highlight,
+html[theme='dark'] .v-application div.bg-highlight {
+  background-color: hsl(235, 30%, 15%);
+}
+
+/* Style pour l'app-bar - ciblage précis */
+.v-application .v-app-bar.y-app-bar {
+  background: linear-gradient(135deg, hsl(235, 80%, 80%), hsl(235, 60%, 85%));
+  color: #070708;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+html[theme='dark'] .v-application .v-app-bar.y-app-bar {
+  background: linear-gradient(135deg, hsl(235, 40%, 20%), hsl(235, 30%, 25%));
+  color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Augmentation de spécificité pour les éléments enfants */
+.v-application .v-app-bar.y-app-bar .v-toolbar__content {
+  background: transparent;
+}
+
+/* Optionnel : Pour un texte plus lisible sur fond transparent */
+.v-toolbar__title {
+  color: rgb(var(--v-theme-on-background));
+  /* Couleur dynamique selon le thème */
+}
 body {
-  background: hsl(211, 71%, 3%);
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cible l'élément racine de Vuetify */
+.v-application {
+  background: var(--gradient-background) !important;
+  min-height: 100vh;
+}
+
+/* Pour les applications avec layout */
+.v-application__wrap {
+  min-height: 100vh;
+  background: var(--gradient-background) !important;
+}
+
+/* Cible la zone principale du contenu */
+.v-main {
+  background: var(--gradient-background) !important;
 }
 
 .app-background {
@@ -39,13 +104,13 @@ body {
   padding: 1px;
   transition: all 0.3s ease;
   background-color: hsl(0, 0%, 95%);
-  border: 8px dotted transparent;
+  border: 4px dotted transparent;
 }
 
 /* Effet au survol (optionnel) */
 .flag-border:hover {
   transform: scale(1.02);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* État "Bonne réponse" */

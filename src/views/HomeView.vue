@@ -23,10 +23,12 @@ const goToFlagsQuiz = () => {
   <v-container max-width="800" class="text-center">
     <v-row density="compact">
       <v-col cols="12">
-        <h1 class="text-h3 mb-8">Bienvenue sur Yumewo</h1>
+        <v-card-title class="mt-3 pa-2 mb-3">
 
-        <v-card rounded="lg" class="pa-6 mb-6" elevation="4">
-          <v-card-title class="text-h5 mb-4">Jeux disponibles</v-card-title>
+          <h1 class="text-h3 mb-5 exo2-light">Bienvenue sur Yumewo</h1>
+        </v-card-title>
+
+        <v-card  flat rounded="0" class="pa-6 mb-6" elevation="4">
           <v-card-text>
             <div class="d-flex flex-column gap-6">
               <v-btn size="large" color="primary" @click="goToGuessWord" prepend-icon="mdi-head-dots-horizontal"

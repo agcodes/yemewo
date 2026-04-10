@@ -8,6 +8,11 @@ export function useGameLogic(storageKey: string) {
   const nbRounds = ref<number>(0)
   const historyLimit = ref<number>(10)
 
+  const isSubmitted = ref(false)
+  const isGood = ref(false)
+  const isLoading = ref(false)
+  const gameEnd = ref(false)
+
   let startTime = 0
 
   function startTimer() {
@@ -47,6 +52,7 @@ export function useGameLogic(storageKey: string) {
   }
 
   function initRound() {
+    gameEnd.value = false;
     nbGames.value = 0
     userPts.value = 0
   }
@@ -63,6 +69,10 @@ export function useGameLogic(storageKey: string) {
   }
 
   return {
+    isSubmitted,
+    isLoading,
+    isGood,
+    gameEnd,
     historyItems,
     startTimer,
     addToHistory,

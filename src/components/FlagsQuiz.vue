@@ -1,19 +1,32 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12" md="8">
-        <v-card rounded="lg" v-if="game.savedCountry" class="mt-5 mb-5 pa-4">
+    <v-row class="mt-2">
+      <v-col cols="12" md="8" >
+        <v-card rounded="" class="mb-5 pa-8" v-if="game.gameEnd == true" >
+          <v-alert type="info" class="mb-4" variant="tonal" density="comfortable">
+              <template v-slot:prepend>
+                <v-icon>mdi-information</v-icon>
+              </template>
+              Fin du jeu
+            </v-alert>
 
+            <div class="mb-5">
+                <v-btn @click="initRound" class="mr-2" variant="outlined">
+                    Nouveau jeu
+                </v-btn>
+            </div>
+        </v-card>
+
+        <v-card rounded="0" class="mb-5 pa-8" v-if="game.savedCountry" >
           <v-card-title class="d-flex align-center pa-2 mb-3">
-            <div class="d-flex align-center text-h5 font-weight-bold exo2-light">
-              <v-icon color="primary" class="mr-2">mdi-flag-variant</v-icon>
-              <span class="exo2-light">Jeu des drapeaux</span>
+            <div class="d-flex align-center text-h4 font-weight-bold exo2-light">
+              <span class=" font-weight-black  exo2-light">Jeu des drapeaux</span>
             </div>
           </v-card-title>
 
           <!-- Transition pour les alertes -->
           <transition name="alert-transition" mode="out-in">
-            <div :key="alertKey">
+            <div class="mb-6" :key="alertKey">
               <v-alert v-if="game.previousCountry && game.isGood" type="success" class="mb-2" variant="tonal"
                 density="comfortable">
                 <template v-slot:prepend>
@@ -39,32 +52,49 @@
             </div>
           </transition>
 
-          <v-card-text class="pa-3" v-if="!game.isLoading">
-            <h2 class="mb-5">{{ game.savedCountry.localName }}</h2>
-            <v-radio-group v-model="selected">
-              <v-radio class="mb-4" @change="submit" v-for="choice in choices" :key="choice.value" :value="choice.value"
-                color="primary">
-                <template v-slot:label>
-                  <v-img :src="choice.value" class="flag-border rounded mb-2" :class="{
+          <h2 class="mb-6 font-weight-black primary-text">{{ game.savedCountry.localName }}</h2>
+
+          <v-row class="">
+              <v-col v-for="(choice, index) in choices" :key="index" cols="12" sm="6">
+                <v-card
+                  flat 
+                  outlined
+                  rounded="0"
+                  :class="['pa-4 option-card bg-highlight']"
+                  @click="clickFlag(choice.value)"
+                >
+                  <v-img :src="choice.value" height="150" contain 
+                  class="flag-border rounded mb-2 bg-highlight" :class="{
                     good: game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
                     bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg
-                  }" width="120" height="auto" max-width="120"></v-img>
+                  }"
+              
+                  ></v-img>
 
-                  <span class="ml-3" v-if="game.isSubmitted && choice.value === game.savedCountry.flagSvg">{{
-                    game.savedCountry.localName }}</span>
-                </template>
-              </v-radio>
-            </v-radio-group>
-          </v-card-text>
+                  <div class="d-flex align-center bg-highlight justify-space-between">
+                   
+                    <v-radio-group v-model="selected" hide-details class="ma-0 pa-0">
+                      <v-radio @change="submit" :value="index" class="bg-highlight"></v-radio>
+                    </v-radio-group>
+                    <span v-if="game.isSubmitted && choice.value === game.savedCountry.flagSvg" class="font-weight-bold">
+                      {{  game.savedCountry.localName }}</span>
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
         </v-card>
 
         <v-alert v-else-if="!game.isLoading" type="error">Failed to load quiz.</v-alert>
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-card rounded="lg" v-if="game.savedCountry" class="mt-5 mb-5 pa-4">
-          <div>
-            {{ game.userPts }} / {{ game.nbGames }}
+        <v-card rounded="0" class="mb-6 pa-4 bg-highlight">
+          <v-card-title class="text-h6 font-weight-medium">
+            <v-icon class="mr-2">mdi-star</v-icon>
+            Votre score
+        </v-card-title>
+          <div class="text-center pa-6">
+            <div class="text-h3 font-weight-black mb-2"> {{ game.userPts }} / {{ game.nbGames }}</div>
           </div>
         </v-card>
         <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
@@ -83,10 +113,11 @@ const game = useFlagCountryStore()
 const choices = ref<{ label: string; value: string }[]>([])
 const selected = ref<string>('')
 
-let autoNextTimer = ref<number | null>(null)
+let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 
 // Clé pour forcer la transition des alertes
 const alertKey = ref(0);
+const rounds = ref<number>(0)
 
 // Surveillance des changements de game.isGood ou game.previousCountry
 watch(
@@ -99,15 +130,22 @@ watch(
 
 async function loadQuiz() {
   try {
-    game.defineNewGame(5);
-    choices.value = game.currentCountries.map((country) => ({
-      label: country.localName,
-      value: country.flagSvg,
-    }))
-    game.isLoading = false
+   game.defineNewGame(4);
+   if (game.currentCountries.length > 0){
+      choices.value = game.currentCountries.map((country) => ({
+        label: country.localName,
+        value: country.flagSvg,
+      }))
+      game.isLoading = false
+    }
   } catch (error) {
-    console.error(error)
+    game.isLoading = false
   }
+}
+
+function clickFlag(choice : string){
+  selected.value = choice;
+  submit();
 }
 
 function submit() {
@@ -125,11 +163,16 @@ function newQuiz() {
   loadQuiz()
 }
 
-onMounted(() => {
+function initRound(){
+  rounds.value += 1;
   game.initRound()
   game.isLoading = true
   game.loadCountries().then(() => {
     loadQuiz()
   })
+}
+
+onMounted(() => {
+ initRound();
 })
 </script>

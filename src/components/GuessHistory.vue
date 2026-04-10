@@ -13,11 +13,11 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <v-card rounded="lg" class="mt-5 mb-5" v-if="historyItems.length > 0">
+    <v-card rounded="0" class="mt-5 mb-5 pa-4"  v-if="historyItems.length > 0">
         <v-card-title class="text-h6 font-weight-medium">
+            <v-icon class="mr-2">mdi-history</v-icon>
             {{ title }}
         </v-card-title>
-        <v-divider></v-divider>
         <v-card-text>
             <v-list lines="two" density="comfortable">
                 <v-list-item v-for="(item, index) in historyItems" :key="index" :title="item.name" :subtitle="`temps : ${item.timeSpent}s | ${new Date(item.date).toLocaleDateString('fr-FR', {

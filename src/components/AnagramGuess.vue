@@ -22,7 +22,7 @@ const displayNewWord = () => {
 </script>
 
 <template>
-    <v-card rounded="lg" class="mt-5 mb-5 pa-5">
+    <v-card rounded="0" class="mt-5 mb-5 pa-5">
         <v-card-title class="mb-5 mt-1 text-center">Anagramme</v-card-title>
         <v-card-text>
             <div class="d-flex justify-center gap-2 mb-5">
@@ -68,5 +68,5 @@ const displayNewWord = () => {
         </v-card-text>
     </v-card>
 
-    <GuessHistory :historyItems="game.historyItems" :onReset="game.resethistory" title="Historique" />
+    <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
 </template>

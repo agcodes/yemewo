@@ -12,13 +12,16 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     if (isGood.value) {
       addPts(1)
     }
+    
     incNbGames()
     addToHistory(savedCountry.value.localName, isGood.value)
   }
 
   const {
-    isGood,
     isSubmitted,
+    isLoading,
+    isGood,
+    gameEnd,
     savedCountry,
     previousCountry,
     currentCountries,
@@ -26,7 +29,6 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     resetHistory,
     addToHistory,
     loadCountries,
-    isLoading,
     nbGames,
     incNbGames,
     initRound,
@@ -36,8 +38,10 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
   } = useCountryGameLogic('fagHistoryItems')
 
   return {
-    isGood,
     isSubmitted,
+    isLoading,
+    isGood,
+    gameEnd,
     submit,
     savedCountry,
     previousCountry,
@@ -48,7 +52,6 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     defineNewGame,
     nbGames,
     initRound,
-    isLoading,
     userPts,
   }
 })

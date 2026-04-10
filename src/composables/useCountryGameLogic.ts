@@ -4,6 +4,10 @@ import { Country, RestCountriesService } from '@/services/restCountriesService'
 
 export function useCountryGameLogic(storageKey: string) {
   const {
+    isSubmitted,
+    isLoading,
+    isGood,
+    gameEnd,
     historyItems,
     startTimer,
     addToHistory,
@@ -16,9 +20,6 @@ export function useCountryGameLogic(storageKey: string) {
     userPts,
   } = useGameLogic(storageKey)
 
-  const isSubmitted = ref(false)
-  const isGood = ref(false)
-  const isLoading = ref(false)
   const countries = ref<Country[]>([])
   const currentCountries = ref<Country[]>([])
   const savedCountry = ref<Country | null>(null)
@@ -31,6 +32,7 @@ export function useCountryGameLogic(storageKey: string) {
         false,
       )
       const randomCountries = await service.getCountries()
+      
       if (!randomCountries || randomCountries.length === 0) {
         throw new Error('Something went wrong!')
       }
@@ -41,7 +43,7 @@ export function useCountryGameLogic(storageKey: string) {
     }
   }
 
-  function defineNewGame(nb: number) {
+  function defineNewGame(nb: number) : boolean {
     isSubmitted.value = false
     isGood.value = false
     previousCountry.value = null
@@ -53,23 +55,39 @@ export function useCountryGameLogic(storageKey: string) {
       const shuffled = [...countries.value].sort(() => 0.5 - Math.random())
       currentCountries.value = shuffled.slice(0, nb)
 
+      const filteredCountries = currentCountries.value.filter(a => a.alreadyUsed == false);
+      if (filteredCountries.length == 0){
+        currentCountries.value = [];
+        gameEnd.value = true;
+        return false
+      }
+
       // Save the first country of the current game to display its flag and use it for validation
-      savedCountry.value = currentCountries.value[0]!
+      savedCountry.value = filteredCountries[0]!
+      savedCountry.value.alreadyUsed = true;
+      const index = countries.value.findIndex(a => a.name == savedCountry.value?.name);
+      if (index > 0 && countries.value[index]){
+        countries.value[index].alreadyUsed = true;
+      }
       currentCountries.value = [...currentCountries.value].sort(() => 0.5 - Math.random())
+      return true
     }
+
+    return false
   }
 
   loadHistory(4)
 
   return {
     isSubmitted,
-    previousCountry,
+    isLoading,
     isGood,
+    gameEnd,
+    previousCountry,
     currentCountries,
     savedCountry,
     historyItems,
     addToHistory,
-    isLoading,
     resetHistory,
     loadCountries,
     defineNewGame,
