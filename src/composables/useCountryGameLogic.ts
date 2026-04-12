@@ -1,15 +1,20 @@
 import { ref } from 'vue'
 import { useGameLogic } from '@/composables/useGameLogic'
 import { Country, RestCountriesService } from '@/services/restCountriesService'
+import { API_CONFIG } from '@/config/apiConfig'
 
 export function useCountryGameLogic(storageKey: string) {
   const {
+    message,
+    typeAlert,
     isSubmitted,
     isLoading,
+    loadingError,
     isGood,
     gameEnd,
     historyItems,
     startTimer,
+    startTime,
     addToHistory,
     resetHistory,
     loadHistory,
@@ -25,22 +30,25 @@ export function useCountryGameLogic(storageKey: string) {
   const savedCountry = ref<Country | null>(null)
   const previousCountry = ref<Country | null>(null)
 
-  async function loadCountries() {
-    try {
+  async function loadCountries() : Promise<boolean>  {
+    return new Promise((resolve, reject) => {
+      loadingError.value = false;
+      
       const service = new RestCountriesService(
-        'https://restcountries.com/v3.1/all?fields=name,translations,flags',
+        API_CONFIG.REST_COUNTRIES_URL,
         false,
       )
-      const randomCountries = await service.getCountries()
-      
-      if (!randomCountries || randomCountries.length === 0) {
-        throw new Error('Something went wrong!')
-      }
-
-      countries.value = randomCountries
-    } catch (error) {
-      console.error(error)
-    }
+      service.getCountries().then((randomCountries) => {
+          countries.value = randomCountries
+          resolve(true)
+      })
+      .catch((error) => {
+        loadingError.value = true;
+        message.value = 'Erreur lors de la récupération du quiz'
+        typeAlert.value = 'warning'
+        reject(message.value)
+      });
+    });
   }
 
   function defineNewGame(nb: number) : boolean {
@@ -79,8 +87,11 @@ export function useCountryGameLogic(storageKey: string) {
   loadHistory(4)
 
   return {
+    message,
+    typeAlert,
     isSubmitted,
     isLoading,
+    loadingError,
     isGood,
     gameEnd,
     previousCountry,
@@ -96,5 +107,6 @@ export function useCountryGameLogic(storageKey: string) {
     initRound,
     userPts,
     nbGames,
+    startTime,
   }
 }

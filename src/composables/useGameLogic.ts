@@ -1,22 +1,26 @@
 import { ref } from 'vue'
 import type { GameItem } from '@/composables/GameItem'
 
+type AlertType = 'info' | 'success' | 'warning' | 'error' | undefined
+
 export function useGameLogic(storageKey: string) {
   const historyItems = ref<GameItem[]>([])
   const userPts = ref<number>(0)
   const nbGames = ref<number>(0)
   const nbRounds = ref<number>(0)
   const historyLimit = ref<number>(10)
-
+  const loadingError  = ref(false)
   const isSubmitted = ref(false)
   const isGood = ref(false)
   const isLoading = ref(false)
   const gameEnd = ref(false)
+  const message = ref<string>('')
+  const typeAlert = ref<AlertType>('warning')
 
-  let startTime = 0
+  const startTime = ref<number>(0)
 
   function startTimer() {
-    startTime = Date.now()
+    startTime.value = new Date().getTime()
   }
 
   function incNbGames() {
@@ -58,7 +62,7 @@ export function useGameLogic(storageKey: string) {
   }
 
   function addToHistory(name: string, success: boolean) {
-    const timeSpent = Math.floor((Date.now() - startTime) / 1000)
+    const timeSpent = Math.floor((new Date().getTime() - startTime.value) / 1000)
     historyItems.value.unshift({
       name,
       timeSpent,
@@ -71,10 +75,14 @@ export function useGameLogic(storageKey: string) {
   return {
     isSubmitted,
     isLoading,
+    loadingError,
+    message,
+    typeAlert,
     isGood,
     gameEnd,
     historyItems,
     startTimer,
+    startTime,
     addToHistory,
     loadHistory,
     resetHistory,

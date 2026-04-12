@@ -18,8 +18,11 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
   }
 
   const {
+    message,
+    typeAlert,
     isSubmitted,
     isLoading,
+    loadingError,
     isGood,
     gameEnd,
     savedCountry,
@@ -35,11 +38,15 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     userPts,
     addPts,
     defineNewGame,
+    startTime,
   } = useCountryGameLogic('fagHistoryItems')
 
   return {
+    message,
+    typeAlert,
     isSubmitted,
     isLoading,
+    loadingError,
     isGood,
     gameEnd,
     submit,
@@ -53,5 +60,6 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     nbGames,
     initRound,
     userPts,
+    startTime,
   }
 })

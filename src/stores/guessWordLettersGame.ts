@@ -31,6 +31,7 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
         wl.found = true
         found = true
       }
+
     })
 
     const wordLettersString = wordLetters.value
@@ -45,14 +46,25 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
 
     if (!userLetter) {
       if (!found) {
-        userLetters.value.pop()
-        userLetters.value.unshift({ letter, found: found })
+        // Trouver la première position vide (letter = "")
+        const emptyIndex = userLetters.value.findIndex((l) => l.letter === '');
+        
+        if (emptyIndex !== -1) {
+          // Remplacer la première lettre vide par la nouvelle lettre
+          userLetters.value[emptyIndex] = { letter, found: found };
+        }
+
+        if (userLetters.value.filter((l) => l.letter != '').length == 8){
+          message.value="Attention, il ne vous reste qu'une erreur !"
+        }
 
         if (userLetters.value.filter((l) => l.letter != '').length == 9) {
           discardWord(`Vous avez dépassé les 9 essais ! Le mot était : ${wordToGuess.value}.`)
         }
       }
     }
+
+    triggerFocusCallBack()
   }
 
   const {
@@ -61,9 +73,12 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     userGuess,
     message,
     isLoading,
+    loadingError,
     wordLetters,
     loadingNewGame,
     userLetters,
+    nbGoodLetters,
+    triggerFocusCallBack,
     validateGuess,
     setFocusCallback,
     cancelGame,
@@ -89,9 +104,11 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     userGuess,
     message,
     isLoading,
+    loadingError,
     wordLetters,
     loadingNewGame,
     userLetters,
+    nbGoodLetters,
     setFocusCallback,
     cancelGame,
     resetHistory,

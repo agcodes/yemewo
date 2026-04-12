@@ -1,3 +1,31 @@
+<template>
+  <v-app>
+    <v-container class="pr-5 pl-5 pt-0" max-width="1350">
+      <div class="stylish-border-bottom">
+        <div max-width="1300" class="pb-7 pt-7 row main-outline">
+          <v-toolbar-items>
+            <v-toolbar-title class="text-h5 font-weight-bold secondary-color">
+              <RouterLink to="/" >
+                yemewo
+              </RouterLink>
+            </v-toolbar-title>
+          <v-btn icon="mdi-home" to="/" variant="text" class="fs130 sme-2">
+            <v-icon>mdi-home</v-icon>
+          </v-btn>
+          <v-btn icon="mdi-theme-light-dark" @click="toggleTheme" variant="text" class="me-2">
+            <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
+          </v-btn>
+          </v-toolbar-items>
+        </div>
+        </div>
+      
+      <v-main>
+        <RouterView />
+      </v-main>
+    </v-container>
+  </v-app>
+</template>
+
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
@@ -32,27 +60,3 @@ watch(isDark, (newVal) => {
   document.documentElement.setAttribute('theme', themeName)
 })
 </script>
-
-<template>
-  <v-app>
-    <v-app-bar app :elevation="0" class="rounded-bar y-app-bar">
-      <v-toolbar-title class="text-h5 font-weight-bold">
-        <RouterLink to="/" style="color: inherit; text-decoration: none;">
-          yemewo
-        </RouterLink>
-      </v-toolbar-title>
-      <v-btn icon="mdi-home" to="/" variant="text" class="me-2">
-        <v-icon>mdi-home</v-icon>
-      </v-btn>
-      <v-btn icon="mdi-theme-light-dark" @click="toggleTheme" variant="text" class="me-2">
-        <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
-      </v-btn>
-    </v-app-bar>
-    <v-main>
-      <RouterView />
-    </v-main>
-  </v-app>
-</template>
-
-<style>
-</style>

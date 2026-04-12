@@ -1,19 +1,5 @@
-<script setup lang="ts">
-import type { GameItem } from '@/composables/GameItem'
-
-interface Props {
-    historyItems: GameItem[]
-    onReset: () => void
-    title?: string
-}
-
-withDefaults(defineProps<Props>(), {
-    title: 'Historique'
-})
-</script>
-
 <template>
-    <v-card rounded="0" class="mt-5 mb-5 pa-4"  v-if="historyItems.length > 0">
+    <v-card variant="flat" rounded="0" class="mt-5 mb-5 pa-4"  v-if="historyItems.length > 0">
         <v-card-title class="text-h6 font-weight-medium">
             <v-icon class="mr-2">mdi-history</v-icon>
             {{ title }}
@@ -40,3 +26,17 @@ withDefaults(defineProps<Props>(), {
         </v-card-text>
     </v-card>
 </template>
+
+<script setup lang="ts">
+import type { GameItem } from '@/composables/GameItem'
+
+interface Props {
+    historyItems: GameItem[]
+    onReset: () => void
+    title?: string
+}
+
+withDefaults(defineProps<Props>(), {
+    title: 'Historique'
+})
+</script>

@@ -1,26 +1,24 @@
 import { ref } from 'vue'
 import { fetchRandomWord } from '@/services/wordService'
 import { useGameLogic } from '@/composables/useGameLogic'
+import type { WordLetter } from './WordLetter'
 
-type AlertType = 'info' | 'success' | 'warning' | 'error'
-
-export interface WordLetter {
-  letter: string
-  found: boolean
-}
+export type { WordLetter }
 
 export function useWordGameLogic(
   initCallback: (word: string, category: string) => void,
   storageKey: string,
 ) {
-  const { historyItems, startTimer, addToHistory, resetHistory, loadHistory, addPts, userPts } =
+  const { historyItems, 
+    message,
+    typeAlert,
+    loadingError, startTimer, addToHistory, resetHistory, loadHistory, addPts, userPts } =
     useGameLogic(storageKey)
 
   const wordToGuess = ref<string>('')
   const hintGuess = ref<string>('')
   const userGuess = ref<string>('')
-  const message = ref<string>('')
-  const typeAlert = ref<AlertType>('warning')
+  const nbGoodLetters = ref<number>(0)
   const isLoading = ref<boolean>(false)
   const wordLetters = ref<WordLetter[]>([])
   const userLetters = ref<WordLetter[]>([])
@@ -46,37 +44,53 @@ export function useWordGameLogic(
   async function initGame() {
     isLoading.value = true
     try {
-      const randomWord = await fetchRandomWord()
-      wordToGuess.value = randomWord.name
-      hintGuess.value = randomWord.categorie
-
-      const letters = randomWord.name.toLowerCase().split('')
-      wordLetters.value = letters.map((letter) => ({
-        letter,
-        found: letter === '-' || letter === "'" || letter === ' ',
-      }))
-
-      userLetters.value = Array(9)
-        .fill(null)
-        .map(() => ({ letter: '', found: false }))
-      userGuess.value = ''
-
-      inputTry = 0
-      typeAlert.value = 'info'
-      baseHue.value = Math.floor(Math.random() * 360)
-      startTimer()
-
-      initCallback(randomWord.name, randomWord.categorie)
-
-      wordFound.value = false
-      loadingNewGame.value = false
-      if (focusCallback) {
-        setTimeout(focusCallback, 100) // Délai pour s'assurer que le DOM est prêt
-      }
+      loadingError.value = false;
+      fetchRandomWord().then((randomWord) => {
+        wordToGuess.value = randomWord.name
+        hintGuess.value = randomWord.categorie
+  
+        const letters = randomWord.name.toLowerCase().split('')
+        wordLetters.value = letters.map((letter: string) => ({
+          letter,
+          found: letter === '-' || letter === "'" || letter === ' ',
+        }))
+  
+        // 
+        userLetters.value = Array(9)
+          .fill(null)
+          .map(() => ({ letter: '', found: false }))
+        
+        userGuess.value = ''
+  
+        inputTry = 0
+        nbGoodLetters.value = 0
+        typeAlert.value = 'info'
+        baseHue.value = Math.floor(Math.random() * 360)
+        startTimer()
+  
+        initCallback(randomWord.name, randomWord.categorie)
+  
+        wordFound.value = false
+        loadingNewGame.value = false
+        triggerFocusCallBack()
+      })
+      .catch((error) => {
+        loadingError.value = true;
+        message.value = 'Erreur lors de la récupération du mot'
+        typeAlert.value = 'warning'
+      });
     } catch (error) {
+      loadingError.value = true;
       message.value = 'Erreur lors de la récupération du mot'
+      typeAlert.value = 'warning'
     } finally {
       isLoading.value = false
+    }
+  }
+
+  function triggerFocusCallBack(){
+    if (focusCallback) {
+      setTimeout(focusCallback, 100) // Délai pour s'assurer que le DOM est prêt
     }
   }
 
@@ -140,7 +154,7 @@ export function useWordGameLogic(
       timeOutNewWord()
       return true
     } else if (wordFound.value === false) {
-      typeAlert.value = 'warning'
+      typeAlert.value = undefined
       if (inputTry >= 200) {
         message.value = `Vous avez dépassé les 200 tentatives. Encore un petit effort !`
       } else {
@@ -150,6 +164,7 @@ export function useWordGameLogic(
             correctLetters++
           }
         }
+        nbGoodLetters.value = correctLetters
         message.value = `Vous avez trouvé ${correctLetters} sur ${wordToGuessValue.length} lettres.`
       }
       return false
@@ -181,9 +196,12 @@ export function useWordGameLogic(
     message,
     isLoading,
     loadingNewGame,
+    loadingError,
     wordFound,
     wordLetters,
     userLetters,
+    nbGoodLetters,
+    triggerFocusCallBack,
     setFocusCallback,
     cancelGame,
     discardWord,

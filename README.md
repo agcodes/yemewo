@@ -49,17 +49,9 @@ npm run test:unit
 
 \*\*\* todo
 
-ne pas réutiliser un pays
-
-mettre adresse API en paramètres
-
-pendu : régler problème input
-
 trouver un autre nom à pendu
 
 gérer transitions
-
-mode dark
 
 afficher timer
 
@@ -70,3 +62,5 @@ historique des scores
 trophées
 
 sauvegarde local des scores
+
+mieux gérer loading pendu

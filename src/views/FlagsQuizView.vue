@@ -1,7 +1,5 @@
 <template>
-    <div class="flags-quiz-view">
-        <FlagsQuiz />
-    </div>
+ <FlagsQuiz />
 </template>
 
 <script setup lang="ts">

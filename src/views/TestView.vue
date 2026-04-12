@@ -1,6 +1,4 @@
 <template>
- 
-
   <v-main class="bg-grey-lighten-4">
     <v-container fluid class="pa-8">
       <v-row>

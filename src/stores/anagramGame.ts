@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useWordGameLogic } from '@/composables/useWordGameLogic'
-
-type AlertType = 'info' | 'success' | 'warning' | 'error'
+import type { WordLetter } from '@/composables/WordLetter'
 
 export const useAnagramGameStore = defineStore('anagramGame', () => {
   const scrambledWord = ref<string>('')
+  const currentWord  = ref<WordLetter[]>([])
+  const tempWord  = ref<WordLetter[]>([])
 
   // Function to scramble a word
   function scrambleWord(word: string): string {
@@ -24,8 +25,47 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     revealSolution()
   }
 
+  function checkAnagramGuessOnInput(){
+    
+    if (areLettersMatching(userGuess.value, scrambledWord.value)){
+      scrambledWord.value = userGuess.value;
+    }
+
+    const letters = userGuess.value.toLowerCase().split('')
+    while (letters.length < scrambledWord.value.length) {
+      letters.push('');
+    }
+
+    tempWord.value = letters.map((letter: string) => ({
+      letter: letter,
+      found: scrambledWord.value.toLowerCase().includes(letter.toLowerCase()),
+    }))
+
+    currentWord.value = tempWord.value;
+
+
+
+    checkGuessOnInput();
+  }
+
+  function areLettersMatching(guess: string, scrambled: string): boolean {
+    if (guess.length != scrambled.length){
+      return false;
+    }
+    const sortedGuess = guess.toLowerCase().split('').sort().join('')
+    const sortedScrambled = scrambled.toLowerCase().split('').sort().join('')
+    return sortedGuess === sortedScrambled
+  }
+
   const initCallback = (word: string, category: string) => {
     scrambledWord.value = scrambleWord(word)
+    const letters = scrambledWord.value.toLowerCase().split('')
+
+    currentWord.value = letters.map((letter: string) => ({
+      letter:"",
+      found: true,
+    }))
+
     message.value = 'Réarrangez les lettres pour former le mot caché.'
   }
 
@@ -37,6 +77,8 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     isLoading,
     loadingNewGame,
     wordFound,
+    loadingError,
+    nbGoodLetters,
     setFocusCallback,
     cancelGame,
     resetHistory,
@@ -61,6 +103,9 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     isLoading,
     loadingNewGame,
     wordFound,
+    currentWord,
+    loadingError,
+    nbGoodLetters,
     setFocusCallback,
     cancelGame,
     resetHistory,
@@ -71,6 +116,8 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     checkGuessOnInput,
     revealAnagramSolution,
     getWordToGuessLetter,
+    areLettersMatching,
+    checkAnagramGuessOnInput,
     typeAlert,
     baseHue,
     historyItems,

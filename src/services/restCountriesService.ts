@@ -23,21 +23,31 @@ class RestCountriesService {
 
   constructor(url: string, mockAPI: boolean) {
     this.baseUrl = url
-    // mockAPI parameter is reserved for future use
   }
 
   async getCountries(): Promise<Country[]> {
-    const response = await fetch(this.baseUrl)
-    const results = await response.json()
+    return new Promise((resolve, reject) => {
+      fetch(this.baseUrl).then((response) => {
+        response.json().then((results) => {
+          const countries: Country[] = []
+          if (results) {
+            for (const result of results) {
+              const country = new Country(result)
+              countries.push(country)
+            }
 
-    const countries: Country[] = []
-    if (results) {
-      for (const result of results) {
-        const country = new Country(result)
-        countries.push(country)
-      }
-    }
-    return countries
+            if (countries && countries.length > 0) {
+              resolve(countries)
+              return
+            }
+          }
+          reject("Erreur de chargement des pays")
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+    })
   }
 
   async getCountry(name: string): Promise<Country> {
@@ -56,12 +66,6 @@ class RestCountriesService {
       return countries[randomIndex]!
     }
     return new Country({})
-  }
-
-  async getRandomCountries(nb: number): Promise<Country[]> {
-    const countries = await this.getCountries()
-    const shuffled = [...countries].sort(() => 0.5 - Math.random())
-    return shuffled.slice(0, nb)
   }
 }
 
