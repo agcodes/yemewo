@@ -12,7 +12,7 @@
                 Devinez le mot lettre par lettre
             </div>
         </v-card-title>
-        <v-card-text>
+        <v-card-text v-if="!game.isLoading">
             <div class="d-flex justify-center gap-2 mb-5">
                 <transition-group name="word-letter" tag="div" class="d-flex justify-center gap-2">
                     <v-sheet v-for="(letter, index) in game.wordLetters" :key="letter.letter + index" width="65" height="65"
