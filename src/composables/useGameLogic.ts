@@ -88,6 +88,7 @@ export function useGameLogic(storageKey: string) {
     resetHistory,
     addPts,
     incNbGames,
+    nbRounds,
     nbGames,
     initRound,
     userPts: userPts,

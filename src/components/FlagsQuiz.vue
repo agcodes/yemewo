@@ -107,9 +107,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue'
 import { useFlagCountryStore } from '@/stores/flagCountryGame'
-import GuessHistory from '@/components/GuessHistory.vue'
-
 const game = useFlagCountryStore()
+
+import GuessHistory from '@/components/GuessHistory.vue'
 
 const choices = ref<{ label: string; value: string }[]>([])
 const selected = ref<string>('')
