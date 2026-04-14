@@ -5,8 +5,8 @@ import type { WordLetter } from '@/composables/WordLetter'
 
 export const useAnagramGameStore = defineStore('anagramGame', () => {
   const scrambledWord = ref<string>('')
-  const currentWord  = ref<WordLetter[]>([])
-  const tempWord  = ref<WordLetter[]>([])
+  const currentWord = ref<WordLetter[]>([])
+  const tempWord = ref<WordLetter[]>([])
 
   // Function to scramble a word
   function scrambleWord(word: string): string {
@@ -25,15 +25,14 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     revealSolution()
   }
 
-  function checkAnagramGuessOnInput(){
-    
-    if (areLettersMatching(userGuess.value, scrambledWord.value)){
-      scrambledWord.value = userGuess.value;
+  function checkAnagramGuessOnInput() {
+    if (areLettersMatching(userGuess.value, scrambledWord.value)) {
+      scrambledWord.value = userGuess.value
     }
 
     const letters = userGuess.value.toLowerCase().split('')
     while (letters.length < scrambledWord.value.length) {
-      letters.push('');
+      letters.push('')
     }
 
     tempWord.value = letters.map((letter: string) => ({
@@ -41,16 +40,14 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
       found: scrambledWord.value.toLowerCase().includes(letter.toLowerCase()),
     }))
 
-    currentWord.value = tempWord.value;
+    currentWord.value = tempWord.value
 
-
-
-    checkGuessOnInput();
+    checkGuessOnInput()
   }
 
   function areLettersMatching(guess: string, scrambled: string): boolean {
-    if (guess.length != scrambled.length){
-      return false;
+    if (guess.length != scrambled.length) {
+      return false
     }
     const sortedGuess = guess.toLowerCase().split('').sort().join('')
     const sortedScrambled = scrambled.toLowerCase().split('').sort().join('')
@@ -58,11 +55,14 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
   }
 
   const initCallback = (word: string, category: string) => {
-    scrambledWord.value = scrambleWord(word)
+    scrambledWord.value = word.toLowerCase()
+    while (scrambledWord.value.toLowerCase() === word.toLowerCase()) {
+      scrambledWord.value = scrambleWord(word)
+    }
     const letters = scrambledWord.value.toLowerCase().split('')
 
     currentWord.value = letters.map((letter: string) => ({
-      letter:"",
+      letter: '',
       found: true,
     }))
 

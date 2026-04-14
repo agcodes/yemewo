@@ -6,10 +6,8 @@
         </v-btn>
     </v-alert>
     <v-card variant="flat" v-else rounded="0" class="mt-5 mb-5 pa-5">
-        <v-card-title class="text-center">
-            <div class="mb-5 text-h5 font-weight-bold">
-                Anagramme
-            </div>
+        <v-card-title class="text-center mb-4">
+            Anagramme
         </v-card-title>
         <v-card-text>
             <div class="d-flex justify-center gap-2 mb-5">
@@ -18,7 +16,7 @@
                     :style="{ backgroundColor: game.wordFound ? game.getLetterColor(game.getWordToGuessLetter(index)) : game.getLetterColor(letter) }">
                     <span>
                         {{
-                           letter.toUpperCase()
+                            letter.toUpperCase()
                         }}
                     </span>
                 </v-sheet>
@@ -41,7 +39,8 @@
             <v-responsive class="mx-auto mb-5" max-width="344">
                 <v-text-field ref="guessInput" class="fs170" :maxlength="game.wordToGuess.length" glow single-line
                     v-model="game.userGuess" density="comfortable" label="Votre proposition"
-                    @input="game.checkAnagramGuessOnInput" @keyup.enter="game.checkAnagramGuessOnInput" :disabled="game.isLoading" />
+                    @input="game.checkAnagramGuessOnInput" @keyup.enter="game.checkAnagramGuessOnInput"
+                    :disabled="game.isLoading" />
             </v-responsive>
 
             <transition name="alert-transition">
@@ -49,7 +48,6 @@
                     {{ game.message }}
                 </v-alert>
             </transition>
-           
 
             <v-alert class="mb-5">
                 Indice : {{ game.hintGuess }}

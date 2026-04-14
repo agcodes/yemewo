@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('../views/GuessWordLetters.vue'),
     },
     {
+      path: '/guess-wiki-words',
+      name: 'guess-wiki-words',
+      component: () => import('../views/GuessWikiWords.vue'),
+    },
+    {
       path: '/anagram',
       name: 'anagram',
       component: () => import('../views/AnagramView.vue'),

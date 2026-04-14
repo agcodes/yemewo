@@ -1,5 +1,3 @@
-@import './base.css';
-
 @font-face {
   font-family: 'Alfabilder';
   src: url('./fonts/Alfabilder.ttf') format('truetype');
@@ -15,6 +13,11 @@
   src: url('./fonts/Exo2-Thin.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('./fonts/BricolageGrotesque-VariableFont_opsz,wdth,wght.ttf') format('truetype');
+}
+
 .exo2-light {
   font-family: 'Exo2-Light', sans-serif;
 }
@@ -27,18 +30,29 @@
   font-family: 'Alfabilder', sans-serif;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Outfit:wght@100..900&display=swap");
-
+.font-grotesque {
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
 :root {
-  --gradient-background: linear-gradient(135deg, hsl(235, 95.00%, 98.00%) 0%, hsl(240, 100.00%, 93.90%) 100%);
+  --v-font-family: 'Bricolage Grotesque', Verdana, Geneva, Tahoma, sans-serif;
+  --gradient-background: linear-gradient(135deg, hsl(235, 95%, 98%) 0%, hsl(240, 100%, 93.9%) 100%);
 }
 
-
 body {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: var(--v-font-family);
   min-height: 100vh;
   margin: 0;
   padding: 0;
+}
+
+.v-application,
+.text-h1,
+.text-h2,
+.text-h3,
+.text-h4,
+.text-h5,
+.text-h6 {
+  font-family: var(--v-font-family);
 }
 
 /* Cible l'élément racine de Vuetify */
@@ -71,11 +85,7 @@ img {
 }
 
 .header {
-  background: linear-gradient(
-    135deg,
-    hsl(250, 88%, 87%) 0%,
-    hsl(218, 68%, 83%) 100%
-  );
+  background: linear-gradient(135deg, hsl(250, 88%, 87%) 0%, hsl(218, 68%, 83%) 100%);
   background-size: 300% 300%;
   animation: gradient-move 6s 1 linear;
   vertical-align: middle;
@@ -100,7 +110,9 @@ img {
 .header a {
   color: hsla(0, 0%, 99.2%, 98%);
   display: block;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 .header a:focus,
 .header a:hover {
@@ -185,17 +197,13 @@ h1 {
 }
 
 .stylish-border-bottom::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(
-    135deg,
-    hsl(250, 88%, 75%) 0%,
-    hsl(218, 68%, 70%) 100%
-  );
+  background: linear-gradient(135deg, hsl(250, 88%, 75%) 0%, hsl(218, 68%, 70%) 100%);
 }
 
 .img-frame {
@@ -204,11 +212,7 @@ h1 {
 }
 
 .progress-bar {
-  background: linear-gradient(
-    135deg,
-    hsl(250, 88%, 87%) 0%,
-    hsl(218, 68%, 83%) 100%
-  );
+  background: linear-gradient(135deg, hsl(250, 88%, 87%) 0%, hsl(218, 68%, 83%) 100%);
 }
 
 .menu-button {
@@ -232,7 +236,6 @@ h1 {
   background-color: hsl(235, 100%, 97%);
 }
 
-
 /* Augmentation de spécificité pour les éléments enfants */
 .v-application .v-app-bar.y-app-bar .v-toolbar__content {
   background: transparent;
@@ -243,6 +246,16 @@ h1 {
   color: rgb(var(--v-theme-on-background));
   /* Couleur dynamique selon le thème */
 }
+
+.v-toolbar-title__placeholder a {
+  color: black;
+  transition: color 0.3s ease;
+}
+
+.v-toolbar-title__placeholder a:hover {
+  color: hsl(250, 88%, 27%);
+}
+
 .flag-border {
   padding: 1px;
   transition: all 0.3s ease;
@@ -320,7 +333,6 @@ h1 {
 .letter-enter-active {
   transition:
     opacity 0.3s ease,
-    transform 0.3s ease,
     background-color 0.3s ease;
   animation: pulse-red-bg 0.5s ease;
 }
@@ -398,26 +410,19 @@ h1 {
 .expressive-menu-item a {
   display: block;
   padding: 20px;
-  background: linear-gradient(
-    135deg,
-    hsl(238, 84%, 90%) 0%,
-    hsl(238, 84%, 91%) 100%
-  );
+  transition: background 3s ease;
+  background: linear-gradient(135deg, hsl(238, 84%, 90%) 0%, hsl(238, 84%, 91%) 100%);
   color: hsl(238, 5%, 3%);
   text-decoration: none;
-  font-weight: bold;
-  /*border-radius: 10px;*/
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.8s ease;
 }
 
 .expressive-menu-item a:focus,
 .expressive-menu-item a:hover {
   transform: translateY(-1px);
-  background: linear-gradient(
-    135deg,
-    hsl(237, 88%, 85%) 0%,
-    hsl(238, 68%, 82%) 100%
-  );
+  background: linear-gradient(135deg, hsl(237, 88%, 85%) 0%, hsl(238, 68%, 82%) 100%);
 }
 
 .word {
@@ -439,16 +444,10 @@ h1 {
 .btn-expressive:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(
-    135deg,
-    hsl(250, 88%, 87%) 0%,
-    hsl(218, 68%, 83%) 100%
-  );
+  background: linear-gradient(135deg, hsl(250, 88%, 87%) 0%, hsl(218, 68%, 83%) 100%);
 }
 
-
 /* dark */
-
 
 body.dark-theme {
   background-color: hsl(350, 2%, 5%);
@@ -457,32 +456,27 @@ body.dark-theme {
   color: white;
 }
 
-html[theme='dark']  .secondary-color {
+html[theme='dark'] .secondary-color {
   color: hsl(237, 88%, 85%);
 }
 
-html[theme='dark']  .expressive-menu-item a {
+html[theme='dark'] .expressive-menu-item a {
   display: block;
   padding: 20px;
-  background: linear-gradient(
-    135deg,
-    hsl(238, 40%, 20%) 0%,
-    hsl(238, 40%, 30%) 100%
-  );
+  background: linear-gradient(135deg, hsl(238, 40%, 20%) 0%, hsl(238, 40%, 30%) 100%);
   color: hsl(0, 0%, 90%);
   text-decoration: none;
   font-weight: bold;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease;
 }
 
-html[theme='dark']  .expressive-menu-item a:focus,
-html[theme='dark']  .expressive-menu-item a:hover {
+html[theme='dark'] .expressive-menu-item a:focus,
+html[theme='dark'] .expressive-menu-item a:hover {
   transform: translateY(-1px);
-  background: linear-gradient(
-    135deg,
-    hsl(237, 40%, 35%) 0%,
-    hsl(238, 40%, 40%) 100%
-  );
+  background: linear-gradient(135deg, hsl(237, 40%, 35%) 0%, hsl(238, 40%, 40%) 100%);
 }
 
 html[theme='dark'] .btn-expressive {
@@ -495,10 +489,10 @@ html[theme='dark'] .btn-expressive {
   ); /* Fond plus sombre */
 }
 
-html[theme='dark']  .btn-expressive:focus,
-html[theme='dark']  .btn-expressive:hover {
+html[theme='dark'] .btn-expressive:focus,
+html[theme='dark'] .btn-expressive:hover {
   transform: translateY(-1px);
- 
+
   background: linear-gradient(
     135deg,
     hsl(250, 30%, 30%) 0%,
@@ -507,24 +501,17 @@ html[theme='dark']  .btn-expressive:hover {
 }
 
 body.dark-theme .word {
-  background: linear-gradient(
-    135deg,
-    hsl(250, 40%, 25%) 0%,
-    hsl(250, 40%, 29%) 0%
-  );
+  background: linear-gradient(135deg, hsl(250, 40%, 25%) 0%, hsl(250, 40%, 29%) 0%);
   color: hsl(251, 41%, 92%);
 }
-
 
 .v-theme--dark {
   color-scheme: dark;
 }
 
-
 html[theme='dark'] {
   --gradient-background: linear-gradient(135deg, hsl(235, 30%, 15%) 0%, hsl(240, 30%, 10%) 100%);
 }
-
 
 html[theme='dark'] .v-application .v-card.bg-highlight,
 html[theme='dark'] .v-application .v-radio.bg-highlight,

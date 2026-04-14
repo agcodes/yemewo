@@ -1,68 +1,65 @@
-
 <template>
     <v-alert v-if="game.loadingError" :type="game.typeAlert" class="mb-5">
-       {{ game.message }}
-       <v-btn @click="initGame" variant="outlined">
-           Recharger
-       </v-btn>
-   </v-alert>
+        {{ game.message }}
+        <v-btn @click="initGame" variant="outlined">
+            Recharger
+        </v-btn>
+    </v-alert>
 
-   <v-card variant="flat" v-else rounded="0" class="mt-5 mb-5 pa-5">
-       <v-card-title class="text-center">
-            <div class="mb-5 text-h5 font-weight-bold ">
-                Deviner le mot
-            </div> 
-       </v-card-title>
-       <v-card-text>
-           <div class="d-flex justify-center gap-2 mb-5">
-               <v-sheet v-for="(letter, index) in game.wordToGuess" :key="index" width="65" height="65"
-                   class="d-flex align-center justify-center text-h4" elevation="2"
-                   :style="{ backgroundColor: game.getLetterColor(letter) }">
-                   <span>
-                       {{
-                           game.wordFound
-                               ? letter.toUpperCase()
-                               : (((index === 0 || game.wordToGuess[index] == '-') && !game.userGuess[index])
-                                   ? game.getWordToGuessLetter(index) // display the first letter of the word to guess
-                                   : (game.userGuess[index] ? game.userGuess[index].toUpperCase() : ''))
-                       }}
-                   </span>
-               </v-sheet>
-           </div>
+    <v-card variant="flat" v-else rounded="0" class="mt-5 mb-5 pa-5">
+        <v-card-title class="text-center mb-4">
+            Devinez le mot
+        </v-card-title>
+        <v-card-text>
+            <div class="d-flex justify-center gap-2 mb-5">
+                <v-sheet v-for="(letter, index) in game.wordToGuess" :key="index" width="65" height="65"
+                    class="d-flex align-center justify-center text-h4" elevation="2"
+                    :style="{ backgroundColor: game.getLetterColor(letter) }">
+                    <span>
+                        {{
+                            game.wordFound
+                                ? letter.toUpperCase()
+                                : (((index === 0 || game.wordToGuess[index] == '-') && !game.userGuess[index])
+                                    ? game.getWordToGuessLetter(index) // display the first letter of the word to guess
+                                    : (game.userGuess[index] ? game.userGuess[index].toUpperCase() : ''))
+                        }}
+                    </span>
+                </v-sheet>
+            </div>
 
-           <v-responsive class="mx-auto mb-5" max-width="344">
-               <v-text-field ref="guessInput" class="text-h4" placeholder="saisir un mot"
-                   :maxlength="game.wordToGuess.length" glow single-line v-model="game.userGuess" density="comfortable"
-                   label="Votre proposition" @input="game.checkGuessOnInput" @keyup.enter="game.checkGuessOnInput"
-                   :disabled="game.isLoading" />
-           </v-responsive>
+            <v-responsive class="mx-auto mb-5" max-width="344">
+                <v-text-field ref="guessInput" class="text-h4" placeholder="saisir un mot"
+                    :maxlength="game.wordToGuess.length" glow single-line v-model="game.userGuess" density="comfortable"
+                    label="Votre proposition" @input="game.checkGuessOnInput" @keyup.enter="game.checkGuessOnInput"
+                    :disabled="game.isLoading" />
+            </v-responsive>
 
-           <transition name="alert-transition">
-               <v-alert v-if="game.message" :type="game.typeAlert" class="mb-5">
-                   {{ game.message }}
-               </v-alert>
-           </transition>
+            <transition name="alert-transition">
+                <v-alert v-if="game.message" :type="game.typeAlert" class="mb-5">
+                    {{ game.message }}
+                </v-alert>
+            </transition>
 
-           <v-alert class="mb-5">
-               Indice : {{ game.hintGuess }}
-           </v-alert>
+            <v-alert class="mb-5">
+                Indice : {{ game.hintGuess }}
+            </v-alert>
 
-           <div class="mb-5">
-               <v-btn @click="displayNewWord" class="mr-2" variant="outlined">
-                   Nouveau mot
-               </v-btn>
-               <v-btn v-if="game.wordFound === false && game.isLoading == false && game.loadingNewGame == false"
-                   @click="game.revealSolution" class="mr-2" variant="tonal" color="warning">
-                   Solution
-               </v-btn>
-               <v-btn v-if="game.loadingNewGame" @click="game.cancelAutoNext" variant="outlined">
-                   Annuler
-               </v-btn>
-           </div>
-       </v-card-text>
-   </v-card>
+            <div class="mb-5">
+                <v-btn @click="displayNewWord" class="mr-2" variant="outlined">
+                    Nouveau mot
+                </v-btn>
+                <v-btn v-if="game.wordFound === false && game.isLoading == false && game.loadingNewGame == false"
+                    @click="game.revealSolution" class="mr-2" variant="tonal" color="warning">
+                    Solution
+                </v-btn>
+                <v-btn v-if="game.loadingNewGame" @click="game.cancelAutoNext" variant="outlined">
+                    Annuler
+                </v-btn>
+            </div>
+        </v-card-text>
+    </v-card>
 
-   <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique des mots" />
+    <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique des mots" />
 </template>
 
 <script setup lang="ts">
@@ -74,7 +71,7 @@ const game = useGameStore()
 const guessInput = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-   initGame()
+    initGame()
 })
 
 const initGame = () => {

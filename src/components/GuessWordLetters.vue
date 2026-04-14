@@ -7,16 +7,15 @@
     </v-alert>
 
     <v-card variant="flat" v-else rounded="0" class="ma-0 mt-5 mb-4 pa-5">
-        <v-card-title class="text-center">
-            <div class="mb-5 text-h5 font-weight-bold ">
-                Devinez le mot lettre par lettre
-            </div>
+        <v-card-title class="text-center mb-4">
+
+            Devinez le mot lettre par lettre
         </v-card-title>
         <v-card-text v-if="!game.isLoading">
             <div class="d-flex justify-center gap-2 mb-5">
                 <transition-group name="word-letter" tag="div" class="d-flex justify-center gap-2">
-                    <v-sheet v-for="(letter, index) in game.wordLetters" :key="letter.letter + index" width="65" height="65"
-                        class="d-flex align-center justify-center text-h4" elevation="2"
+                    <v-sheet v-for="(letter, index) in game.wordLetters" :key="letter.letter + index" width="65"
+                        height="65" class="d-flex align-center justify-center text-h4" elevation="2"
                         :class="{ 'letter-found': letter.found && !game.wordFound }"
                         :style="{ backgroundColor: game.getLetterColor(letter.letter) }">
                         <span>
@@ -39,11 +38,12 @@
                         @click:append="game.checkLetterGuessOnInput"></v-text-field>
                 </v-responsive>
             </div>
-            
+
             <div class="d-flex justify-center gap-2 mb-5">
                 <transition-group name="letter" tag="div" class="d-flex justify-center gap-2">
-                    <v-sheet v-for="(letter, index) in game.userLetters.filter(a => !a.found)" :key="letter.letter + index" width="65"
-                        height="65" class="d-flex align-center justify-center text-h4 mb-5" elevation="2">
+                    <v-sheet v-for="(letter, index) in game.userLetters.filter(a => !a.found)"
+                        :key="letter.letter + index" width="65" height="65"
+                        class="d-flex align-center justify-center text-h4 mb-5" elevation="2">
                         <span>
                             {{
                                 letter.letter.toUpperCase()
@@ -91,7 +91,7 @@ const game = useGameStore()
 const guessInput = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-   initGame();
+    initGame();
 })
 
 const initGame = () => {

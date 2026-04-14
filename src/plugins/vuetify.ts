@@ -7,6 +7,15 @@ import 'vuetify/styles'
 export default createVuetify({
   components,
   directives,
+
+  defaults: {
+    global: {
+      style: {
+        fontFamily: 'Bricolage Grotesque, Verdana, sans-serif',
+      },
+    },
+  },
+
   theme: {
     defaultTheme: 'light',
 

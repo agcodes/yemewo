@@ -4,21 +4,21 @@
       <div class="stylish-border-bottom">
         <div max-width="1300" class="pb-7 pt-7 row main-outline">
           <v-toolbar-items>
-            <v-toolbar-title class="text-h5 font-weight-bold secondary-color">
-              <RouterLink to="/" >
+            <v-toolbar-title class="exo2-light">
+              <RouterLink to="/">
                 yemewo
               </RouterLink>
             </v-toolbar-title>
-          <v-btn icon="mdi-home" to="/" variant="text" class="fs130 sme-2">
-            <v-icon>mdi-home</v-icon>
-          </v-btn>
-          <v-btn icon="mdi-theme-light-dark" @click="toggleTheme" variant="text" class="me-2">
-            <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
-          </v-btn>
+            <v-btn icon="mdi-home" to="/" variant="text" class="fs130 sme-2">
+              <v-icon>mdi-home</v-icon>
+            </v-btn>
+            <v-btn icon="mdi-theme-light-dark" @click="toggleTheme" variant="text" class="me-2">
+              <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
+            </v-btn>
           </v-toolbar-items>
         </div>
-        </div>
-      
+      </div>
+
       <v-main>
         <RouterView />
       </v-main>

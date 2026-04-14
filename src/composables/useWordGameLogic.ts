@@ -9,11 +9,18 @@ export function useWordGameLogic(
   initCallback: (word: string, category: string) => void,
   storageKey: string,
 ) {
-  const { historyItems, 
+  const {
+    historyItems,
     message,
     typeAlert,
-    loadingError, startTimer, addToHistory, resetHistory, loadHistory, addPts, userPts } =
-    useGameLogic(storageKey)
+    loadingError,
+    startTimer,
+    addToHistory,
+    resetHistory,
+    loadHistory,
+    addPts,
+    userPts,
+  } = useGameLogic(storageKey)
 
   const wordToGuess = ref<string>('')
   const hintGuess = ref<string>('')
@@ -44,43 +51,44 @@ export function useWordGameLogic(
   async function initGame() {
     isLoading.value = true
     try {
-      loadingError.value = false;
-      fetchRandomWord().then((randomWord) => {
-        wordToGuess.value = randomWord.name
-        hintGuess.value = randomWord.categorie
-  
-        const letters = randomWord.name.toLowerCase().split('')
-        wordLetters.value = letters.map((letter: string) => ({
-          letter,
-          found: letter === '-' || letter === "'" || letter === ' ',
-        }))
-  
-        // 
-        userLetters.value = Array(9)
-          .fill(null)
-          .map(() => ({ letter: '', found: false }))
-        
-        userGuess.value = ''
-  
-        inputTry = 0
-        nbGoodLetters.value = 0
-        typeAlert.value = 'info'
-        baseHue.value = Math.floor(Math.random() * 360)
-        startTimer()
-  
-        initCallback(randomWord.name, randomWord.categorie)
-  
-        wordFound.value = false
-        loadingNewGame.value = false
-        triggerFocusCallBack()
-      })
-      .catch((error) => {
-        loadingError.value = true;
-        message.value = 'Erreur lors de la récupération du mot'
-        typeAlert.value = 'warning'
-      });
+      loadingError.value = false
+      fetchRandomWord()
+        .then((randomWord) => {
+          wordToGuess.value = randomWord.name
+          hintGuess.value = randomWord.categorie
+
+          const letters = randomWord.name.toLowerCase().split('')
+          wordLetters.value = letters.map((letter: string) => ({
+            letter,
+            found: letter === '-' || letter === "'" || letter === ' ',
+          }))
+
+          //
+          userLetters.value = Array(9)
+            .fill(null)
+            .map(() => ({ letter: '', found: false }))
+
+          userGuess.value = ''
+
+          inputTry = 0
+          nbGoodLetters.value = 0
+          typeAlert.value = 'info'
+          baseHue.value = Math.floor(Math.random() * 360)
+          startTimer()
+
+          initCallback(randomWord.name, randomWord.categorie)
+
+          wordFound.value = false
+          loadingNewGame.value = false
+          triggerFocusCallBack()
+        })
+        .catch((error) => {
+          loadingError.value = true
+          message.value = 'Erreur lors de la récupération du mot'
+          typeAlert.value = 'warning'
+        })
     } catch (error) {
-      loadingError.value = true;
+      loadingError.value = true
       message.value = 'Erreur lors de la récupération du mot'
       typeAlert.value = 'warning'
     } finally {
@@ -88,7 +96,7 @@ export function useWordGameLogic(
     }
   }
 
-  function triggerFocusCallBack(){
+  function triggerFocusCallBack() {
     if (focusCallback) {
       setTimeout(focusCallback, 100) // Délai pour s'assurer que le DOM est prêt
     }
@@ -154,7 +162,7 @@ export function useWordGameLogic(
       timeOutNewWord()
       return true
     } else if (wordFound.value === false) {
-      typeAlert.value = undefined
+      typeAlert.value = 'info'
       if (inputTry >= 200) {
         message.value = `Vous avez dépassé les 200 tentatives. Encore un petit effort !`
       } else {
