@@ -19,6 +19,7 @@ export function useWordGameLogic(
     resetHistory,
     loadHistory,
     addPts,
+    loadingNewGame,
     userPts,
   } = useGameLogic(storageKey)
 
@@ -32,7 +33,6 @@ export function useWordGameLogic(
 
   const baseHue = ref<number>(Math.floor(Math.random() * 360))
   const wordFound = ref<boolean>(false)
-  const loadingNewGame = ref<boolean>(false)
 
   let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
   let inputTry = 0

@@ -1,8 +1,8 @@
 <template>
-
-  <v-btn icon="mdi-theme-light-dark" @click="toggleTheme" variant="text" class="me-2">
-      <v-icon>{{ isDarkMode ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
-  </v-btn>
+  <button @click="toggleTheme" class="menu-button">
+    <i title="light mode" v-if="isDarkMode" class="bi bi-sun-fill"></i>
+    <i title="dark mode" v-else class="bi bi-moon-stars-fill"></i>
+  </button>
 </template>
 
 <script lang="ts">

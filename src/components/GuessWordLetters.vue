@@ -1,86 +1,92 @@
 <template>
-    <v-alert v-if="game.loadingError" :type="game.typeAlert" class="mb-5">
+    <!-- loading error -->
+    <div v-if="game.loadingError" class="alert mb-4" :class="`alert-${game.typeAlert}`" role="alert">
         {{ game.message }}
-        <v-btn @click="initGame" variant="outlined">
+        <button class="btn btn-outline-secondary ms-2" @click="initGame">
             Recharger
-        </v-btn>
-    </v-alert>
+        </button>
+    </div>
 
-    <v-card variant="flat" v-else rounded="0" class="ma-0 mt-5 mb-4 pa-5">
-        <v-card-title class="text-center mb-4">
-
+    <div v-else class="card border-0 mb-4 p-5">
+        <div class="card-title text-center mt-2 fs130 mb-3">
             Devinez le mot lettre par lettre
-        </v-card-title>
-        <v-card-text v-if="!game.isLoading">
-            <div class="d-flex justify-center gap-2 mb-5">
-                <transition-group name="word-letter" tag="div" class="d-flex justify-center gap-2">
-                    <v-sheet v-for="(letter, index) in game.wordLetters" :key="letter.letter + index" width="65"
-                        height="65" class="d-flex align-center justify-center text-h4" elevation="2"
-                        :class="{ 'letter-found': letter.found && !game.wordFound }"
-                        :style="{ backgroundColor: game.getLetterColor(letter.letter) }">
+        </div>
+
+        <div class="card-body" v-if="!game.isLoading">
+            <!-- letters -->
+            <div class="d-flex justify-content-center mt-1 gap-1 mb-5">
+                <transition-group name="word-letter" tag="div" class="d-flex justify-content-center gap-1">
+                    <div v-for="(letter, index) in game.wordLetters" :key="letter.letter + index"
+                        class="d-flex align-items-center text-black justify-content-center shadow-primary  text-uppercase fs-4"
+                        :class="{ 'letter-found': letter.found && !game.wordFound }" :style="{
+                            width: '65px',
+                            height: '65px',
+                            backgroundColor: game.getLetterColor(letter.letter)
+                        }">
                         <span>
                             {{
                                 letter.found || game.wordFound
-                                    ? letter.letter.toUpperCase()
+                                    ? letter.letter
                                     : ''
                             }}
                         </span>
-                    </v-sheet>
+                    </div>
                 </transition-group>
             </div>
 
-            <div class="d-flex justify-center gap-2 mb-5">
-                <v-responsive class="mx-auto" max-width="255">
-                    <v-text-field ref="guessInput" max-width="" v-model="game.userLetterGuess" append-icon="mdi-send"
-                        prepend-icon="icon" clear-icon="mdi-close-circle" label="lettre" maxlength="1" glow single-line
-                        type="text" variant="filled" placeholder="lettre" clearable
-                        @keyup.enter="game.checkLetterGuessOnInput"
-                        @click:append="game.checkLetterGuessOnInput"></v-text-field>
-                </v-responsive>
+            <!-- Input -->
+            <div class="d-flex justify-content-center mb-5">
+                <div style="max-width:144px;">
+                    <div class="input-group">
+                        <input ref="guessInput" v-model="game.userLetterGuess" type="text" maxlength="1"
+                            class="form-control form-control-lg  shadow-primary rounded-0 text-uppercase"
+                            placeholder="Lettre" @keyup.enter="game.checkLetterGuessOnInput" />
+                        <button class="btn btn-primary" @click="game.checkLetterGuessOnInput">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="d-flex justify-center gap-2 mb-5">
-                <transition-group name="letter" tag="div" class="d-flex justify-center gap-2">
-                    <v-sheet v-for="(letter, index) in game.userLetters.filter(a => !a.found)"
-                        :key="letter.letter + index" width="65" height="65"
-                        class="d-flex align-center justify-center text-h4 mb-5" elevation="2">
-                        <span>
-                            {{
-                                letter.letter.toUpperCase()
-                            }}
-                        </span>
-                    </v-sheet>
+            <div class="d-flex justify-content-center mb-5">
+                <transition-group name="letter" tag="div" class="d-flex justify-content-center gap-2">
+                    <div v-for="(letter, index) in game.userLetters.filter(a => !a.found)" :key="letter.letter + index"
+                        class="d-flex align-items-center justify-content-center shadow-primary text-uppercase fs-4"
+                        style="width:65px; height:65px">
+                        {{ letter.letter }}
+                    </div>
                 </transition-group>
             </div>
 
-            <v-alert class="mb-5">
+            <div class="alert alert-secondary mb-4">
                 Indice : {{ game.hintGuess }}
-            </v-alert>
+            </div>
 
-            <div class="mb-5">
-                <v-btn @click="displayNewWord" class="mr-2" variant="outlined">
+            <div class="mb-4">
+                <button class="btn btn-outline-primary me-2" @click="displayNewWord">
                     Nouveau mot
-                </v-btn>
-                <v-btn v-if="game.wordFound === false && game.isLoading == false && game.loadingNewGame == false"
-                    @click="game.revealSolution" class="mr-2" variant="tonal" color="warning">
+                </button>
+                <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"
+                    class="btn btn-warning me-2" @click="game.revealSolution">
                     Solution
-                </v-btn>
+                </button>
             </div>
 
             <transition name="alert-transition">
-                <v-alert v-if="game.message" :key="game.message" :type="game.typeAlert" class="mb-5">
+                <div v-if="game.message" :key="game.message" class="alert mt-2 mb-5" :class="`alert-${game.typeAlert}`">
                     {{ game.message }}
-                    <v-btn v-if="game.loadingNewGame" @click="game.cancelAutoNext" variant="outlined">
+                    <button v-if="game.loadingNewGame" class="btn btn-outline-secondary ms-2"
+                        @click="game.cancelAutoNext">
                         Annuler
-                    </v-btn>
-                </v-alert>
+                    </button>
+                </div>
             </transition>
-        </v-card-text>
-    </v-card>
+        </div>
+    </div>
 
+    <!-- Historique -->
     <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique des mots" />
 </template>
-
 
 <script setup lang="ts">
 import GuessHistory from '@/components/GuessHistory.vue'

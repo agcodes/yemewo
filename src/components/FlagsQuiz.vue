@@ -1,107 +1,91 @@
 <template>
-  <v-row class="mt-2">
-    <v-col cols="12" md="8">
-      <v-alert v-if="game.loadingError" :type="game.typeAlert" class="mb-5">
-        <p class="mb-4">
-          {{ game.message }}
-        </p>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <div v-if="game.loadingError" class="alert mb-5" :class="`alert-${game.typeAlert}`">
+        <p class="mb-4">{{ game.message }}</p>
+        <button class="btn btn-outline-secondary" @click="initRound">
+          Recharger
+        </button>
+      </div>
 
-        <div>
-          <v-btn @click="initRound" variant="outlined">
-            Recharger
-          </v-btn>
-        </div>
-      </v-alert>
-
-      <v-card variant="flat" outlined rounded="0" class="mb-5 pa-8" v-else-if="game.gameEnd == true">
-        <v-alert type="info" class="mb-4" variant="tonal" density="comfortable">
-          <template v-slot:prepend>
-            <v-icon>mdi-information</v-icon>
-          </template>
+      <div v-else-if="game.gameEnd === true" class="card rounded-0 mb-5 p-4">
+        <div class="alert alert-info mb-4">
+          <i class="bi bi-info-circle me-2"></i>
           Fin du jeu
-        </v-alert>
-
-        <div class="mb-5">
-          <v-btn @click="initRound" class="mr-2" variant="outlined">
-            Nouveau jeu
-          </v-btn>
         </div>
-      </v-card>
 
-      <v-card variant="flat" rounded="0" class="pa-8 mb-5" v-if="game.savedCountry">
-        <v-card-title class="mb-4">
+        <button class="btn btn-outline-primary" @click="initRound">
+          Nouveau jeu
+        </button>
+      </div>
+
+      <div v-if="game.savedCountry" class="card border-0 mb-4 p-4">
+        <div class="card-title text-center mt-2 fs130 mb-3">
           Jeu des drapeaux
-        </v-card-title>
+        </div>
 
-        <v-card-text>
-          <!-- Transition pour les alertes -->
+        <div class="card-body">
           <transition name="alert-transition" mode="out-in">
-            <div class="mb-6" :key="alertKey">
-              <v-alert v-if="game.previousCountry && game.isGood" type="success" class="mb-2" variant="tonal"
-                density="comfortable">
-                <template v-slot:prepend>
-                  <v-icon>mdi-check-circle</v-icon>
-                </template>
+            <div class="mb-5 mt-1" :key="alertKey">
+              <div v-if="game.previousCountry && game.isGood" class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i>
                 Bonne réponse ! Chargement d'un nouveau pays...
-              </v-alert>
+              </div>
 
-              <v-alert v-else-if="game.previousCountry && !game.isGood" type="error" class="mb-2" variant="tonal"
-                density="comfortable">
-                <template v-slot:prepend>
-                  <v-icon>mdi-close-circle</v-icon>
-                </template>
+              <div v-else-if="game.previousCountry && !game.isGood" class="alert alert-danger">
+                <i class="bi bi-x-circle me-2"></i>
                 Mauvaise réponse. Chargement d'un nouveau pays...
-              </v-alert>
+              </div>
 
-              <v-alert v-else-if="!game.isLoading" type="info" class="mb-2" variant="tonal" density="comfortable">
-                <template v-slot:prepend>
-                  <v-icon>mdi-information</v-icon>
-                </template>
+              <div v-else-if="!game.isLoading" class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
                 Devinez le pays à partir de son drapeau
-              </v-alert>
+              </div>
             </div>
           </transition>
-          <h2 class="mb-6 font-weight-black primary-text">{{ game.savedCountry.localName }}</h2>
 
-          <v-row class="">
-            <v-col v-for="(choice, index) in choices" :key="index" cols="12" sm="6">
-              <v-card variant="flat" outlined rounded="0" :class="['pa-4 option-card bg-highlight']"
-                @click="clickFlag(choice.value)">
-                <v-img :src="choice.value" height="150" contain class="flag-border rounded mb-2 bg-highlight" :class="{
-                  good: game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
-                  bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg
-                }"></v-img>
+          <h2 class="mb-4">
+            {{ game.savedCountry.localName }}
+          </h2>
 
-                <div class="d-flex align-center bg-highlight justify-space-between">
-
-                  <v-radio-group v-model="selected" hide-details class="ma-0 pa-0">
-                    <v-radio @change="submit" :value="index" class="bg-highlight"></v-radio>
-                  </v-radio-group>
-                  <span v-if="game.isSubmitted && choice.value === game.savedCountry.flagSvg" class="font-weight-bold">
-                    {{ game.savedCountry.localName }}</span>
-                </div>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-      <v-alert v-else-if="!game.isLoading" type="error">Failed to load quiz.</v-alert>
-    </v-col>
-
-    <v-col cols="12" md="4">
-      <v-card variant="flat" rounded="0" class="mb-6 pa-4 bg-highlight">
-        <v-card-title class="text-h6 font-weight-medium">
-          <v-icon class="mr-2">mdi-star</v-icon>
-          Votre score
-        </v-card-title>
-        <div class="text-center pa-6">
-          <div class="text-h3 font-weight-black mb-2"> {{ game.userPts }} / {{ game.nbGames }}</div>
-          <div class="text-body-1">Temps: {{ elapsedTime }}</div>
+          <!-- Choix des drapeaux -->
+          <div class="row">
+            <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
+              <div :class="{
+                good: game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
+                bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg
+              }" class="card p-3 bg-highlight flag-border" role="button" @click="clickFlag(choice.value)">
+                <img :src="choice.value" class="img-fluid rounded mb-3  bg-highlight"
+                  style="height:150px; object-fit:contain" />
+              </div>
+            </div>
+          </div>
         </div>
-      </v-card>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <!-- Score -->
+      <div class="card border-0 mb-4 p-5 bg-highlight">
+        <h6 class="fw-medium mb-2">
+          <i class="bi bi-star me-2"></i>
+          Votre score
+        </h6>
+
+        <div class="text-center p-4">
+          <div class="fs-2 fw-black mb-2">
+            {{ game.userPts }} / {{ game.nbGames }}
+          </div>
+          <div class="text-muted">
+            Temps : {{ elapsedTime }}
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
       <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

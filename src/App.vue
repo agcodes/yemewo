@@ -1,62 +1,73 @@
 <template>
-  <v-app>
-    <v-container class="pr-5 pl-5 pt-0" max-width="1350">
-      <div class="stylish-border-bottom">
-        <div max-width="1300" class="pb-7 pt-7 row main-outline">
-          <v-toolbar-items>
-            <v-toolbar-title class="exo2-light">
-              <RouterLink to="/">
-                yemewo
-              </RouterLink>
-            </v-toolbar-title>
-            <v-btn icon="mdi-home" to="/" variant="text" class="fs130 sme-2">
-              <v-icon>mdi-home</v-icon>
-            </v-btn>
-            <v-btn icon="mdi-theme-light-dark" @click="toggleTheme" variant="text" class="me-2">
-              <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
-            </v-btn>
-          </v-toolbar-items>
+  <div :data-bs-theme="themeStore.isDarkMode ? 'dark' : 'light'">
+    <div class="container-lg">
+      <div class="row main-outline">
+        <div class="col-md-12 col-12">
+          <div class="p-4">
+            <div class="stylish-border-bottom mb-4">
+              <div class="row main-outline">
+                <div class="fs190 italic main-outline d-flex justify-content-between align-items-center">
+                  <router-link class="secondary-color mb-0" title="home" to="/">
+                    Yemewo </router-link><button class="menu-button">
+                    <router-link :to="{ name: 'home' }"><i class="secondary-color bi bi-house"></i></router-link>
+                  </button>
+                  <ThemeToggleButton />
+                </div>
+              </div>
+            </div>
+            <router-view />
+          </div>
         </div>
       </div>
-
-      <v-main>
-        <RouterView />
-      </v-main>
-    </v-container>
-  </v-app>
+    </div>
+  </div>
 </template>
 
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { ref, onMounted, watch } from 'vue'
-import { useTheme } from 'vuetify'
+<script lang="ts">
+import { defineComponent, onMounted, watch, computed } from "vue";
+import { useThemeStore } from "./stores/theme";
+import ThemeToggleButton from "@/components/ThemeToggleButton.vue";
 
-const theme = useTheme()
-const isDark = ref(false)
+export default defineComponent({
+  name: "App",
+  components: {
+    ThemeToggleButton,
+  },
+  setup() {
+    const themeStore = useThemeStore();
 
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  theme.global.name.value = isDark.value ? 'dark' : 'light'
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-}
+    // Function to apply the theme class to the body
+    const applyThemeToBody = () => {
+      if (themeStore.isDarkMode) {
+        document.body.classList.add("dark-theme");
+        document.body.classList.remove("light-theme");
+      } else {
+        document.body.classList.add("light-theme");
+        document.body.classList.remove("dark-theme");
+      }
+    };
 
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme) {
-    isDark.value = savedTheme === 'dark'
-    theme.global.name.value = savedTheme
-    document.documentElement.setAttribute('theme', savedTheme)
-  } else {
-    isDark.value = false
-    theme.global.name.value = 'light'
-    document.documentElement.setAttribute('theme', 'light')
-  }
-})
+    onMounted(() => {
+      themeStore.initializeTheme();
+      applyThemeToBody();
+    });
 
-watch(isDark, (newVal) => {
-  const themeName = newVal ? 'dark' : 'light'
-  theme.global.name.value = themeName
-  localStorage.setItem('theme', themeName)
-  document.documentElement.setAttribute('theme', themeName)
-})
+    const themeClass = computed(() => ({
+      "dark-theme": themeStore.isDarkMode,
+      "light-theme": !themeStore.isDarkMode,
+    }));
+
+    // Watch for changes in the theme and apply the appropriate class to the body
+    watch(
+      () => themeStore.isDarkMode,
+      (newVal) => {
+        applyThemeToBody();
+      }
+    );
+    return {
+      themeStore,
+      themeClass,
+    };
+  },
+});
 </script>

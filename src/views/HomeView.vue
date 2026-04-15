@@ -1,25 +1,25 @@
 <template>
   <div>
-    <p class="mb-6 mt-6">A vous de jouer</p>
+    <p class="mb-6 mt-6 fs130">A vous de jouer</p>
     <ul class="list-group expressive-menu fs120">
-      <li class="expressive-menu-item mb-5">
-        <router-link :to="{ name: 'guess-word-letters' }"><v-icon class="mr-2">mdi-alphabetical-variant</v-icon> Jeu du
+      <li class="expressive-menu-item mb-1">
+        <router-link :to="{ name: 'guess-word-letters' }"> Jeu du
           pendu</router-link>
       </li>
-      <li class="expressive-menu-item mb-5">
-        <router-link :to="{ name: 'anagram' }"><v-icon class="mr-2">mdi mdi-swap-horizontal</v-icon> Trouver
+      <li class="expressive-menu-item mb-1">
+        <router-link :to="{ name: 'anagram' }"> Trouver
           l'anagramme</router-link>
       </li>
-      <li class="expressive-menu-item mb-5">
-        <router-link :to="{ name: 'guess-word' }"><v-icon class="mr-2">mdi-alphabetical-variant</v-icon> Deviner le
+      <li class="expressive-menu-item mb-1">
+        <router-link :to="{ name: 'guess-word' }"> Deviner le
           mot</router-link>
       </li>
-      <li class="expressive-menu-item mb-5">
-        <router-link :to="{ name: 'flags-quiz' }"><v-icon class="mr-2">mdi-flag</v-icon> Trouver le
+      <li class="expressive-menu-item mb-1">
+        <router-link :to="{ name: 'flags-quiz' }"> Trouver le
           drapeau</router-link>
       </li>
-      <li class="expressive-menu-item mb-5">
-        <router-link :to="{ name: 'guess-wiki-words' }"><v-icon class="mr-2">mdi-wikipedia</v-icon> Deviner les
+      <li class="expressive-menu-item mb-1">
+        <router-link :to="{ name: 'guess-wiki-words' }">Deviner les
           articles Wikipédia</router-link>
       </li>
 

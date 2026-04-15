@@ -9,13 +9,14 @@ export function useGameLogic(storageKey: string) {
   const nbGames = ref<number>(0)
   const nbRounds = ref<number>(0)
   const historyLimit = ref<number>(10)
-  const loadingError  = ref(false)
+  const loadingError = ref(false)
   const isSubmitted = ref(false)
   const isGood = ref(false)
   const isLoading = ref(false)
   const gameEnd = ref(false)
   const message = ref<string>('')
   const typeAlert = ref<AlertType>('warning')
+  const loadingNewGame = ref<boolean>(false)
 
   const startTime = ref<number>(0)
 
@@ -56,7 +57,7 @@ export function useGameLogic(storageKey: string) {
   }
 
   function initRound() {
-    gameEnd.value = false;
+    gameEnd.value = false
     nbGames.value = 0
     userPts.value = 0
   }
@@ -80,6 +81,7 @@ export function useGameLogic(storageKey: string) {
     typeAlert,
     isGood,
     gameEnd,
+    loadingNewGame,
     historyItems,
     startTimer,
     startTime,

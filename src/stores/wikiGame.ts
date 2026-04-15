@@ -5,14 +5,15 @@ import type { Article } from '@/services/wikiService'
 export const useWikiGameStore = defineStore('wikiGame', () => {
   function submit(article: Article) {
     if (randomArticle.value) {
-        console.log(article.title);
-        incNbGames();
-        if (randomArticle.value.article === article.article) {
-            message.value = `Correct ! ${randomArticle.value.originalTitle}`;
-        
-        } else {
-            message.value = `Incorrect ! Solution : ${randomArticle.value.originalTitle}`;
-        }
+      incNbGames()
+      if (randomArticle.value.article === article.article) {
+        message.value = `Correct ! ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
+        typeAlert.value = 'success'
+      } else {
+        message.value = `Incorrect ! Solution : ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
+        typeAlert.value = 'warning'
+      }
+      timeOutNewWord()
     }
   }
 
@@ -31,13 +32,14 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     incNbGames,
     loadGuess,
     initRound,
+    timeOutNewWord,
     userPts,
     addPts,
     startTime,
     randomArticle,
     selectedArticles,
     articles,
-    words
+    words,
   } = useWikiGameLogic('wikiHistoryItems')
 
   return {
@@ -59,6 +61,6 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     randomArticle,
     selectedArticles,
     articles,
-    words
+    words,
   }
 })

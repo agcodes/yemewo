@@ -33,9 +33,9 @@
 .font-grotesque {
   font-family: 'Bricolage Grotesque', sans-serif;
 }
+
 :root {
   --v-font-family: 'Bricolage Grotesque', Verdana, Geneva, Tahoma, sans-serif;
-  --gradient-background: linear-gradient(135deg, hsl(235, 95%, 98%) 0%, hsl(240, 100%, 93.9%) 100%);
 }
 
 body {
@@ -43,33 +43,7 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-}
-
-.v-application,
-.text-h1,
-.text-h2,
-.text-h3,
-.text-h4,
-.text-h5,
-.text-h6 {
-  font-family: var(--v-font-family);
-}
-
-/* Cible l'élément racine de Vuetify */
-.v-application {
-  background: var(--gradient-background) !important;
-  min-height: 100vh;
-}
-
-/* Pour les applications avec layout */
-.v-application__wrap {
-  min-height: 100vh;
-  background: var(--gradient-background) !important;
-}
-
-/* Cible la zone principale du contenu */
-.v-main {
-  background: var(--gradient-background) !important;
+  background: linear-gradient(135deg, hsl(225, 95%, 98%) 0%, hsl(230, 100%, 93.9%) 100%);
 }
 
 a {
@@ -114,6 +88,7 @@ img {
     background-color 0.3s ease,
     color 0.3s ease;
 }
+
 .header a:focus,
 .header a:hover {
   background-color: hsla(0, 0%, 99.2%, 97%);
@@ -149,7 +124,20 @@ h1 {
 }
 
 .main-border {
-  border: 1px solid hsl(202, 100%, 68%);
+  border: 1px solid hsl(225, 100%, 68%);
+}
+
+.bg-highlight {
+  background-color: hsl(225, 100%, 94%);
+}
+
+.shadow-primary {
+  box-shadow:
+    hsla(225, 10%, 5%, 0.2) 0px 3px 1px -2px,
+    hsla(225, 10%, 5%, 0.14) 0px 2px 2px 0px,
+    hsla(225, 10%, 5%, 0.12) 0px 1px 5px 0px;
+
+  border: hsla(225, 10%, 5%, 0.12) 1px 1px;
 }
 
 .fs130 {
@@ -182,6 +170,10 @@ h1 {
   font-size: 120%;
 }
 
+.fs130 {
+  font-size: 130%;
+}
+
 .card {
   border-radius: 0;
   opacity: 0.99;
@@ -189,6 +181,10 @@ h1 {
 
 .card-header {
   background-color: transparent;
+}
+
+input::placeholder {
+  color: hsl(225, 50%, 50%);
 }
 
 .stylish-border-bottom {
@@ -203,7 +199,7 @@ h1 {
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(135deg, hsl(250, 88%, 75%) 0%, hsl(218, 68%, 70%) 100%);
+  background: linear-gradient(135deg, hsl(225, 88%, 75%) 0%, hsl(230, 68%, 70%) 100%);
 }
 
 .img-frame {
@@ -228,34 +224,6 @@ h1 {
   font-size: 1.5rem;
 }
 
-/* Style de fond personnalisé - spécificité naturelle */
-.v-application .v-card.bg-highlight,
-.v-application .v-radio.bg-highlight,
-.v-application .v-img.bg-highlight,
-.v-application div.bg-highlight {
-  background-color: hsl(235, 100%, 97%);
-}
-
-/* Augmentation de spécificité pour les éléments enfants */
-.v-application .v-app-bar.y-app-bar .v-toolbar__content {
-  background: transparent;
-}
-
-/* Optionnel : Pour un texte plus lisible sur fond transparent */
-.v-toolbar__title {
-  color: rgb(var(--v-theme-on-background));
-  /* Couleur dynamique selon le thème */
-}
-
-.v-toolbar-title__placeholder a {
-  color: black;
-  transition: color 0.3s ease;
-}
-
-.v-toolbar-title__placeholder a:hover {
-  color: hsl(250, 88%, 27%);
-}
-
 .flag-border {
   padding: 1px;
   transition: all 0.3s ease;
@@ -271,17 +239,17 @@ h1 {
 
 /* État "Bonne réponse" */
 .flag-border.good {
-  background-color: transparent;
-  border-color: rgb(var(--v-theme-success));
-  box-shadow: 0 0 0 2px rgb(var(--v-theme-success));
+  background-color: hsla(150, 65%, 36%, 0.8);
+  border-color: hsl(150, 65%, 36%);
+  box-shadow: 0 0 0 2px rgb(hsl(150, 65%, 36%));
   animation: pulse-green 3s ease;
 }
 
 /* État "Mauvaise réponse" */
 .flag-border.bad {
-  background-color: transparent;
-  border-color: rgb(230, 122, 80);
-  box-shadow: 0 0 0 2px rgb(var(--v-theme-error));
+  background-color: hsla(16, 100%, 65%, 0.8);
+  border-color: hsla(16, 100%, 65%, 0.8);
+  box-shadow: 0 0 0 2px hsla(16, 100%, 65%, 0.8);
   animation: pulse-red 3s ease;
 }
 
@@ -339,7 +307,7 @@ h1 {
 
 .letter-enter-from {
   opacity: 0;
-  background-color: rgba(255, 0, 0, 0.3); /* Rouge transparent */
+  background-color: hsla(0, 100%, 50%, 0.3); /* Rouge transparent */
 }
 
 .letter-enter-to {
@@ -350,11 +318,11 @@ h1 {
 /* Animation de pulsation supplémentaire */
 @keyframes pulse-red-bg {
   0% {
-    background-color: rgba(255, 0, 0, 0.3);
+    background-color: hsla(0, 100%, 50%, 0.3);
     transform: scale(0.95);
   }
   50% {
-    background-color: rgba(255, 0, 0, 0.1);
+    background-color: hsla(0, 100%, 50%, 0.1);
     transform: scale(1.05);
   }
   100% {
@@ -372,14 +340,14 @@ h1 {
 
 @keyframes pulse-green-bg {
   0% {
-    background-color: rgba(0, 255, 0, 0.3) !important;
+    background-color: hsla(120, 100%, 50%, 0.3) !important;
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4);
+    box-shadow: 0 0 0 5px hsla(120, 100%, 50%, 0.4);
   }
   50% {
-    background-color: rgba(0, 255, 0, 0.1) !important;
+    background-color: hsla(120, 100%, 50%, 0.1) !important;
     transform: scale(1.1);
-    box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+    box-shadow: 0 0 0 5px hsla(120, 100%, 50%, 0);
   }
   100% {
     background-color: transparent !important;
@@ -410,8 +378,9 @@ h1 {
 .expressive-menu-item a {
   display: block;
   padding: 20px;
+  font-weight: bold;
   transition: background 3s ease;
-  background: linear-gradient(135deg, hsl(238, 84%, 90%) 0%, hsl(238, 84%, 91%) 100%);
+  background: linear-gradient(135deg, hsl(230, 84%, 90%) 0%, hsl(230, 84%, 91%) 100%);
   color: hsl(238, 5%, 3%);
   text-decoration: none;
   transition:
@@ -422,15 +391,15 @@ h1 {
 .expressive-menu-item a:focus,
 .expressive-menu-item a:hover {
   transform: translateY(-1px);
-  background: linear-gradient(135deg, hsl(237, 88%, 85%) 0%, hsl(238, 68%, 82%) 100%);
+  background: linear-gradient(135deg, hsl(230, 88%, 85%) 0%, hsl(232, 68%, 82%) 100%);
 }
 
 .word {
-  background: hsl(250, 16%, 93%);
+  background: hsl(225, 16%, 93%);
   border-radius: 17px;
   padding: 7px 18px 7px 18px;
   color: hsl(250, 9%, 31%);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 3px hsla(225, 10%, 10%, 0.05);
 }
 
 .btn-expressive {
@@ -444,42 +413,44 @@ h1 {
 .btn-expressive:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, hsl(250, 88%, 87%) 0%, hsl(218, 68%, 83%) 100%);
+  background: linear-gradient(135deg, hsl(225, 88%, 87%) 0%, hsl(230, 68%, 83%) 100%);
 }
 
 /* dark */
 
 body.dark-theme {
   background-color: hsl(350, 2%, 5%);
-  background-image: radial-gradient(hsl(0, 0%, 10%) 1px, transparent 1px);
+  background-image: radial-gradient(hsl(225, 10%, 10%) 1px, transparent 1px);
   background-size: 20px 20px;
   color: white;
 }
 
-html[theme='dark'] .secondary-color {
+body.dark-theme .secondary-color {
   color: hsl(237, 88%, 85%);
 }
 
-html[theme='dark'] .expressive-menu-item a {
+body.dark-theme .expressive-menu-item a {
   display: block;
   padding: 20px;
-  background: linear-gradient(135deg, hsl(238, 40%, 20%) 0%, hsl(238, 40%, 30%) 100%);
+  background: linear-gradient(135deg, hsl(230, 40%, 20%) 0%, hsl(230, 40%, 30%) 100%);
   color: hsl(0, 0%, 90%);
   text-decoration: none;
   font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px hsla(225, 10%, 10%, 0.3);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease,
     background 0.3s ease;
 }
 
-html[theme='dark'] .expressive-menu-item a:focus,
-html[theme='dark'] .expressive-menu-item a:hover {
+body.dark-theme .expressive-menu-item a:focus,
+body.dark-theme .expressive-menu-item a:hover {
   transform: translateY(-1px);
-  background: linear-gradient(135deg, hsl(237, 40%, 35%) 0%, hsl(238, 40%, 40%) 100%);
+  background: linear-gradient(135deg, hsl(230, 40%, 35%) 0%, hsl(232, 40%, 40%) 100%);
 }
 
-html[theme='dark'] .btn-expressive {
+body.dark-theme .btn-expressive {
   color: hsl(0, 0%, 85%);
 
   background: linear-gradient(
@@ -489,10 +460,10 @@ html[theme='dark'] .btn-expressive {
   ); /* Fond plus sombre */
 }
 
-html[theme='dark'] .btn-expressive:focus,
-html[theme='dark'] .btn-expressive:hover {
+body.dark-theme .btn-expressive:focus,
+body.dark-theme .btn-expressive:hover {
   transform: translateY(-1px);
-
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Ombre légèrement plus visible */
   background: linear-gradient(
     135deg,
     hsl(250, 30%, 30%) 0%,
@@ -500,22 +471,14 @@ html[theme='dark'] .btn-expressive:hover {
   ); /* Fond légèrement plus clair au survol */
 }
 
+body.dark-theme .card {
+  border-radius: 3px;
+  background-color: hsl(240, 2%, 14%);
+  border-color: hsl(350, 2%, 40%);
+  color: hsl(350, 2%, 99%);
+}
+
 body.dark-theme .word {
-  background: linear-gradient(135deg, hsl(250, 40%, 25%) 0%, hsl(250, 40%, 29%) 0%);
-  color: hsl(251, 41%, 92%);
-}
-
-.v-theme--dark {
-  color-scheme: dark;
-}
-
-html[theme='dark'] {
-  --gradient-background: linear-gradient(135deg, hsl(235, 30%, 15%) 0%, hsl(240, 30%, 10%) 100%);
-}
-
-html[theme='dark'] .v-application .v-card.bg-highlight,
-html[theme='dark'] .v-application .v-radio.bg-highlight,
-html[theme='dark'] .v-application .v-img.bg-highlight,
-html[theme='dark'] .v-application div.bg-highlight {
-  background-color: hsl(235, 30%, 15%);
+  background: linear-gradient(135deg, hsl(225, 40%, 25%) 0%, hsl(225, 40%, 29%) 0%);
+  color: hsl(225, 41%, 92%);
 }
