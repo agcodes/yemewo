@@ -1,6 +1,6 @@
 <template>
   <div :data-bs-theme="themeStore.isDarkMode ? 'dark' : 'light'">
-    <div class="container-lg">
+    <div class="container-xl">
       <div class="row main-outline">
         <div class="col-md-12 col-12">
           <div class="p-4">

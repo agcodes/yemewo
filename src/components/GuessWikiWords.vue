@@ -1,66 +1,68 @@
 <!-- src/components/RandomArticle.vue -->
 <template>
-  <div>
-    <div v-if="game.loadingError">
-      <div class="card mb-4">
-        <div class="card-body">
-          <p>Erreur rencontrée</p>
-          <button class="btn btn-primary" @click="initRound">Recharger</button>
-        </div>
-      </div>
-    </div>
 
-    <div v-if="game.isLoading == false">
-      <div class="card mb-4">
-        <div class="card-body">Chargement...</div>
-      </div>
-    </div>
-
-    <div class="mb-4" v-if="game.randomArticle">
-      <div v-if="game.isLoading">
-        <div v-if="game.words" class="mb-4 d-flex flex-wrap">
-          <div class="card border-0 mb-4 p-4">
-            <div class="card-title text-center mt-2 fs130 mb-3">
-              Trouvez l'article correspondant aux mots suivants
-            </div>
-            <div class="card-body">
-              <div v-if="game.words" class="mb-4 d-flex flex-wrap">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="card-words">
-                      <span v-for="(word, index) in game.words" :key="index" class="me-4 word">
-                        {{ word }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="game.isLoading" class="mb-4">
-                <div class="btn-group d-flex flex-wrap">
-                  <button v-for="(article, index) in game.selectedArticles" :key="index"
-                    class="btn btn btn-outline-info m-2 btn-expressive" @click="game.submit(article)">
-                    {{ article.title }}
-                  </button>
-                </div>
-              </div>
-
-              <transition name="alert-transition">
-                <div v-if="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
-                  {{ game.message }}
-                </div>
-              </transition>
-
-              <div class="mb-2">
-                <button class="btn btn-outline-primary me-2" @click="loadQuiz">Passer</button>
-              </div>
-            </div>
+  <div class="row">
+    <div class="col-12 col-md-9">
+      <div v-if="game.loadingError">
+        <div class="card mb-4">
+          <div class="card-body">
+            <p>Erreur rencontrée</p>
+            <button class="btn btn-primary" @click="initRound">Recharger</button>
           </div>
         </div>
       </div>
 
-      <div class="mb-4">
-        <!-- Barre de progression 
+      <div v-if="game.isLoading == false">
+        <div class="card mb-4">
+          <div class="card-body">Chargement...</div>
+        </div>
+      </div>
+
+      <div class="mb-4" v-if="game.randomArticle">
+        <div v-if="game.isLoading">
+          <div v-if="game.words" class="mb-4 d-flex flex-wrap">
+            <div class="card border-0 mb-4 p-4">
+              <div class="card-title text-center mt-2 fs130 mb-3">
+                Trouvez l'article correspondant aux mots suivants
+              </div>
+              <div class="card-body">
+                <div v-if="game.words" class="mb-4 d-flex flex-wrap">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="card-words">
+                        <span v-for="(word, index) in game.words" :key="index" class="me-4 word">
+                          {{ word }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="game.isLoading" class="mb-4">
+                  <div class="btn-group d-flex flex-wrap">
+                    <button v-for="(article, index) in game.selectedArticles" :key="index"
+                      class="btn btn btn-outline-info m-2 btn-expressive" @click="game.submit(article)">
+                      {{ article.title }}
+                    </button>
+                  </div>
+                </div>
+
+                <transition name="alert-transition">
+                  <div v-if="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
+                    {{ game.message }}
+                  </div>
+                </transition>
+
+                <div class="mb-2">
+                  <button class="btn btn-outline-primary me-2" @click="loadQuiz">Passer</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <!-- Barre de progression 
           <div v-if="nbGuesses > 0" class="progress mb-4">
             <div class="progress-bar" role="progressbar" :style="{ width: progress + '%' }" :aria-valuenow="progress"
               aria-valuemin="0" aria-valuemax="100" :title="progress + '%'"></div>
@@ -77,11 +79,35 @@
             </ol>
           </div>
           -->
+        </div>
       </div>
+
+
     </div>
-    <!-- Historique -->
-    <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
+    <div class="col-12 col-md-3">
+
+      <!-- Score -->
+      <div class="card border-0 mb-4 p-5 bg-highlight">
+        <h6 class="fw-medium mb-2">
+          <i class="bi bi-star me-2"></i>
+          Votre score
+        </h6>
+
+        <div class="text-center p-4">
+          <div class="fs-2 fw-black mb-2">
+            {{ game.userPts }} / {{ game.nbGames }}
+          </div>
+          <div class="text-muted">
+            Temps : {{ game.elapsedTime }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Historique -->
+      <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
+    </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -105,6 +131,11 @@ const alertKey = ref(0);
 async function loadQuiz() {
   try {
     game.loadGuess();
+    if (timerInterval.value) {
+      clearInterval(timerInterval.value)
+    }
+    game.updateElapsedTime();
+    timerInterval.value = setInterval(game.updateElapsedTime, 1000)
   } catch (error) {
     game.isLoading = false
   }
@@ -120,6 +151,7 @@ function initRound() {
 }
 
 onMounted(() => {
+  timerInterval.value = setInterval(game.updateElapsedTime, 1000)
   initRound();
   loadQuiz();
 })

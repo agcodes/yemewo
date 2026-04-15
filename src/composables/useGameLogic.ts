@@ -17,6 +17,7 @@ export function useGameLogic(storageKey: string) {
   const message = ref<string>('')
   const typeAlert = ref<AlertType>('warning')
   const loadingNewGame = ref<boolean>(false)
+  const elapsedTime = ref<string>('00:00')
 
   const startTime = ref<number>(0)
 
@@ -73,6 +74,18 @@ export function useGameLogic(storageKey: string) {
     historyItems.value = historyItems.value.slice(0, historyLimit.value)
   }
 
+  function updateElapsedTime() {
+    if (!startTime.value) {
+      elapsedTime.value = '00:00'
+      return
+    }
+    const now = new Date().getTime()
+    const diff = now - startTime.value
+    const seconds = Math.floor(diff / 1000) % 60
+    const minutes = Math.floor(diff / 1000 / 60)
+    elapsedTime.value = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  }
+
   return {
     isSubmitted,
     isLoading,
@@ -93,6 +106,8 @@ export function useGameLogic(storageKey: string) {
     nbRounds,
     nbGames,
     initRound,
+    elapsedTime,
+    updateElapsedTime,
     userPts: userPts,
   }
 }

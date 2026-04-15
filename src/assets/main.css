@@ -482,3 +482,14 @@ body.dark-theme .word {
   background: linear-gradient(135deg, hsl(225, 40%, 25%) 0%, hsl(225, 40%, 29%) 0%);
   color: hsl(225, 41%, 92%);
 }
+
+@media (min-width: 1400px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1520px;
+  }
+}

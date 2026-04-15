@@ -133,13 +133,10 @@ export function useWikiGameLogic(storageKey: string) {
 
               randomArticle.value = article
 
-              console.log(randomArticle.value.title)
               // remove article
               articles.value.splice(randomIndex, 1)
               article.originalTitle = article.title
-              //if (mode.value == "anagram-2") {
-              //  article.title = scrambleArticleContent(article.title);
-              //}
+
               selectedArticles.value.push(randomArticle.value)
 
               getOtherArticles()
@@ -174,9 +171,6 @@ export function useWikiGameLogic(storageKey: string) {
           .then((article2) => {
             if (article2 && article2.title) {
               article2.originalTitle = article2.title
-              // if (mode.value == "anagram-2") {
-              //   article2.title = scrambleArticleContent(article2.title);
-              // }
 
               // add to articles
               selectedArticles.value.push(article2)
@@ -226,6 +220,7 @@ export function useWikiGameLogic(storageKey: string) {
     initRound,
     nbGames,
     userPts,
+    elapsedTime,
   } = useGameLogic(storageKey)
 
   loadHistory(4)
@@ -253,5 +248,6 @@ export function useWikiGameLogic(storageKey: string) {
     selectedArticles,
     articles,
     words,
+    elapsedTime,
   }
 }

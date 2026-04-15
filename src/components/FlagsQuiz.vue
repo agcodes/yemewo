@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-md-9">
       <div v-if="game.loadingError" class="alert mb-5" :class="`alert-${game.typeAlert}`">
         <p class="mb-4">{{ game.message }}</p>
         <button class="btn btn-outline-secondary" @click="initRound">
@@ -64,7 +64,7 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-3">
       <!-- Score -->
       <div class="card border-0 mb-4 p-5 bg-highlight">
         <h6 class="fw-medium mb-2">
@@ -77,7 +77,7 @@
             {{ game.userPts }} / {{ game.nbGames }}
           </div>
           <div class="text-muted">
-            Temps : {{ elapsedTime }}
+            Temps : {{ game.elapsedTime }}
           </div>
         </div>
       </div>
@@ -99,31 +99,10 @@ const choices = ref<{ label: string; value: string }[]>([])
 const selected = ref<string>('')
 
 let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
-
-// Clé pour forcer la transition des alertes
-
-const rounds = ref<number>(0)
-
-// Temps écoulé
-const elapsedTime = ref<string>('00:00')
-
-// Mise à jour du temps en temps réel
 let timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
 
-function updateElapsedTime() {
-  if (!game.startTime) {
-    elapsedTime.value = '00:00'
-    return
-  }
-  const now = new Date().getTime()
-  const diff = now - game.startTime
-  const seconds = Math.floor(diff / 1000) % 60
-  const minutes = Math.floor(diff / 1000 / 60)
-  elapsedTime.value = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-}
-
 onMounted(() => {
-  timerInterval.value = setInterval(updateElapsedTime, 1000)
+  timerInterval.value = setInterval(game.updateElapsedTime, 1000)
 })
 
 onBeforeUnmount(() => {
@@ -133,11 +112,10 @@ onBeforeUnmount(() => {
 })
 
 const alertKey = ref(0);
-// Surveillance des changements de game.isGood ou game.previousCountry
 watch(
   () => [game.isGood, game.previousCountry],
   () => {
-    alertKey.value++; // Change la clé pour déclencher la transition
+    alertKey.value++;
   },
   { deep: true }
 );
@@ -154,8 +132,8 @@ async function loadQuiz() {
       if (timerInterval.value) {
         clearInterval(timerInterval.value)
       }
-      updateElapsedTime();
-      timerInterval.value = setInterval(updateElapsedTime, 1000)
+      game.updateElapsedTime();
+      timerInterval.value = setInterval(game.updateElapsedTime, 1000)
     }
   } catch (error) {
     game.isLoading = false
@@ -189,7 +167,6 @@ function newQuiz() {
 }
 
 function initRound() {
-  rounds.value += 1;
   game.initRound()
   game.isLoading = true
   if (timerInterval.value) {

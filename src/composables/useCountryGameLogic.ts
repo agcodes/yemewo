@@ -23,6 +23,8 @@ export function useCountryGameLogic(storageKey: string) {
     initRound,
     nbGames,
     userPts,
+    elapsedTime,
+    updateElapsedTime,
   } = useGameLogic(storageKey)
 
   const countries = ref<Country[]>([])
@@ -30,28 +32,27 @@ export function useCountryGameLogic(storageKey: string) {
   const savedCountry = ref<Country | null>(null)
   const previousCountry = ref<Country | null>(null)
 
-  async function loadCountries() : Promise<boolean>  {
+  async function loadCountries(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      loadingError.value = false;
-      
-      const service = new RestCountriesService(
-        API_CONFIG.REST_COUNTRIES_URL,
-        false,
-      )
-      service.getCountries().then((randomCountries) => {
+      loadingError.value = false
+
+      const service = new RestCountriesService(API_CONFIG.REST_COUNTRIES_URL, false)
+      service
+        .getCountries()
+        .then((randomCountries) => {
           countries.value = randomCountries
           resolve(true)
-      })
-      .catch((error) => {
-        loadingError.value = true;
-        message.value = 'Erreur lors de la récupération du quiz'
-        typeAlert.value = 'warning'
-        reject(message.value)
-      });
-    });
+        })
+        .catch((error) => {
+          loadingError.value = true
+          message.value = 'Erreur lors de la récupération du quiz'
+          typeAlert.value = 'warning'
+          reject(message.value)
+        })
+    })
   }
 
-  function defineNewGame(nb: number) : boolean {
+  function defineNewGame(nb: number): boolean {
     isSubmitted.value = false
     isGood.value = false
     previousCountry.value = null
@@ -63,19 +64,19 @@ export function useCountryGameLogic(storageKey: string) {
       const shuffled = [...countries.value].sort(() => 0.5 - Math.random())
       currentCountries.value = shuffled.slice(0, nb)
 
-      const filteredCountries = currentCountries.value.filter(a => a.alreadyUsed == false);
-      if (filteredCountries.length == 0){
-        currentCountries.value = [];
-        gameEnd.value = true;
+      const filteredCountries = currentCountries.value.filter((a) => a.alreadyUsed == false)
+      if (filteredCountries.length == 0) {
+        currentCountries.value = []
+        gameEnd.value = true
         return false
       }
 
       // Save the first country of the current game to display its flag and use it for validation
       savedCountry.value = filteredCountries[0]!
-      savedCountry.value.alreadyUsed = true;
-      const index = countries.value.findIndex(a => a.name == savedCountry.value?.name);
-      if (index > 0 && countries.value[index]){
-        countries.value[index].alreadyUsed = true;
+      savedCountry.value.alreadyUsed = true
+      const index = countries.value.findIndex((a) => a.name == savedCountry.value?.name)
+      if (index > 0 && countries.value[index]) {
+        countries.value[index].alreadyUsed = true
       }
       currentCountries.value = [...currentCountries.value].sort(() => 0.5 - Math.random())
       return true
@@ -108,5 +109,7 @@ export function useCountryGameLogic(storageKey: string) {
     userPts,
     nbGames,
     startTime,
+    updateElapsedTime,
+    elapsedTime,
   }
 }

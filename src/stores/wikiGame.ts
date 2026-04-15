@@ -40,6 +40,8 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     selectedArticles,
     articles,
     words,
+    elapsedTime,
+    updateElapsedTime,
   } = useWikiGameLogic('wikiHistoryItems')
 
   return {
@@ -62,5 +64,7 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     selectedArticles,
     articles,
     words,
+    elapsedTime,
+    updateElapsedTime,
   }
 })
