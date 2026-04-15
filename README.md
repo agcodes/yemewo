@@ -59,8 +59,12 @@ afficher score sur tous les jeux
 
 historique des scores
 
-trophées
+trophées : speed si x secondes
 
 sauvegarde local des scores
 
 mieux gérer loading pendu
+
+favicon
+
+bug 32

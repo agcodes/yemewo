@@ -12,14 +12,14 @@
         </div>
       </div>
 
-      <div v-if="game.isLoading == false">
+      <div v-if="game.isLoading">
         <div class="card mb-4">
           <div class="card-body">Chargement...</div>
         </div>
       </div>
 
       <div class="mb-4" v-if="game.randomArticle">
-        <div v-if="game.isLoading">
+        <div v-if="!game.isLoading">
           <div v-if="game.words" class="mb-4 d-flex flex-wrap">
             <div class="card border-0 mb-4 p-4">
               <div class="card-title text-center mt-2 fs130 mb-3">
@@ -29,7 +29,7 @@
                 <div v-if="game.words" class="mb-4 d-flex flex-wrap">
                   <div class="card">
                     <div class="card-body">
-                      <div class="card-words">
+                      <div class="card-words p-2">
                         <span v-for="(word, index) in game.words" :key="index" class="me-4 word">
                           {{ word }}
                         </span>
@@ -38,7 +38,7 @@
                   </div>
                 </div>
 
-                <div v-if="game.isLoading" class="mb-4">
+                <div v-if="!game.isLoading" class="mb-4">
                   <div class="btn-group d-flex flex-wrap">
                     <button v-for="(article, index) in game.selectedArticles" :key="index"
                       class="btn btn btn-outline-info m-2 btn-expressive" @click="game.submit(article)">
@@ -85,15 +85,14 @@
 
     </div>
     <div class="col-12 col-md-3">
-
       <!-- Score -->
-      <div class="card border-0 mb-4 p-5 bg-highlight">
+      <div class="card border-0 mb-4 p-4 bg-highlight">
         <h6 class="fw-medium mb-2">
           <i class="bi bi-star me-2"></i>
-          Votre score
+          Score
         </h6>
 
-        <div class="text-center p-4">
+        <div class="text-center p-3">
           <div class="fs-2 fw-black mb-2">
             {{ game.userPts }} / {{ game.nbGames }}
           </div>
@@ -107,17 +106,14 @@
       <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
     </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue'
+import GuessHistory from '@/components/GuessHistory.vue'
 import { useWikiGameStore } from '@/stores/wikiGame'
 const game = useWikiGameStore()
 
-import GuessHistory from '@/components/GuessHistory.vue'
-
-// Mise à jour du temps en temps réel
 let timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
 
 onBeforeUnmount(() => {
@@ -125,8 +121,6 @@ onBeforeUnmount(() => {
     clearInterval(timerInterval.value)
   }
 })
-
-const alertKey = ref(0);
 
 async function loadQuiz() {
   try {
@@ -136,6 +130,7 @@ async function loadQuiz() {
     }
     game.updateElapsedTime();
     timerInterval.value = setInterval(game.updateElapsedTime, 1000)
+    game.isLoading = false
   } catch (error) {
     game.isLoading = false
   }

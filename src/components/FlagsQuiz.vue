@@ -26,7 +26,7 @@
 
         <div class="card-body">
           <transition name="alert-transition" mode="out-in">
-            <div class="mb-5 mt-1" :key="alertKey">
+            <div class="mb-4 mt-1" :key="alertKey">
               <div v-if="game.previousCountry && game.isGood" class="alert alert-success">
                 <i class="bi bi-check-circle me-2"></i>
                 Bonne réponse ! Chargement d'un nouveau pays...
@@ -44,7 +44,7 @@
             </div>
           </transition>
 
-          <h2 class="mb-4">
+          <h2 class="mb-4 mt-1">
             {{ game.savedCountry.localName }}
           </h2>
 
@@ -53,9 +53,10 @@
             <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
               <div :class="{
                 good: game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
-                bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg
+                bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg,
+                selected: game.isSubmitted && choice.value === selected
               }" class="card p-3 bg-highlight flag-border" role="button" @click="clickFlag(choice.value)">
-                <img :src="choice.value" class="img-fluid rounded mb-3  bg-highlight"
+                <img :src="choice.value" class="img-fluid rounded bg-highlight"
                   style="height:150px; object-fit:contain" />
               </div>
             </div>
@@ -66,13 +67,13 @@
 
     <div class="col-12 col-md-3">
       <!-- Score -->
-      <div class="card border-0 mb-4 p-5 bg-highlight">
+      <div class="card border-0 mb-4 p-4 bg-highlight">
         <h6 class="fw-medium mb-2">
           <i class="bi bi-star me-2"></i>
-          Votre score
+          Score
         </h6>
 
-        <div class="text-center p-4">
+        <div class="text-center p-3">
           <div class="fs-2 fw-black mb-2">
             {{ game.userPts }} / {{ game.nbGames }}
           </div>

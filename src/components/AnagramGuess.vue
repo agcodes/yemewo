@@ -68,7 +68,7 @@
             </transition>
 
             <!-- Indice -->
-            <div class="alert alert-secondary mb-4">
+            <div class="alert alert-light mb-4">
                 Indice : {{ game.hintGuess }}
             </div>
 
@@ -98,7 +98,7 @@
 <script setup lang="ts">
 import GuessHistory from '@/components/GuessHistory.vue'
 import { useAnagramGameStore } from '@/stores/anagramGame'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const game = useAnagramGameStore()
 const guessInput = ref<HTMLElement | null>(null)

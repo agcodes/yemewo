@@ -58,7 +58,7 @@
             </transition>
 
             <!-- Indice -->
-            <div class="alert alert-secondary mb-4">
+            <div class="alert alert-light mb-4">
                 Indice : {{ game.hintGuess }}
             </div>
 

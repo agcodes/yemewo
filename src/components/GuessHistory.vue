@@ -1,5 +1,5 @@
 <template>
-    <div v-if="historyItems.length > 0" class="card border-0 mb-5 p-5">
+    <div v-if="historyItems.length > 0" class="card border-0 mb-5 p-4">
         <!-- Titre -->
         <div class="d-flex align-items-center mb-4">
             <i class="bi bi-clock-history me-2"></i>
@@ -21,14 +21,7 @@
                         {{ item.name }}
                     </div>
                     <small class="text-muted">
-                        temps : {{ item.timeSpent }}s |
-                        {{
-                            new Date(item.date).toLocaleDateString('fr-FR', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                year: 'numeric'
-                            })
-                        }}
+                        temps : {{ item.timeSpent }}s
                     </small>
                 </div>
             </li>

@@ -29,11 +29,8 @@ export function useWikiGameLogic(storageKey: string) {
     nbGames.value = 0
     //nbTrophees.value = 0;
     //feedbackClass.value = "alert-info";
-    if (nbRounds.value == 0) {
-      message.value = 'Choisir un article parmi les propositions'
-    } else {
-      message.value = `Round ${nbRounds.value + 1}. Choisir un article parmi les propositions`
-    }
+    message.value = 'Choisir un article parmi les propositions'
+    typeAlert.value = 'info'
   }
 
   function timeOutNewWord() {
@@ -46,10 +43,11 @@ export function useWikiGameLogic(storageKey: string) {
 
   const loadGuess = async () => {
     loadingError.value = false
+    isLoading.value = true
     //showContent.value = false;
     //showSoluce.value = false;
-    isLoading.value = false
-
+    message.value = 'Choisir un article parmi les propositions'
+    typeAlert.value = 'info'
     if (requestLimitStore.canMakeRequest(limit) == false) {
       loadingError.value = true
       return
@@ -68,7 +66,7 @@ export function useWikiGameLogic(storageKey: string) {
 
       requestLimitStore.incrementRequestCount()
 
-      if (!isLoading.value || !articles.value || articles.value.length < 10) {
+      if (!articles.value || articles.value.length < 10) {
         initGuess()
         const today = new Date()
         const yesterday = new Date(today)
@@ -82,11 +80,9 @@ export function useWikiGameLogic(storageKey: string) {
         fetchTopWikipediaArticles(formattedDate, 500, 30)
           .then((topArticles) => {
             articles.value = topArticles
-            isLoading.value = true
             loadArticles(0)
           })
           .catch((error) => {
-            isLoading.value = false
             loadingError.value = true
           })
       } else {
@@ -100,7 +96,6 @@ export function useWikiGameLogic(storageKey: string) {
 
   const loadArticles = (index: number) => {
     if (articles.value && articles.value.length > 0) {
-      isLoading.value = false
       selectedArticles.value = []
       randomArticle.value = null
 
@@ -140,6 +135,8 @@ export function useWikiGameLogic(storageKey: string) {
               selectedArticles.value.push(randomArticle.value)
 
               getOtherArticles()
+
+              startTimer()
             } else if (index < 2) {
               index++
               loadArticles(index)
@@ -175,7 +172,8 @@ export function useWikiGameLogic(storageKey: string) {
               // add to articles
               selectedArticles.value.push(article2)
               if (selectedArticles.value.length == nbOtherArticles) {
-                isLoading.value = true
+                isLoading.value = false
+                console.log('tout est chargé')
                 selectedArticles.value = shuffleArray(selectedArticles.value)
                 selectedArticles.value = shuffleArray(selectedArticles.value)
               }
@@ -221,6 +219,7 @@ export function useWikiGameLogic(storageKey: string) {
     nbGames,
     userPts,
     elapsedTime,
+    updateElapsedTime,
   } = useGameLogic(storageKey)
 
   loadHistory(4)
@@ -243,11 +242,13 @@ export function useWikiGameLogic(storageKey: string) {
     timeOutNewWord,
     userPts,
     nbGames,
+    nbRounds,
     startTime,
     randomArticle,
     selectedArticles,
     articles,
     words,
     elapsedTime,
+    updateElapsedTime,
   }
 }

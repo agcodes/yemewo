@@ -231,6 +231,10 @@ input::placeholder {
   border: 4px dotted transparent;
 }
 
+.flag-border.selected {
+  border: 4px dotted hsl(0, 0%, 70%);
+}
+
 /* Effet au survol (optionnel) */
 .flag-border:hover {
   transform: scale(1.02);
@@ -388,6 +392,13 @@ input::placeholder {
     background 0.8s ease;
 }
 
+.expressive-menu-item-bi {
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 15px;
+  background-color: hsl(235, 80%, 92%);
+}
+
 .expressive-menu-item a:focus,
 .expressive-menu-item a:hover {
   transform: translateY(-1px);
@@ -396,7 +407,7 @@ input::placeholder {
 
 .word {
   background: hsl(225, 16%, 93%);
-  border-radius: 17px;
+  border-radius: 12px;
   padding: 7px 18px 7px 18px;
   color: hsl(250, 9%, 31%);
   box-shadow: 0 2px 3px hsla(225, 10%, 10%, 0.05);
@@ -481,6 +492,38 @@ body.dark-theme .card {
 body.dark-theme .word {
   background: linear-gradient(135deg, hsl(225, 40%, 25%) 0%, hsl(225, 40%, 29%) 0%);
   color: hsl(225, 41%, 92%);
+}
+
+body.dark-theme .shadow-primary {
+  box-shadow:
+    hsla(0, 0%, 100%, 0.08) 0px 1px 1px 0px,
+    hsla(0, 0%, 100%, 0.06) 0px 2px 2px 0px;
+
+  border: 1px solid hsla(0, 0%, 100%, 0.12);
+}
+
+body.dark-theme .expressive-menu-item-bi {
+  background-color: hsl(235, 20%, 42%);
+}
+
+/* État "Bonne réponse" */
+body.dark-theme .flag-border.good {
+  background-color: hsla(150, 65%, 36%, 0.8);
+  border-color: hsl(150, 65%, 36%);
+  box-shadow: 0 0 0 2px rgb(hsl(150, 65%, 36%));
+  animation: pulse-green 3s ease;
+}
+
+/* État "Mauvaise réponse" */
+body.dark-theme .flag-border.bad {
+  background-color: hsla(16, 100%, 65%, 0.8);
+  border-color: hsla(16, 100%, 65%, 0.8);
+  box-shadow: 0 0 0 2px hsla(16, 100%, 65%, 0.8);
+  animation: pulse-red 3s ease;
+}
+
+body.dark-theme .flag-border.selected {
+  border: 4px dotted hsl(0, 0%, 80%);
 }
 
 @media (min-width: 1400px) {

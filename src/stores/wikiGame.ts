@@ -9,9 +9,12 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
       if (randomArticle.value.article === article.article) {
         message.value = `Correct ! ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
         typeAlert.value = 'success'
+        addToHistory(randomArticle.value.title, true)
+        addPts(1)
       } else {
         message.value = `Incorrect ! Solution : ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
         typeAlert.value = 'warning'
+        addToHistory(randomArticle.value.title, false)
       }
       timeOutNewWord()
     }
@@ -29,6 +32,7 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     resetHistory,
     addToHistory,
     nbGames,
+    nbRounds,
     incNbGames,
     loadGuess,
     initRound,
@@ -57,6 +61,7 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     resetHistory,
     loadGuess,
     nbGames,
+    nbRounds,
     initRound,
     userPts,
     startTime,

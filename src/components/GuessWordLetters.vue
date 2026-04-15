@@ -39,9 +39,9 @@
                 <div style="max-width:144px;">
                     <div class="input-group">
                         <input ref="guessInput" v-model="game.userLetterGuess" type="text" maxlength="1"
-                            class="form-control form-control-lg  shadow-primary rounded-0 text-uppercase"
-                            placeholder="Lettre" @keyup.enter="game.checkLetterGuessOnInput" />
-                        <button class="btn btn-primary" @click="game.checkLetterGuessOnInput">
+                            class="form-control form-control-lg  rounded-0 text-uppercase" placeholder="Lettre"
+                            @keyup.enter="game.checkLetterGuessOnInput" />
+                        <button class="btn btn-outline-secondary" @click="game.checkLetterGuessOnInput">
                             <i class="bi bi-send"></i>
                         </button>
                     </div>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="d-flex justify-content-center mb-5">
-                <transition-group name="letter" tag="div" class="d-flex justify-content-center gap-2">
+                <transition-group name="letter" tag="div" class="d-flex justify-content-center gap-1">
                     <div v-for="(letter, index) in game.userLetters.filter(a => !a.found)" :key="letter.letter + index"
                         class="d-flex align-items-center justify-content-center shadow-primary text-uppercase fs-4"
                         style="width:65px; height:65px">
@@ -58,7 +58,7 @@
                 </transition-group>
             </div>
 
-            <div class="alert alert-secondary mb-4">
+            <div class="alert alert-light mb-4">
                 Indice : {{ game.hintGuess }}
             </div>
 
