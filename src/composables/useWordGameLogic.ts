@@ -18,9 +18,9 @@ export function useWordGameLogic(
     addToHistory,
     resetHistory,
     loadHistory,
-    addPts,
+    addRoundPts,
     loadingNewGame,
-    userPts,
+    roundPts,
   } = useGameLogic(storageKey)
 
   const wordToGuess = ref<string>('')
@@ -157,7 +157,7 @@ export function useWordGameLogic(
       message.value = 'Bravo ! Vous avez trouvé le mot. Nouveau mot dans 3 secondes...'
       typeAlert.value = 'success'
       wordFound.value = true
-      addPts(10)
+      addRoundPts(10)
       addToHistory(wordToGuess.value, true)
       timeOutNewWord()
       return true

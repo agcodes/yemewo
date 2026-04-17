@@ -5,12 +5,12 @@ import type { Article } from '@/services/wikiService'
 export const useWikiGameStore = defineStore('wikiGame', () => {
   function submit(article: Article) {
     if (randomArticle.value) {
-      incNbGames()
+      incNbRoundGames()
       if (randomArticle.value.article === article.article) {
         message.value = `Correct ! ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
         typeAlert.value = 'success'
         addToHistory(randomArticle.value.title, true)
-        addPts(1)
+        addRoundPts(1)
       } else {
         message.value = `Incorrect ! Solution : ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
         typeAlert.value = 'warning'
@@ -31,14 +31,14 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     historyItems,
     resetHistory,
     addToHistory,
-    nbGames,
+    nbRoundGames,
     nbRounds,
-    incNbGames,
+    incNbRoundGames,
     loadGuess,
     initRound,
     timeOutNewWord,
-    userPts,
-    addPts,
+    roundPts,
+    addRoundPts,
     startTime,
     randomArticle,
     selectedArticles,
@@ -60,10 +60,10 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     historyItems,
     resetHistory,
     loadGuess,
-    nbGames,
+    nbRoundGames,
     nbRounds,
     initRound,
-    userPts,
+    roundPts,
     startTime,
     randomArticle,
     selectedArticles,

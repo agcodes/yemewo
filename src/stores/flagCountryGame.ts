@@ -9,15 +9,46 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     isGood.value = selected === savedCountry.value.flagSvg
     previousCountry.value = savedCountry.value
 
+    incNbRoundGames()
     if (isGood.value) {
-      addPts(1)
-    }
+      addRoundPts(1)
 
-    incNbGames()
+      console.log('nbRoundGames.value', nbRoundGames.value, 'round pts', roundPts.value)
+      if (nbRoundGames.value == 5 && roundPts.value == 5) {
+        message.value = 'Bien joué !'
+      } else if (nbRoundGames.value == 9 && roundPts.value == 9) {
+        message.value = 'Incroyable ! Encore une bonne réponse !'
+      } else if (
+        nbRoundGames.value == gamesPerRound.value &&
+        roundPts.value == gamesPerRound.value
+      ) {
+        message.value = 'Magnifique ! Vous êtes un expert des drapeaux !'
+      } else {
+        message.value = 'Bonne réponse !'
+      }
+      typeAlert.value = 'success'
+    } else {
+      message.value = 'Mauvaise réponse.'
+      typeAlert.value = 'danger'
+    }
     addToHistory(savedCountry.value.localName, isGood.value)
+
+    if (isEndOfGame()) {
+      gamesPerRound.value = nbRoundGames.value
+      message.value = `Fin du jeu !.`
+      typeAlert.value = 'info'
+      addRound()
+    } else {
+      if (nbRoundGames.value == gamesPerRound.value) {
+        message.value += " Début d'un nouveau round..."
+      } else {
+        message.value += " Chargement d'un nouveau pays..."
+      }
+    }
   }
 
   const {
+    init,
     message,
     typeAlert,
     isSubmitted,
@@ -32,11 +63,16 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     resetHistory,
     addToHistory,
     loadCountries,
-    nbGames,
-    incNbGames,
+    nbRoundGames,
+    incNbRoundGames,
+    isEndOfGame,
     initRound,
-    userPts,
-    addPts,
+    addRound,
+    nbRounds,
+    roundPts,
+    gameRounds,
+    gamesPerRound,
+    addRoundPts,
     defineNewGame,
     startTime,
     elapsedTime,
@@ -44,6 +80,7 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
   } = useCountryGameLogic('fagHistoryItems')
 
   return {
+    init,
     message,
     typeAlert,
     isSubmitted,
@@ -59,9 +96,11 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     resetHistory,
     loadCountries,
     defineNewGame,
-    nbGames,
+    nbRoundGames,
     initRound,
-    userPts,
+    nbRounds,
+    gameRounds,
+    roundPts,
     startTime,
     elapsedTime,
     updateElapsedTime,

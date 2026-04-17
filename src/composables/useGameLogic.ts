@@ -1,12 +1,16 @@
 import { ref } from 'vue'
 import type { GameItem } from '@/composables/GameItem'
+import type { GameRound } from './GameRound'
 
-type AlertType = 'info' | 'success' | 'warning' | 'error' | undefined
+type AlertType = 'info' | 'success' | 'warning' | 'error' | 'secondary' | 'danger' | undefined
 
 export function useGameLogic(storageKey: string) {
   const historyItems = ref<GameItem[]>([])
-  const userPts = ref<number>(0)
-  const nbGames = ref<number>(0)
+  const gameRounds = ref<GameRound[]>([])
+  const roundPts = ref<number>(0)
+  const totalPts = ref<number>(0)
+  const gamesPerRound = ref<number>(10)
+  const nbRoundGames = ref<number>(0)
   const nbRounds = ref<number>(0)
   const historyLimit = ref<number>(10)
   const loadingError = ref(false)
@@ -21,16 +25,30 @@ export function useGameLogic(storageKey: string) {
 
   const startTime = ref<number>(0)
 
+  function init() {
+    gameRounds.value = []
+    nbRoundGames.value = 0
+    nbRounds.value = 0
+    roundPts.value = 0
+    totalPts.value = 0
+    gameEnd.value = false
+    isSubmitted.value = false
+    isGood.value = false
+    isLoading.value = false
+    loadingError.value = false
+    message.value = ''
+  }
+
   function startTimer() {
     startTime.value = new Date().getTime()
   }
 
-  function incNbGames() {
-    nbGames.value += 1
+  function incNbRoundGames() {
+    nbRoundGames.value += 1
   }
 
-  function addPts(points: number) {
-    userPts.value += points
+  function addRoundPts(points: number) {
+    roundPts.value += points
   }
 
   function loadHistory(nb: number) {
@@ -57,10 +75,41 @@ export function useGameLogic(storageKey: string) {
     saveHistory()
   }
 
+  function getLevel() {
+    if (roundPts.value == 0) {
+      return 0
+    }
+
+    if (roundPts.value / gamesPerRound.value > 0.9) {
+      return 3
+    }
+
+    if (roundPts.value / gamesPerRound.value >= 0.7) {
+      return 2
+    }
+
+    return 1
+  }
+
+  function addRound() {
+    if (nbRoundGames.value > 0) {
+      gameRounds.value.push({
+        index: nbRounds.value,
+        nbPts: roundPts.value,
+        level: getLevel(),
+      })
+    }
+  }
+
   function initRound() {
     gameEnd.value = false
-    nbGames.value = 0
-    userPts.value = 0
+    totalPts.value += roundPts.value
+
+    // add previous round to history
+    addRound()
+    nbRoundGames.value = 0
+    nbRounds.value += 1
+    roundPts.value = 0
   }
 
   function addToHistory(name: string, success: boolean) {
@@ -87,6 +136,7 @@ export function useGameLogic(storageKey: string) {
   }
 
   return {
+    init,
     isSubmitted,
     isLoading,
     loadingError,
@@ -94,6 +144,10 @@ export function useGameLogic(storageKey: string) {
     typeAlert,
     isGood,
     gameEnd,
+    totalPts,
+    nbRounds,
+    nbRoundGames,
+    gameRounds,
     loadingNewGame,
     historyItems,
     startTimer,
@@ -101,13 +155,13 @@ export function useGameLogic(storageKey: string) {
     addToHistory,
     loadHistory,
     resetHistory,
-    addPts,
-    incNbGames,
-    nbRounds,
-    nbGames,
+    addRoundPts,
+    addRound,
+    incNbRoundGames,
     initRound,
     elapsedTime,
     updateElapsedTime,
-    userPts: userPts,
+    roundPts: roundPts,
+    gamesPerRound,
   }
 }

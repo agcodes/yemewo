@@ -8,7 +8,8 @@
               <div class="row main-outline">
                 <div class="fs190 italic main-outline d-flex justify-content-between align-items-center">
                   <router-link class="secondary-color mb-0" title="home" to="/">
-                    Yemewo </router-link><button class="menu-button">
+                    <img src="@/assets/yemewo.png" alt="Yemewo" width="200" />
+                  </router-link><button class="menu-button">
                     <router-link :to="{ name: 'home' }"><i class="secondary-color bi bi-house"></i></router-link>
                   </button>
                   <ThemeToggleButton />

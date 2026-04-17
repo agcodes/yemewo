@@ -94,7 +94,7 @@
 
         <div class="text-center p-3">
           <div class="fs-2 fw-black mb-2">
-            {{ game.userPts }} / {{ game.nbGames }}
+            {{ game.roundPts }} / {{ game.nbRoundGames }}
           </div>
           <div class="text-muted">
             Temps : {{ game.elapsedTime }}

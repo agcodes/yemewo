@@ -8,17 +8,6 @@
         </button>
       </div>
 
-      <div v-else-if="game.gameEnd === true" class="card rounded-0 mb-5 p-4">
-        <div class="alert alert-info mb-4">
-          <i class="bi bi-info-circle me-2"></i>
-          Fin du jeu
-        </div>
-
-        <button class="btn btn-outline-primary" @click="initRound">
-          Nouveau jeu
-        </button>
-      </div>
-
       <div v-if="game.savedCountry" class="card border-0 mb-4 p-4">
         <div class="card-title text-center mt-2 fs130 mb-3">
           Jeu des drapeaux
@@ -27,19 +16,27 @@
         <div class="card-body">
           <transition name="alert-transition" mode="out-in">
             <div class="mb-4 mt-1" :key="alertKey">
-              <div v-if="game.previousCountry && game.isGood" class="alert alert-success">
-                <i class="bi bi-check-circle me-2"></i>
-                Bonne réponse ! Chargement d'un nouveau pays...
+              <div v-if="game.gameEnd === true" class="card rounded-0 mb-5 p-4">
+                <div class="alert alert-info mb-4">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Fin du jeu ! Votre score est {{ game.roundPts }} / {{ game.nbRoundGames }}
+                </div>
+
+                <button class="btn btn-outline-primary" @click="initRound">
+                  Nouveau jeu
+                </button>
               </div>
 
-              <div v-else-if="game.previousCountry && !game.isGood" class="alert alert-danger">
-                <i class="bi bi-x-circle me-2"></i>
-                Mauvaise réponse. Chargement d'un nouveau pays...
+              <div v-if="game.previousCountry && game.message" :class="`alert-${game.typeAlert}`" class="alert">
+                <i v-if="game.typeAlert == 'danger'" class="bi bi-x-circle me-2"></i>
+                <i v-if="game.typeAlert == 'success'" class="bi bi-check-circle me-2"></i>
+                {{ game.message }}
               </div>
 
               <div v-else-if="!game.isLoading" class="alert alert-info">
                 <i class="bi bi-info-circle me-2"></i>
-                Devinez le pays à partir de son drapeau
+                {{ game.message }}
+
               </div>
             </div>
           </transition>
@@ -58,6 +55,7 @@
               }" class="card p-3 bg-highlight flag-border" role="button" @click="clickFlag(choice.value)">
                 <img :src="choice.value" class="img-fluid rounded bg-highlight"
                   style="height:150px; object-fit:contain" />
+
               </div>
             </div>
           </div>
@@ -75,11 +73,23 @@
 
         <div class="text-center p-3">
           <div class="fs-2 fw-black mb-2">
-            {{ game.userPts }} / {{ game.nbGames }}
+            {{ game.roundPts }} / {{ game.nbRoundGames }}
           </div>
-          <div class="text-muted">
+          <div class="text-muted mb-2">
             Temps : {{ game.elapsedTime }}
           </div>
+          <div class="text-muted mb-4">
+            Round {{ game.nbRounds }}
+          </div>
+
+          <TransitionGroup name="round" tag="div" class="gap-2 d-flex justify-content-center">
+            <span v-for="(round, index) in game.gameRounds" :key="round.index">
+              <i v-if="round.level == 1" title="bronze" class="fs180 bi bi-trophy-fill level-bronze"></i>
+              <i v-else-if="round.level == 2" title="argent" class="fs180 bi bi-trophy-fill level-silver"></i>
+              <i v-else-if="round.level == 3" title="or" class="fs180 bi bi-trophy-fill level-gold"></i>
+            </span>
+          </TransitionGroup>
+
         </div>
       </div>
 
@@ -104,6 +114,8 @@ let timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
 
 onMounted(() => {
   timerInterval.value = setInterval(game.updateElapsedTime, 1000)
+  game.init()
+  initRound();
 })
 
 onBeforeUnmount(() => {
@@ -121,18 +133,33 @@ watch(
   { deep: true }
 );
 
-async function loadQuiz() {
+function initRound() {
+  game.initRound()
+  clearTimer()
+  loadQuiz(true)
+}
+
+async function clearTimer() {
+  if (timerInterval.value) {
+    clearInterval(timerInterval.value)
+    timerInterval.value = null
+  }
+}
+
+async function loadQuiz(reload: boolean) {
   try {
-    game.defineNewGame(4);
-    if (game.currentCountries.length > 0) {
-      choices.value = game.currentCountries.map((country) => ({
-        label: country.localName,
-        value: country.flagSvg,
-      }))
-      game.isLoading = false
-      if (timerInterval.value) {
-        clearInterval(timerInterval.value)
+
+    choices.value = await game.defineNewGame(4, reload);
+
+    if (game.nbRounds == 1 && game.nbRoundGames == 1) {
+      for (let i = 0; i < 248; i++) {
+        //choices.value = await game.defineNewGame(4, false);
       }
+    }
+
+    if (choices.value.length > 0) {
+      game.isLoading = false
+      clearTimer()
       game.updateElapsedTime();
       timerInterval.value = setInterval(game.updateElapsedTime, 1000)
     }
@@ -149,9 +176,10 @@ function clickFlag(choice: string) {
 function submit() {
   if (game.isSubmitted) return
   game.submit(selected.value)
-  if (timerInterval.value) {
-    clearInterval(timerInterval.value)
-    timerInterval.value = null
+  clearTimer()
+
+  if (game.gameEnd) {
+    return
   }
 
   autoNextTimer.value = setTimeout(() => {
@@ -162,25 +190,7 @@ function submit() {
 function newQuiz() {
   choices.value = []
   selected.value = ''
-  loadQuiz().then(() => {
-
-  })
+  loadQuiz(false)
 }
 
-function initRound() {
-  game.initRound()
-  game.isLoading = true
-  if (timerInterval.value) {
-    clearInterval(timerInterval.value)
-    timerInterval.value = null
-  }
-
-  game.loadCountries().then(() => {
-    loadQuiz()
-  })
-}
-
-onMounted(() => {
-  initRound();
-})
 </script>

@@ -15,7 +15,7 @@
 
         <div class="card-body">
             <!-- Mot mélangé -->
-            <div class="d-flex justify-content-center mt-1   gap-2 mb-3">
+            <div class="d-flex justify-content-center mt-1 gap-2 mb-3">
                 <div v-for="(letter, index) in game.scrambledWord" :key="index"
                     class="d-flex align-items-center text-black justify-content-center fs-4 shadow-primary" :style="{
                         width: '65px',

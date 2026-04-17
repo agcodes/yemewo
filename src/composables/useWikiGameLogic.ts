@@ -25,8 +25,8 @@ export function useWikiGameLogic(storageKey: string) {
   }
 
   const initGuess = () => {
-    userPts.value = 0
-    nbGames.value = 0
+    roundPts.value = 0
+    nbRoundGames.value = 0
     //nbTrophees.value = 0;
     //feedbackClass.value = "alert-info";
     message.value = 'Choisir un article parmi les propositions'
@@ -213,11 +213,11 @@ export function useWikiGameLogic(storageKey: string) {
     addToHistory,
     resetHistory,
     loadHistory,
-    addPts,
-    incNbGames,
+    addRoundPts,
+    incNbRoundGames,
     initRound,
-    nbGames,
-    userPts,
+    nbRoundGames,
+    roundPts,
     elapsedTime,
     updateElapsedTime,
   } = useGameLogic(storageKey)
@@ -235,13 +235,13 @@ export function useWikiGameLogic(storageKey: string) {
     historyItems,
     addToHistory,
     resetHistory,
-    addPts,
-    incNbGames,
+    addRoundPts,
+    incNbRoundGames,
     loadGuess,
     initRound,
     timeOutNewWord,
-    userPts,
-    nbGames,
+    roundPts,
+    nbRoundGames,
     nbRounds,
     startTime,
     randomArticle,

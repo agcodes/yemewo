@@ -5,6 +5,7 @@ import { API_CONFIG } from '@/config/apiConfig'
 
 export function useCountryGameLogic(storageKey: string) {
   const {
+    init,
     message,
     typeAlert,
     isSubmitted,
@@ -18,12 +19,16 @@ export function useCountryGameLogic(storageKey: string) {
     addToHistory,
     resetHistory,
     loadHistory,
-    addPts,
-    incNbGames,
+    addRoundPts,
+    addRound,
+    incNbRoundGames,
     initRound,
-    nbGames,
-    userPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    roundPts,
     elapsedTime,
+    gamesPerRound,
     updateElapsedTime,
   } = useGameLogic(storageKey)
 
@@ -52,25 +57,51 @@ export function useCountryGameLogic(storageKey: string) {
     })
   }
 
-  function defineNewGame(nb: number): boolean {
+  function isEndOfGame(): boolean {
+    if (countries.value.filter((a) => a.alreadyUsed == false).length == 0) {
+      gameEnd.value = true
+      return true
+    }
+    return false
+  }
+
+  async function defineNewGame(
+    nb: number,
+    reload: boolean,
+  ): Promise<{ label: string; value: string }[]> {
     isSubmitted.value = false
     isGood.value = false
     previousCountry.value = null
     savedCountry.value = null
+    currentCountries.value = []
+    isLoading.value = true
+    gamesPerRound.value = 10
+
+    if (reload) {
+      gameRounds.value = []
+      nbRounds.value = 1
+      await loadCountries()
+    }
+
+    if (isEndOfGame()) {
+      currentCountries.value = []
+      savedCountry.value = null
+      isLoading.value = false
+      return []
+    }
     startTimer()
+
+    if (nbRoundGames.value >= 10) {
+      initRound()
+      message.value = `Début d'un nouveau round !`
+    } else {
+      message.value = `Chargement d'un nouveau pays...`
+    }
 
     if (countries.value.length > 0) {
       // Shuffle the countries and take the first 'nb' countries for the current game
       const shuffled = [...countries.value].sort(() => 0.5 - Math.random())
-      currentCountries.value = shuffled.slice(0, nb)
-
-      const filteredCountries = currentCountries.value.filter((a) => a.alreadyUsed == false)
-      if (filteredCountries.length == 0) {
-        currentCountries.value = []
-        gameEnd.value = true
-        return false
-      }
-
+      const filteredCountries = shuffled.filter((a) => a.alreadyUsed == false)
       // Save the first country of the current game to display its flag and use it for validation
       savedCountry.value = filteredCountries[0]!
       savedCountry.value.alreadyUsed = true
@@ -78,16 +109,31 @@ export function useCountryGameLogic(storageKey: string) {
       if (index > 0 && countries.value[index]) {
         countries.value[index].alreadyUsed = true
       }
+
+      const selectedCountries = shuffled
+        .filter((a) => a.name != savedCountry.value?.name)
+        .slice(0, nb - 1)
+
+      currentCountries.value = [...selectedCountries].sort(() => 0.5 - Math.random())
+      currentCountries.value.push(savedCountry.value)
       currentCountries.value = [...currentCountries.value].sort(() => 0.5 - Math.random())
-      return true
+      isLoading.value = false
+      message.value = 'Devinez le pays à partir de son drapeau'
+      return currentCountries.value.map((country) => ({
+        label: country.localName,
+        value: country.flagSvg,
+      }))
     }
 
-    return false
+    isLoading.value = false
+    return []
   }
 
+  init()
   loadHistory(4)
 
   return {
+    init,
     message,
     typeAlert,
     isSubmitted,
@@ -103,13 +149,18 @@ export function useCountryGameLogic(storageKey: string) {
     resetHistory,
     loadCountries,
     defineNewGame,
-    addPts,
-    incNbGames,
+    isEndOfGame,
+    addRoundPts,
+    incNbRoundGames,
     initRound,
-    userPts,
-    nbGames,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
     startTime,
     updateElapsedTime,
     elapsedTime,
+    gamesPerRound,
   }
 }
