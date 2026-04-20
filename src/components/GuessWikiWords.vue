@@ -47,8 +47,8 @@
                   </div>
                 </div>
 
-                <transition name="alert-transition">
-                  <div v-if="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
+                <transition name="alert-transition" mode="out-in">
+                  <div v-if="game.message" :key="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
                     {{ game.message }}
                   </div>
                 </transition>
@@ -113,6 +113,15 @@ import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue'
 import GuessHistory from '@/components/GuessHistory.vue'
 import { useWikiGameStore } from '@/stores/wikiGame'
 const game = useWikiGameStore()
+
+const alertKey = ref(0);
+watch(
+  () => [game.message],
+  () => {
+    alertKey.value++;
+  },
+  { deep: true }
+);
 
 let timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
 

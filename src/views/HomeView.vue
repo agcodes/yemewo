@@ -21,8 +21,7 @@
       </li>
       <li class="expressive-menu-item mb-1">
         <router-link :to="{ name: 'guess-wiki-words' }"><i class="expressive-menu-item-bi bi bi-wikipedia mr-5"></i>
-          Deviner les
-          articles Wikipédia</router-link>
+          Deviner l'article Wikipédia</router-link>
       </li>
 
     </ul>

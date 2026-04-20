@@ -310,7 +310,7 @@ input::placeholder {
 .alert-transition-enter-from,
 .alert-transition-leave-to {
   opacity: 0;
-  transform: translateY(-7px);
+  transform: translateY(-5px);
 }
 
 .alert-transition-enter-to,

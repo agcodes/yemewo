@@ -89,7 +89,6 @@
               <i v-else-if="round.level == 3" title="or" class="fs180 bi bi-trophy-fill level-gold"></i>
             </span>
           </TransitionGroup>
-
         </div>
       </div>
 

@@ -72,8 +72,9 @@
                 </button>
             </div>
 
-            <transition name="alert-transition">
-                <div v-if="game.message" :key="game.message" class="alert mt-2 mb-5" :class="`alert-${game.typeAlert}`">
+
+            <transition name="alert-transition" mode="out-in">
+                <div v-if="game.message" :key="game.message" class="alert mt-2" :class="`alert-${game.typeAlert}`">
                     {{ game.message }}
                     <button v-if="game.loadingNewGame" class="btn btn-outline-secondary ms-2"
                         @click="game.cancelAutoNext">
@@ -91,10 +92,19 @@
 <script setup lang="ts">
 import GuessHistory from '@/components/GuessHistory.vue'
 import { useGameStore } from '@/stores/guessWordLettersGame'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const game = useGameStore()
 const guessInput = ref<HTMLElement | null>(null)
+
+const alertKey = ref(0);
+watch(
+  () => [game.message],
+  () => {
+    alertKey.value++;
+  },
+  { deep: true }
+);
 
 onMounted(() => {
     initGame();

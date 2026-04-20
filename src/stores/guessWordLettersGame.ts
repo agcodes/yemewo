@@ -6,7 +6,7 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
   const userLetterGuess = ref<string>('')
 
   const initCallback = () => {
-    message.value = ''
+    message.value = 'Saisir une lettre'
   }
 
   function getUserLetter(letter: string): WordLetter | undefined {
@@ -26,12 +26,12 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
 
     let found = false
     userLetterGuess.value = ''
+
     wordLetters.value.forEach((wl) => {
       if (wl.letter.toLowerCase() === letter) {
         wl.found = true
         found = true
       }
-
     })
 
     const wordLettersString = wordLetters.value
@@ -55,15 +55,16 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
         }
 
         if (userLetters.value.filter((l) => l.letter != '').length == 8){
-          message.value="Attention, il ne vous reste qu'une erreur !"
+          message.value += ". Attention, il ne vous reste qu'une erreur !"
+          typeAlert.value="warning"
         }
 
         if (userLetters.value.filter((l) => l.letter != '').length == 9) {
           discardWord(`Vous avez dépassé les 9 essais ! Le mot était : ${wordToGuess.value}.`)
         }
-      }
+      } 
     }
-
+   
     triggerFocusCallBack()
   }
 
