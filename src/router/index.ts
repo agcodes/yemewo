@@ -25,14 +25,14 @@ const router = createRouter({
       component: () => import('../views/GuessWikiWords.vue'),
     },
     {
+      path: '/guess-drawing',
+      name: 'guess-drawing',
+      component: () => import('../views/GuessDrawing.vue'),
+    },
+    {
       path: '/anagram',
       name: 'anagram',
       component: () => import('../views/AnagramView.vue'),
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('../views/TestView.vue'),
     },
     {
       path: '/flags-quiz',
