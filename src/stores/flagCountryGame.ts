@@ -13,7 +13,6 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     if (isGood.value) {
       addRoundPts(1)
 
-      console.log('nbRoundGames.value', nbRoundGames.value, 'round pts', roundPts.value)
       if (nbRoundGames.value == 5 && roundPts.value == 5) {
         message.value = 'Bien joué !'
       } else if (nbRoundGames.value == 9 && roundPts.value == 9) {

@@ -173,7 +173,6 @@ export function useWikiGameLogic(storageKey: string) {
               selectedArticles.value.push(article2)
               if (selectedArticles.value.length == nbOtherArticles) {
                 isLoading.value = false
-                console.log('tout est chargé')
                 selectedArticles.value = shuffleArray(selectedArticles.value)
                 selectedArticles.value = shuffleArray(selectedArticles.value)
               }

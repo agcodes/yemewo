@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useWordGameLogic, type WordLetter } from '@/composables/useWordGameLogic'
 import { ref } from 'vue'
+import { fetchRandomWord } from '@/services/wordService'
 
 export const useGameStore = defineStore('guessWordLettersGame', () => {
   const userLetterGuess = ref<string>('')
@@ -96,7 +97,7 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
     typeAlert,
     baseHue,
     historyItems,
-  } = useWordGameLogic(initCallback, 'guesswordlettershistoryItems')
+  } = useWordGameLogic(initCallback, 'guesswordlettershistoryItems', fetchRandomWord)
 
   return {
     wordToGuess,

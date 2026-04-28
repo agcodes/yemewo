@@ -2,12 +2,14 @@ import { ref } from 'vue'
 import { fetchRandomWord } from '@/services/wordService'
 import { useGameLogic } from '@/composables/useGameLogic'
 import type { WordLetter } from './WordLetter'
+import type { Word } from '@/composables/Word'
 
 export type { WordLetter }
 
 export function useWordGameLogic(
-  initCallback: (word: string, category: string) => void,
+  initCallback: (word: Word) => void,
   storageKey: string,
+  getWordFrom: () => Promise<Word>
 ) {
   const {
     historyItems,
@@ -23,6 +25,8 @@ export function useWordGameLogic(
     roundPts,
   } = useGameLogic(storageKey)
 
+
+  const wordSource = ref<string>('word-api')
   const wordToGuess = ref<string>('')
   const hintGuess = ref<string>('')
   const userGuess = ref<string>('')
@@ -48,16 +52,25 @@ export function useWordGameLogic(
     return `hsl(${hue}, 80%, 70%)`
   }
 
+  async function getWord(): Promise<Word> {
+    if (getWordFrom){
+      return getWordFrom();
+    }
+    return fetchRandomWord();
+  }
+
   async function initGame() {
+    console.log("init game parent");
     isLoading.value = true
     try {
       loadingError.value = false
-      fetchRandomWord()
+      getWord()
         .then((randomWord) => {
-          wordToGuess.value = randomWord.name
-          hintGuess.value = randomWord.categorie
+          console.log(randomWord);
+          wordToGuess.value = randomWord.value
+          hintGuess.value = randomWord.category
 
-          const letters = randomWord.name.toLowerCase().split('')
+          const letters = randomWord.value.toLowerCase().split('')
           wordLetters.value = letters.map((letter: string) => ({
             letter,
             found: letter === '-' || letter === "'" || letter === ' ',
@@ -76,7 +89,7 @@ export function useWordGameLogic(
           baseHue.value = Math.floor(Math.random() * 360)
           startTimer()
 
-          initCallback(randomWord.name, randomWord.categorie)
+          initCallback(randomWord)
 
           wordFound.value = false
           loadingNewGame.value = false

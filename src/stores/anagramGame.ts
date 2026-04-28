@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useWordGameLogic } from '@/composables/useWordGameLogic'
 import type { WordLetter } from '@/composables/WordLetter'
+import type { Word } from '@/composables/Word'
+import { fetchRandomWord } from '@/services/wordService'
 
 export const useAnagramGameStore = defineStore('anagramGame', () => {
   const scrambledWord = ref<string>('')
@@ -54,10 +56,10 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     return sortedGuess === sortedScrambled
   }
 
-  const initCallback = (word: string, category: string) => {
-    scrambledWord.value = word.toLowerCase()
-    while (scrambledWord.value.toLowerCase() === word.toLowerCase()) {
-      scrambledWord.value = scrambleWord(word)
+  const initCallback = (word: Word) => {
+    scrambledWord.value = word.value.toLowerCase()
+    while (scrambledWord.value.toLowerCase() === word.value.toLowerCase()) {
+      scrambledWord.value = scrambleWord(word.value)
     }
     const letters = scrambledWord.value.toLowerCase().split('')
 
@@ -92,7 +94,7 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     typeAlert,
     baseHue,
     historyItems,
-  } = useWordGameLogic(initCallback, 'anagramhistoryItems')
+  } = useWordGameLogic(initCallback, 'anagramhistoryItems', fetchRandomWord)
 
   return {
     wordToGuess,

@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 import { useWordGameLogic } from '@/composables/useWordGameLogic'
+import { fetchRandomWord } from '@/services/wordService'
+import type { Word } from '@/composables/Word'
 
 export const useGameStore = defineStore('guessWordGame', () => {
-  const initCallback = () => {
+  const initCallback = (word: Word) => {
     message.value =
       "Chaque couleur représente une lettre différente de l'alphabet suivant l'ordre du spectre."
   }
@@ -30,7 +32,7 @@ export const useGameStore = defineStore('guessWordGame', () => {
     typeAlert,
     baseHue,
     historyItems,
-  } = useWordGameLogic(initCallback, 'historyItems')
+  } = useWordGameLogic(initCallback, 'historyItems', fetchRandomWord)
 
   return {
     wordToGuess,

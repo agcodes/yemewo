@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <!-- Champ de saisie -->
+            <!-- input text -->
             <div class="d-flex justify-content-center mb-5">
                 <div style="max-width: 344px;">
                     <label class="form-label">
@@ -50,14 +50,14 @@
                 </div>
             </div>
 
-            <!-- Message de jeu -->
+            <!-- game message -->
             <transition name="alert-transition">
                 <div v-if="game.message" class="alert mb-3" :class="`alert-${game.typeAlert}`">
                     {{ game.message }}
                 </div>
             </transition>
 
-            <!-- Indice -->
+            <!-- hint -->
             <div class="alert alert-light mb-4">
                 Indice : {{ game.hintGuess }}
             </div>
@@ -65,7 +65,7 @@
             <!-- Actions -->
             <div class="mb-2">
                 <button class="btn btn-outline-primary me-2" @click="displayNewWord">
-                    Nouveau mot
+                   Passer
                 </button>
 
                 <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"

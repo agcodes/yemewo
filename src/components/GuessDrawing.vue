@@ -2,224 +2,174 @@
     <div class="row">
         <div class="col-12 col-md-9">
             <div class="card border-0 mb-5 p-4">
-                <div id="container"></div>
+                 <div class="card-title text-center mt-2 fs130 mb-3">
+                    Devinez le mot
+                </div>
+                 <div class="card-body">
+                    <!-- input text -->
+                    <div class="d-flex justify-content-center mb-5">
+                        <div style="max-width: 344px;">
+                            <label class="form-label">
+                                Votre proposition
+                            </label>
+                            <input ref="guessInput" v-model="game.userGuess" type="text"
+                                class="form-control form-control-lg rounded-0 text-uppercase shadow-primary"
+                                placeholder="Saisir un mot" :maxlength="game.wordToGuess.length" :disabled="game.isLoading"
+                                @input="game.checkGuessOnInput" @keyup.enter="game.checkGuessOnInput" />
+                        </div>
+                    </div>
+
+                    <!-- game message -->
+                    <transition name="alert-transition">
+                        <div v-if="game.message" class="alert mb-2" :class="`alert-${game.typeAlert}`">
+                            {{ game.message }}
+                        </div>
+                    </transition>
+
+                    <div id="container"></div>
+
+                    <!-- hint -->
+                    <div class="alert alert-light mb-4">
+                        {{ game.hintGuess }}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mb-2">
+                        <button class="btn btn-outline-primary me-2" @click="displayNewWord">
+                            Passer
+                        </button>
+                        <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"
+                            class="btn btn-warning me-2" @click="game.revealSolution">
+                            Solution
+                        </button>
+
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-3">
-
+            <!-- Historique -->
+             <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique des mots" />
         </div>
+
+
+        {{ game.wordToGuess }}
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import GuessHistory from '@/components/GuessHistory.vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useGuessDrawingGameStore } from '@/stores/guessDrawingGame'
-
+import {
+  preparePath,
+  prepareCircle,
+  rectToPath,
+  animatePath,
+  animateCircle,
+  animateOpacity
+} from '@/composables/useSvgDrawing'
 
 const game = useGuessDrawingGameStore()
+const { initIcons, mdiIcons, initGame } = game
+const guessInput = ref<HTMLElement | null>(null)
 
-/* =========================================================
-   SVG SOURCE
-========================================================= */
+// Déclenche initSvg quand svgString est mis à jour
+watch(() => game.svgString, (newVal) => {
+  if (newVal) initSvg()
+})
 
-const getRandomKeyword = () => {
-    return mdiIcons[Math.floor(Math.random() * mdiIcons.length)]
+const focusInput = () => {
+    guessInput.value?.focus()
 }
 
-const buildSvgUrl = (keyword: string) => `https://api.iconify.design/${iconType}:${keyword}.svg`
+const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
+/* =========================================================
+   STATE
+========================================================= */
 let animationId = 0
-let mdiIcons: string[] | null = null;
-const iconType = "openmoji";
-let elements = [
-];
+let elements: Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement> = [];
 
-/* =========================================================
-   LOAD SVG FROM URL
-========================================================= */
-const loadSvg = async (): Promise<string> => {
-    const keyword = 'accordion'// 'accordion';// getRandomKeyword()
-    console.log(`Loading SVG for keyword: ${keyword}`)
-    const svgUrl = buildSvgUrl(keyword)
-    const response = await fetch(svgUrl)
-    if (!response.ok) {
-        throw new Error(`Unable to load SVG: ${response.status} ${response.statusText}`)
+onMounted(async () => {
+    game.setFocusCallback(focusInput);
+    initIcons().then(() => {
+        initGame();
+    });
+
+    return;
+})
+
+function initSvg(){
+    const containerEl = document.getElementById("container");
+    if (!containerEl || !game.svgString) return
+
+    // Adapter le SVG à la taille du conteneur
+    const rect = containerEl.getBoundingClientRect()
+    const width: number = Math.floor(rect.width) || 400
+    const height: number = Math.floor(rect.height) || 400
+    
+    let svgText = game.svgString
+        .replace(/height="1em"/g, `height="${height}"`)
+        .replace(/width="1em"/g, `width="${width}"`)
+
+    containerEl.innerHTML = svgText
+
+    const svg = document.querySelector<SVGSVGElement>("#container svg");
+
+    if (svg) {
+        svg.style.visibility = 'hidden';
+        elements = [
+            ...Array.from(svg.querySelectorAll<SVGPathElement>("path")),
+            ...Array.from(svg.querySelectorAll<SVGCircleElement>("circle")),
+            ...Array.from(svg.querySelectorAll<SVGRectElement>("rect")),
+            ...Array.from(svg.querySelectorAll<SVGLineElement>("line")),
+            ...Array.from(svg.querySelectorAll<SVGPolylineElement>("polyline")),
+            ...Array.from(svg.querySelectorAll<SVGPolygonElement>("polygon"))
+        ];
     }
-    return response.text()
+
+    drawSVGSequentially();
 }
 
-function preparePath(path) {
-    const length = path.getTotalLength();
-    path.classList.add("draw-path");
-    path.style.strokeDasharray = length;
-    path.style.strokeDashoffset = length;
-}
-
-function prepareCircle(circle) {
-    const r = circle.getAttribute("r");
-    circle.dataset.finalRadius = r;
-    circle.setAttribute("r", "0");
-    circle.style.opacity = "1";
-}
-
-
-function rectToPath(rect) {
-    const x = parseFloat(rect.getAttribute("x") || 0)
-    const y = parseFloat(rect.getAttribute("y") || 0)
-    const w = parseFloat(rect.getAttribute("width"))
-    const h = parseFloat(rect.getAttribute("height"))
-    const rx = parseFloat(rect.getAttribute("rx") || 0)
-    const ry = parseFloat(rect.getAttribute("ry") || rx)
-
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path")
-
-    const d = `
-        M${x + rx},${y}
-        H${x + w - rx}
-        Q${x + w},${y} ${x + w},${y + ry}
-        V${y + h - ry}
-        Q${x + w},${y + h} ${x + w - rx},${y + h}
-        H${x + rx}
-        Q${x},${y + h} ${x},${y + h - ry}
-        V${y + ry}
-        Q${x},${y} ${x + rx},${y}
-        Z
-    `
-
-    path.setAttribute("d", d)
-    path.setAttribute("fill", rect.getAttribute("fill") || "none")
-    path.setAttribute("stroke", rect.getAttribute("stroke") || "#000")
-    path.setAttribute("stroke-width", rect.getAttribute("stroke-width") || "2")
-
-    rect.replaceWith(path)
-    return path
-}
-
-
-function animatePath(path, duration = 700) {
-    return new Promise(resolve => {
-        const length = path.getTotalLength();
-        let start = null;
-
-        function frame(time) {
-            if (!start) start = time;
-            const progress = Math.min((time - start) / duration, 1);
-            path.style.strokeDashoffset = length * (1 - progress);
-            if (progress < 1) requestAnimationFrame(frame);
-            else resolve();
-        }
-
-        requestAnimationFrame(frame);
-    });
-}
-
-function animateCircle(circle, duration = 300) {
-    return new Promise(resolve => {
-        const finalR = parseFloat(circle.dataset.finalRadius);
-        let start = null;
-
-        function frame(time) {
-            if (!start) start = time;
-            const progress = Math.min((time - start) / duration, 1);
-            circle.setAttribute("r", finalR * progress);
-            if (progress < 1) requestAnimationFrame(frame);
-            else resolve();
-        }
-
-        requestAnimationFrame(frame);
-    });
-}
-async function drawSVGSequentially() {
+async function drawSVGSequentially(): Promise<void> {
     for (const el of elements) {
         if (el.tagName === "path") {
-            preparePath(el);
-            await animatePath(el);
-            el.classList.remove("draw-path"); // restore fill
+            preparePath(el as SVGPathElement);
+            await animatePath(el as SVGPathElement);
+            el.classList.remove("draw-path");
         }
 
         if (el.tagName === "rect") {
-            const path = rectToPath(el)
+            const path = rectToPath(el as SVGRectElement);
             preparePath(path);
             await animatePath(path);
+            path.classList.remove("draw-path");
         }
 
         if (el.tagName === "circle") {
-            prepareCircle(el);
-            await animateCircle(el);
+            prepareCircle(el as SVGCircleElement);
+            await animateCircle(el as SVGCircleElement);
         }
-    }
 
-    console.log("✅ SVG dessiné entièrement");
+        if (el.tagName === "line" || el.tagName === "polyline") {
+            preparePath(el as unknown as SVGPathElement);
+            await animatePath(el as unknown as SVGPathElement);
+            el.classList.remove("draw-path");
+        }
+
+        if (el.tagName === "polygon") {
+            await animateOpacity(el as SVGPolygonElement);
+        }
+
+        await delay(1000);
+    }
 }
 
-/* =========================================================
-   MOUNT
-========================================================= */
-onMounted(async () => {
-    /*
-    const res = await fetch(
-        `https://api.iconify.design/collection?prefix=${iconType}`
-    )
-    const data = await res.json()
-*/
-    const data: any = [];
-    if (data) {
 
-        const iconNames = new Set<string>()
-
-        const allowedCategories = [
-            'Sport',
-            'Objects',
-            'Education',
-            'Automotive',
-            'Hardware / Tools',
-            'Fruits & Vegetables',
-            'Animal',
-            'Clothing',
-            'Nature',
-            'Food / Drink',
-            'Music'
-        ];
-
-        // uniquement les catégories voulues
-        for (const category of allowedCategories) {
-            if (data.categories?.[category]) {
-                const icons = data.categories?.[category]
-                if (Array.isArray(icons)) {
-                    icons.forEach((name: string) => {
-                        iconNames.add(name)
-                    })
-                }
-            }
-        }
-
-        // icônes finales
-        mdiIcons = Array.from(iconNames).map(
-            name => `${name}`
-        )
-        mdiIcons = mdiIcons.filter(a => !a.includes('-'))
-    }
-
-    let svgText = await loadSvg()
-
-    svgText = svgText.replace('height="1em"', 'height="400"').replace('width="1em"', 'width="400"')
-
-    if (!svgText) return
-    document.getElementById("container").innerHTML = svgText
-
-    const svg = document.querySelector("svg");
-
-    elements = [
-        ...svg.querySelectorAll("path"),
-        ...svg.querySelectorAll("circle"),
-        ...svg.querySelectorAll("rect"),
-        ...svg.querySelectorAll("line"),
-        ...svg.querySelectorAll("polyline"),
-        ...svg.querySelectorAll("polygon")
-    ];
-
-    drawSVGSequentially();
-})
+const displayNewWord = () => {
+    game.cancelGame()
+}
 
 /* =========================================================
    CLEANUP
@@ -244,11 +194,17 @@ onBeforeUnmount(() => {
     background: white;
 }
 
+/* Masquer le SVG et tous ses éléments initialement */
+#container svg,
+#container svg * {
+    visibility: hidden;
+}
+
 /* styles appliqués pendant le dessin */
 .draw-path {
     fill: none !important;
     stroke: #000;
-    stroke-width: 2;
+    stroke-width: 1;
     stroke-linecap: round;
     stroke-linejoin: round;
 }

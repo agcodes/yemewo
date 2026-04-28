@@ -24,6 +24,10 @@
           Deviner l'article Wikipédia</router-link>
       </li>
 
+      <li class="expressive-menu-item mb-1">
+        <router-link :to="{ name: 'guess-drawing' }"><i class="expressive-menu-item-bi bi bi-wikipedia mr-5"></i>
+          Deviner le dessin (anglais)</router-link>
+      </li>
     </ul>
   </div>
 </template>
