@@ -2,23 +2,41 @@
     <div class="row">
         <div class="col-12 col-md-9">
             <div class="card border-0 mb-5 p-4">
-                 <div class="card-title text-center mt-2 fs130 mb-3">
+                 <div class="card-title text-center mt-2 fs130 mb-4">
                     Devinez le mot
                 </div>
-                 <div class="card-body">
+                 <div class="card-body"> <!-- Lettres du mot -->
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <div v-for="(letter, index) in game.wordToGuess" :key="index"
+                            class="d-flex align-items-center text-black justify-content-center shadow-primary  text-uppercase fs-4"
+                            :style="{
+                                width: '65px',
+                                height: '65px',
+                                backgroundColor: game.getLetterColor(letter)
+                            }">
+                            <span>
+                                {{
+                                    game.wordFound
+                                        ? letter.toUpperCase()
+                                        : (
+                                            (( game.wordToGuess[index] === '-') && !game.userGuess[index])
+                                                ? game.getWordToGuessLetter(index)
+                                                : (game.userGuess[index] ? game.userGuess[index].toUpperCase() : '')
+                                        )
+                                }}
+                            </span>
+                        </div>
+                    </div>
+
                     <!-- input text -->
-                    <div class="d-flex justify-content-center mb-5">
-                        <div style="max-width: 344px;">
-                            <label class="form-label">
-                                Votre proposition
-                            </label>
+                    <div class="d-flex justify-content-center mb-4">
+                        <div class="hidden" style="max-width: 300px;">
                             <input ref="guessInput" v-model="game.userGuess" type="text"
-                                class="form-control form-control-lg rounded-0 text-uppercase shadow-primary"
+                                class="form-control form-control-sm rounded-0 text-uppercase shadow-primary"
                                 placeholder="Saisir un mot" :maxlength="game.wordToGuess.length" :disabled="game.isLoading"
                                 @input="game.checkGuessOnInput" @keyup.enter="game.checkGuessOnInput" />
                         </div>
                     </div>
-
                     <!-- game message -->
                     <transition name="alert-transition">
                         <div v-if="game.message" class="alert mb-2" :class="`alert-${game.typeAlert}`">
@@ -44,6 +62,7 @@
                         </button>
 
                     </div>
+
                 </div>
             </div>
         </div>
@@ -100,7 +119,8 @@ onMounted(async () => {
     return;
 })
 
-function initSvg(){
+
+async function initSvg(){
     const containerEl = document.getElementById("container");
     if (!containerEl || !game.svgString) return
 
@@ -127,12 +147,14 @@ function initSvg(){
             ...Array.from(svg.querySelectorAll<SVGPolylineElement>("polyline")),
             ...Array.from(svg.querySelectorAll<SVGPolygonElement>("polygon"))
         ];
-    }
+        await drawSVGSequentially(svgText);
 
-    drawSVGSequentially();
+        containerEl.innerHTML = svgText
+        svg.style.visibility = 'visible';
+    }
 }
 
-async function drawSVGSequentially(): Promise<void> {
+async function drawSVGSequentially(svgText: string): Promise<void> {
     for (const el of elements) {
         if (el.tagName === "path") {
             preparePath(el as SVGPathElement);
@@ -185,12 +207,10 @@ onBeforeUnmount(() => {
     height: 400px;
     border: 1px solid red;
     background: white;
+    padding: 10px;
 }
 
 .container svg {
-    width: 400px;
-    height: 400px;
-    border: 1px solid red;
     background: white;
 }
 

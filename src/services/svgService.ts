@@ -3,15 +3,17 @@ import type { Word } from '@/composables/Word'
 export const iconType = "openmoji"
 
 export const allowedCategories = [
-  'Animals Nature',
-  'Objects',
-  'Food Drink'
+  //'Animals Nature',
+  //'Objects',
+  //'Food Drink',
+  'Activities'
 ]
 
 export const buildSvgUrl = (keyword: string): string =>
   `https://api.iconify.design/${iconType}:${keyword}.svg`
 
 export const getRandomKeyword = (icons: Word[]): Word => {
+  //return { value: 'falafel', category: 'Objects' }
   if (icons.length === 0) return { value: 'accordion', category: 'Objects' }
   const icon = icons[Math.floor(Math.random() * icons.length)]
   return icon!
@@ -44,10 +46,8 @@ export const loadIcons = async (): Promise<Word[]> => {
         }
       }
     }
-
     return words
   } catch (error) {
-    console.error('Failed to load icons:', error)
     return []
   }
 }
