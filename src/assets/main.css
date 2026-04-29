@@ -58,6 +58,10 @@ img {
   width: 100%;
 }
 
+.btn {
+  border-radius: 0;
+}
+
 .header {
   background: linear-gradient(135deg, hsl(250, 88%, 87%) 0%, hsl(218, 68%, 83%) 100%);
   background-size: 300% 300%;
@@ -225,6 +229,11 @@ input::placeholder {
   font-size: 1.5rem;
 }
 
+.flag-img {
+  height: 150px;
+  object-fit: contain;
+}
+
 .flag-border {
   padding: 1px;
   transition: all 0.3s ease;
@@ -378,6 +387,11 @@ input::placeholder {
   }
 }
 
+.word-letter {
+  text-align: center;
+  width: 60px;
+  height: 60px;
+}
 /* Transitions pour les lettres du mot */
 .word-letter-move {
   transition: transform 0.5s ease;
@@ -578,5 +592,18 @@ body.dark-theme .flag-border.selected {
   .container-xl,
   .container-xxl {
     max-width: 1520px;
+  }
+}
+
+@media (max-width: 700px) {
+  .flag-img {
+    height: 50px;
+    object-fit: contain;
+  }
+
+  .word-letter {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
   }
 }

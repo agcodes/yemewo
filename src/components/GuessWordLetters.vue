@@ -7,7 +7,7 @@
         </button>
     </div>
 
-    <div v-else class="card border-0 mb-4 p-5">
+    <div v-else class="card border-0 mb-4 p-4">
         <div class="card-title text-center mt-2 fs130 mb-3">
             Devinez le mot lettre par lettre
         </div>
@@ -17,10 +17,9 @@
             <div class="d-flex justify-content-center mt-1 gap-1 mb-5">
                 <transition-group name="word-letter" tag="div" class="d-flex justify-content-center gap-1">
                     <div v-for="(letter, index) in game.wordLetters" :key="letter.letter + index"
-                        class="d-flex align-items-center text-black justify-content-center shadow-primary  text-uppercase fs-4"
+                        class="d-flex align-items-center text-black justify-content-center shadow-primary word-letter text-uppercase fs-4"
                         :class="{ 'letter-found': letter.found && !game.wordFound }" :style="{
-                            width: '65px',
-                            height: '65px',
+
                             backgroundColor: game.getLetterColor(letter.letter)
                         }">
                         <span>
@@ -49,10 +48,9 @@
             </div>
 
             <div class="d-flex justify-content-center mb-5">
-                <transition-group name="letter" tag="div" class="d-flex justify-content-center gap-1">
+                <transition-group name="letter" tag="div" class="d-flex justify-content-center gap-1 flex-wrap">
                     <div v-for="(letter, index) in game.userLetters.filter(a => !a.found)" :key="letter.letter + index"
-                        class="d-flex align-items-center justify-content-center shadow-primary text-uppercase fs-4"
-                        style="width:65px; height:65px">
+                        class="d-flex align-items-center justify-content-center shadow-primary word-letter text-uppercase fs-4">
                         {{ letter.letter }}
                     </div>
                 </transition-group>
@@ -62,7 +60,7 @@
                 Indice : {{ game.hintGuess }}
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 btn-group">
                 <button class="btn btn-outline-primary me-2" @click="displayNewWord">
                     Nouveau mot
                 </button>
@@ -71,7 +69,6 @@
                     Solution
                 </button>
             </div>
-
 
             <transition name="alert-transition" mode="out-in">
                 <div v-if="game.message" :key="game.message" class="alert mt-2" :class="`alert-${game.typeAlert}`">
@@ -99,11 +96,11 @@ const guessInput = ref<HTMLElement | null>(null)
 
 const alertKey = ref(0);
 watch(
-  () => [game.message],
-  () => {
-    alertKey.value++;
-  },
-  { deep: true }
+    () => [game.message],
+    () => {
+        alertKey.value++;
+    },
+    { deep: true }
 );
 
 onMounted(() => {

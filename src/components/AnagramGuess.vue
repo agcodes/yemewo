@@ -73,7 +73,7 @@
             </div>
 
             <!-- Actions -->
-            <div class="d-flex gap-3 mb-2">
+            <div class="gap-3 mb-2  btn-group">
                 <button class="btn btn-outline-primary" @click="displayNewWord">
                     Nouveau mot
                 </button>

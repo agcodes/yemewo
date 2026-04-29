@@ -1,13 +1,8 @@
 import type { Word } from '@/composables/Word'
 
-export const iconType = "openmoji"
+export const iconType = 'openmoji'
 
-export const allowedCategories = [
-  //'Animals Nature',
-  //'Objects',
-  //'Food Drink',
-  'Activities'
-]
+export const allowedCategories = ['Animals Nature', 'Objects', 'Food Drink', 'Activities']
 
 export const buildSvgUrl = (keyword: string): string =>
   `https://api.iconify.design/${iconType}:${keyword}.svg`

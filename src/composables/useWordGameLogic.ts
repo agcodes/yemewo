@@ -9,7 +9,7 @@ export type { WordLetter }
 export function useWordGameLogic(
   initCallback: (word: Word) => void,
   storageKey: string,
-  getWordFrom: () => Promise<Word>
+  getWordFrom: () => Promise<Word>,
 ) {
   const {
     historyItems,
@@ -24,7 +24,6 @@ export function useWordGameLogic(
     loadingNewGame,
     roundPts,
   } = useGameLogic(storageKey)
-
 
   const wordSource = ref<string>('word-api')
   const wordToGuess = ref<string>('')
@@ -53,20 +52,18 @@ export function useWordGameLogic(
   }
 
   async function getWord(): Promise<Word> {
-    if (getWordFrom){
-      return getWordFrom();
+    if (getWordFrom) {
+      return getWordFrom()
     }
-    return fetchRandomWord();
+    return fetchRandomWord()
   }
 
   async function initGame() {
-    console.log("init game parent");
     isLoading.value = true
     try {
       loadingError.value = false
       getWord()
         .then((randomWord) => {
-          console.log(randomWord);
           wordToGuess.value = randomWord.value
           hintGuess.value = randomWord.category
 

@@ -36,7 +36,6 @@
               <div v-else-if="!game.isLoading" class="alert alert-info">
                 <i class="bi bi-info-circle me-2"></i>
                 {{ game.message }}
-
               </div>
             </div>
           </transition>
@@ -53,8 +52,7 @@
                 bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg,
                 selected: game.isSubmitted && choice.value === selected
               }" class="card p-3 bg-highlight flag-border" role="button" @click="clickFlag(choice.value)">
-                <img :src="choice.value" class="img-fluid rounded bg-highlight"
-                  style="height:150px; object-fit:contain" />
+                <img :src="choice.value" class="img-fluid rounded bg-highlight flag-img" />
 
               </div>
             </div>
