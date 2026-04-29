@@ -20,15 +20,9 @@ export function useWikiGameLogic(storageKey: string) {
   const limit = 150
   let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 
-  const calcProgress = () => {
-    return 0 // (nbGoodGuesses.value / nbMaxGuesses.value) * 100;
-  }
-
   const initGuess = () => {
     roundPts.value = 0
     nbRoundGames.value = 0
-    //nbTrophees.value = 0;
-    //feedbackClass.value = "alert-info";
     message.value = 'Choisir un article parmi les propositions'
     typeAlert.value = 'info'
   }
@@ -44,9 +38,14 @@ export function useWikiGameLogic(storageKey: string) {
   const loadGuess = async () => {
     loadingError.value = false
     isLoading.value = true
-    //showContent.value = false;
-    //showSoluce.value = false;
-    message.value = 'Choisir un article parmi les propositions'
+    
+    if (nbRoundGames.value >= gamesPerRound.value) {
+      initRound()
+      message.value = `Début d'un nouveau round !`
+    } else {
+       message.value = 'Choisir un article parmi les propositions'
+    }
+    
     typeAlert.value = 'info'
     if (requestLimitStore.canMakeRequest(limit) == false) {
       loadingError.value = true
@@ -54,16 +53,6 @@ export function useWikiGameLogic(storageKey: string) {
     }
 
     try {
-      //if (nbGuesses.value == nbMaxGuesses.value) {
-      //if (calcProgress() > 70) {
-      //  nbTrophees.value++;
-      //}
-
-      //scores.value.push(`${Math.floor(calcProgress())} %`);
-
-      //initGuess();
-      //}
-
       requestLimitStore.incrementRequestCount()
 
       if (!articles.value || articles.value.length < 10) {
@@ -90,7 +79,6 @@ export function useWikiGameLogic(storageKey: string) {
       }
     } catch (error) {
       loadingError.value = true
-      console.error('Failed to get random article:', error)
     }
   }
 
@@ -112,7 +100,7 @@ export function useWikiGameLogic(storageKey: string) {
             const article = data
             if (
               articles.value != null &&
-              article &&
+              article != null &&
               article.content &&
               article.content.length > 0
             ) {
@@ -166,7 +154,7 @@ export function useWikiGameLogic(storageKey: string) {
         }
         getArticle(articles.value[randomIndex])
           .then((article2) => {
-            if (article2 && article2.title) {
+            if (article2 != null && article2.title) {
               article2.originalTitle = article2.title
 
               // add to articles
@@ -189,14 +177,16 @@ export function useWikiGameLogic(storageKey: string) {
     const newArray = [...array]
     for (let i = newArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
-      if (newArray[j] && newArray[i]) {
-        ;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
-      }
+      const temp = newArray[i] as Article
+      newArray[i] = newArray[j] as Article
+      newArray[j] = temp
     }
     return newArray
   }
 
   const {
+    gamesPerRound,
+    gameRounds,
     message,
     typeAlert,
     isSubmitted,
@@ -224,6 +214,8 @@ export function useWikiGameLogic(storageKey: string) {
   loadHistory(4)
 
   return {
+    gamesPerRound,
+    gameRounds,
     message,
     typeAlert,
     isSubmitted,

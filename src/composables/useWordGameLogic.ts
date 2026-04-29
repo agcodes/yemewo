@@ -12,6 +12,9 @@ export function useWordGameLogic(
   getWordFrom: () => Promise<Word>,
 ) {
   const {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
     historyItems,
     message,
     typeAlert,
@@ -23,6 +26,14 @@ export function useWordGameLogic(
     addRoundPts,
     loadingNewGame,
     roundPts,
+    gameEnd,
+    initRound,
+    addRound,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
+    incNbRoundGames
   } = useGameLogic(storageKey)
 
   const wordSource = ref<string>('word-api')
@@ -167,8 +178,9 @@ export function useWordGameLogic(
       message.value = 'Bravo ! Vous avez trouvé le mot. Nouveau mot dans 3 secondes...'
       typeAlert.value = 'success'
       wordFound.value = true
-      addRoundPts(10)
+      addRoundPts(1)
       addToHistory(wordToGuess.value, true)
+      incNbRoundGames()
       timeOutNewWord()
       return true
     } else if (wordFound.value === false) {
@@ -208,6 +220,16 @@ export function useWordGameLogic(
   loadHistory(8)
 
   return {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     hintGuess,
     userGuess,
@@ -235,5 +257,6 @@ export function useWordGameLogic(
     typeAlert,
     baseHue,
     historyItems,
+    gameEnd
   }
 }

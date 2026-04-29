@@ -7,7 +7,12 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
   const userLetterGuess = ref<string>('')
 
   const initCallback = () => {
-    message.value = 'Saisir une lettre'
+    if (nbRoundGames.value >= gamesPerRound.value) {
+      initRound()
+      message.value = `Début d'un nouveau round !`
+    } else {
+       message.value = 'Deviner le mot en saisissant une lettre'
+    }
   }
 
   function getUserLetter(letter: string): WordLetter | undefined {
@@ -70,6 +75,16 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
   }
 
   const {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     hintGuess,
     userGuess,
@@ -100,6 +115,16 @@ export const useGameStore = defineStore('guessWordLettersGame', () => {
   } = useWordGameLogic(initCallback, 'guesswordlettershistoryItems', fetchRandomWord)
 
   return {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     userLetterGuess,
     hintGuess,

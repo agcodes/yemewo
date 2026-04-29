@@ -8,19 +8,20 @@
     </div>
 
     <!-- Carte principale -->
-    <div v-else class="card border-0 mb-5 p-4">
-        <div class="card-title text-center mt-2 fs130 mb-3">
-            Devinez le mot
-        </div>
-
+    <div v-else class="card border-0 mb-5 p-3">
         <div class="card-body">
+            <!-- game message -->
+            <transition name="alert-transition">
+                <div v-if="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
+                    {{ game.message }}
+                </div>
+            </transition>
+
             <!-- Lettres du mot -->
             <div class="d-flex justify-content-center gap-2 mb-5">
                 <div v-for="(letter, index) in game.wordToGuess" :key="index"
-                    class="d-flex align-items-center text-black justify-content-center shadow-primary  text-uppercase fs-4"
+                    class="d-flex align-items-center text-black justify-content-center word-letter shadow-primary  text-uppercase fs-4"
                     :style="{
-                        width: '65px',
-                        height: '65px',
                         backgroundColor: game.getLetterColor(letter)
                     }">
                     <span>
@@ -49,13 +50,6 @@
                         @input="game.checkGuessOnInput" @keyup.enter="game.checkGuessOnInput" />
                 </div>
             </div>
-
-            <!-- game message -->
-            <transition name="alert-transition">
-                <div v-if="game.message" class="alert mb-3" :class="`alert-${game.typeAlert}`">
-                    {{ game.message }}
-                </div>
-            </transition>
 
             <!-- hint -->
             <div class="alert alert-light mb-4">

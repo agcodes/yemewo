@@ -7,12 +7,13 @@
         </button>
     </div>
 
-    <div v-else class="card border-0 mb-4 p-4">
-        <div class="card-title text-center mt-2 fs130 mb-3">
-            Devinez le mot lettre par lettre
-        </div>
-
+    <div v-else class="card border-0 mb-5 p-3">
         <div class="card-body" v-if="!game.isLoading">
+            <transition name="alert-transition" mode="out-in">
+                <div v-if="game.message" :key="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
+                    {{ game.message }}
+                </div>
+            </transition>
             <!-- letters -->
             <div class="d-flex justify-content-center mt-1 gap-1 mb-5">
                 <transition-group name="word-letter" tag="div" class="d-flex justify-content-center gap-1">
@@ -62,23 +63,13 @@
 
             <div class="mb-4 btn-group">
                 <button class="btn btn-outline-primary me-2" @click="displayNewWord">
-                    Nouveau mot
+                    Passer
                 </button>
                 <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"
                     class="btn btn-warning me-2" @click="game.revealSolution">
                     Solution
                 </button>
             </div>
-
-            <transition name="alert-transition" mode="out-in">
-                <div v-if="game.message" :key="game.message" class="alert mt-2" :class="`alert-${game.typeAlert}`">
-                    {{ game.message }}
-                    <button v-if="game.loadingNewGame" class="btn btn-outline-secondary ms-2"
-                        @click="game.cancelAutoNext">
-                        Annuler
-                    </button>
-                </div>
-            </transition>
         </div>
     </div>
 

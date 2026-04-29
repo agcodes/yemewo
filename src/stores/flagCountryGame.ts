@@ -5,11 +5,13 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
   function submit(selected: string) {
     if (!savedCountry.value) return
 
+    clearTimer()
     isSubmitted.value = true
     isGood.value = selected === savedCountry.value.flagSvg
     previousCountry.value = savedCountry.value
 
     incNbRoundGames()
+    
     if (isGood.value) {
       addRoundPts(1)
 
@@ -30,11 +32,12 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
       message.value = 'Mauvaise réponse.'
       typeAlert.value = 'danger'
     }
+    
     addToHistory(savedCountry.value.localName, isGood.value)
 
     if (isEndOfGame()) {
       gamesPerRound.value = nbRoundGames.value
-      message.value = `Fin du jeu !.`
+      message.value = `Fin du jeu !`
       typeAlert.value = 'info'
       addRound()
     } else {
@@ -74,6 +77,9 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     addRoundPts,
     defineNewGame,
     startTime,
+    startTimer,
+    timerInterval,
+    clearTimer,
     elapsedTime,
     updateElapsedTime,
   } = useCountryGameLogic('fagHistoryItems')
@@ -101,6 +107,9 @@ export const useFlagCountryStore = defineStore('flagCountryGame', () => {
     gameRounds,
     roundPts,
     startTime,
+    startTimer,
+    timerInterval,
+    clearTimer,
     elapsedTime,
     updateElapsedTime,
   }

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Article } from '@/services/wikiService'
 import { useWordGameLogic, type WordLetter } from '@/composables/useWordGameLogic'
 import { loadSvg as loadSvgFromService, loadIcons, getRandomKeyword } from '@/services/svgService'
 import type { Word } from '@/composables/Word'
@@ -9,11 +8,17 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
   const mdiIcons = ref<Word[]>([])
   const svgString = ref<string>('')
 
-  const initCallback = (word: Word) => {
-    message.value = 'Devinez le mot anglais.'
+  const initCallback = () => {
+    if (nbRoundGames.value >= gamesPerRound.value) {
+      initRound()
+      message.value = `Début d'un nouveau round !`
+    } else {
+      message.value = 'Devinez le mot anglais.'
+    }
   }
 
   const initIcons = async (): Promise<void> => {
+     gameEnd.value = false
     return new Promise((resolve, reject) => {
       loadIcons()
         .then((icons) => {
@@ -22,18 +27,27 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
         })
         .catch((error) => {
           mdiIcons.value = []
-          reject()
+          reject(error)
         })
     })
   }
 
   const getWord = async (): Promise<Word> => {
     return new Promise((resolve, reject) => {
+      if (mdiIcons.value.length == 0){
+        reject("no words");
+        gameEnd.value = true
+        message.value = `Fin du jeu !`
+        typeAlert.value = 'info'
+      }
       const word: Word = getRandomKeyword(mdiIcons.value)
-
+      // Remove the icon if its value matches word.value
+      mdiIcons.value = mdiIcons.value.filter((icon) => icon.value !== word.value);
       loadSvg(word.value).then((svgTxt: string) => {
         svgString.value = svgTxt
         resolve(word)
+      }).catch((error)  => {
+        reject(error)
       })
     })
   }
@@ -43,6 +57,16 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
   }
 
   const {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     hintGuess,
     userGuess,
@@ -70,9 +94,20 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     typeAlert,
     baseHue,
     historyItems,
-  } = useWordGameLogic(initCallback, 'guesswordlettershistoryItems', getWord)
+    gameEnd
+  } = useWordGameLogic(initCallback, 'guessDrawingGamehistoryItems', getWord)
 
   return {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     hintGuess,
     userGuess,
@@ -101,5 +136,6 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     initIcons,
     loadSvg,
     svgString,
+    gameEnd
   }
 })

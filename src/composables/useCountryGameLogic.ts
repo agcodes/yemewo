@@ -16,6 +16,8 @@ export function useCountryGameLogic(storageKey: string) {
     historyItems,
     startTimer,
     startTime,
+    timerInterval,
+    clearTimer,
     addToHistory,
     resetHistory,
     loadHistory,
@@ -89,7 +91,6 @@ export function useCountryGameLogic(storageKey: string) {
       isLoading.value = false
       return []
     }
-    startTimer()
 
     if (nbRoundGames.value >= 10) {
       initRound()
@@ -118,6 +119,7 @@ export function useCountryGameLogic(storageKey: string) {
       currentCountries.value.push(savedCountry.value)
       currentCountries.value = [...currentCountries.value].sort(() => 0.5 - Math.random())
       isLoading.value = false
+      
       message.value = 'Devinez le pays à partir de son drapeau'
       return currentCountries.value.map((country) => ({
         label: country.localName,
@@ -125,6 +127,7 @@ export function useCountryGameLogic(storageKey: string) {
       }))
     }
 
+    startTimer()
     isLoading.value = false
     return []
   }
@@ -154,13 +157,16 @@ export function useCountryGameLogic(storageKey: string) {
     incNbRoundGames,
     initRound,
     addRound,
+    startTimer,
     roundPts,
     nbRounds,
     gameRounds,
     nbRoundGames,
+    gamesPerRound,
     startTime,
+    timerInterval,
+    clearTimer,
     updateElapsedTime,
     elapsedTime,
-    gamesPerRound,
   }
 }

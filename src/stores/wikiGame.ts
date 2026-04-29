@@ -21,6 +21,7 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
   }
 
   const {
+    gameRounds,
     message,
     typeAlert,
     isSubmitted,
@@ -50,6 +51,7 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
 
   return {
     message,
+    gameRounds,
     typeAlert,
     isSubmitted,
     isLoading,

@@ -319,13 +319,11 @@ input::placeholder {
 .alert-transition-enter-from,
 .alert-transition-leave-to {
   opacity: 0;
-  transform: translateY(-5px);
 }
 
 .alert-transition-enter-to,
 .alert-transition-leave-from {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* Animation alternative pour les lettres - pulsation rouge */

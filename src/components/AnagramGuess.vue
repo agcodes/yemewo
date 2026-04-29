@@ -8,12 +8,14 @@
     </div>
 
     <!-- Carte principale -->
-    <div v-else class="card border-0 mb-4 p-4">
-        <div class="card-title text-center mt-2 fs130 mb-3">
-            Anagramme
-        </div>
-
+    <div v-else class="card border-0 mb-5 p-3">
         <div class="card-body">
+            <!-- Message -->
+            <transition name="alert-transition">
+                <div v-if="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
+                    {{ game.message }}
+                </div>
+            </transition>
             <!-- Mot mélangé -->
             <div class="d-flex justify-content-center mt-1 gap-2 mb-3">
                 <div v-for="(letter, index) in game.scrambledWord" :key="index"
@@ -59,14 +61,6 @@
                         @input="game.checkAnagramGuessOnInput" @keyup.enter="game.checkAnagramGuessOnInput" />
                 </div>
             </div>
-
-            <!-- Message -->
-            <transition name="alert-transition">
-                <div v-if="game.message" class="alert mb-3" :class="`alert-${game.typeAlert}`">
-                    {{ game.message }}
-                </div>
-            </transition>
-
             <!-- Indice -->
             <div class="alert alert-light mb-4">
                 Indice : {{ game.hintGuess }}
@@ -75,7 +69,7 @@
             <!-- Actions -->
             <div class="gap-3 mb-2  btn-group">
                 <button class="btn btn-outline-primary" @click="displayNewWord">
-                    Nouveau mot
+                    Passer
                 </button>
 
                 <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"

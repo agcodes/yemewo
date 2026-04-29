@@ -5,11 +5,26 @@ import type { Word } from '@/composables/Word'
 
 export const useGameStore = defineStore('guessWordGame', () => {
   const initCallback = (word: Word) => {
-    message.value =
-      "Chaque couleur représente une lettre différente de l'alphabet suivant l'ordre du spectre."
+    if (nbRoundGames.value >= gamesPerRound.value) {
+      initRound()
+      message.value = `Début d'un nouveau round !`
+    } else {
+      message.value =
+      "Deviner le mot. Chaque couleur représente une lettre différente de l'alphabet."
+    }
   }
 
   const {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     hintGuess,
     userGuess,
@@ -35,6 +50,16 @@ export const useGameStore = defineStore('guessWordGame', () => {
   } = useWordGameLogic(initCallback, 'historyItems', fetchRandomWord)
 
   return {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     hintGuess,
     userGuess,

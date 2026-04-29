@@ -1,6 +1,5 @@
 <!-- src/components/RandomArticle.vue -->
 <template>
-
   <div class="row">
     <div class="col-12 col-md-9">
       <div v-if="game.loadingError">
@@ -12,10 +11,8 @@
         </div>
       </div>
 
-      <div v-if="game.isLoading">
-        <div class="card mb-4">
-          <div class="card-body">Chargement...</div>
-        </div>
+      <div v-if="game.isLoading" class="card border-0 mb-5 p-3">
+        Chargement
       </div>
 
       <div class="mb-4" v-if="game.randomArticle">
@@ -60,47 +57,11 @@
             </div>
           </div>
         </div>
-
-        <div class="mb-4">
-          <!-- Barre de progression 
-          <div v-if="nbGuesses > 0" class="progress mb-4">
-            <div class="progress-bar" role="progressbar" :style="{ width: progress + '%' }" :aria-valuenow="progress"
-              aria-valuemin="0" aria-valuemax="100" :title="progress + '%'"></div>
-          </div>
-            <div v-if="nbGuesses > 0" class="mb-4">
-            {{ nbGoodGuesses }} / {{ nbGuesses }}
-          </div>
-           <div v-if="scores.length > 0" class="mb-4">
-            <p>Précédents scores</p>
-            <ol>
-              <li v-for="(score, index) in scores" :key="index" class="me-4">
-                {{ score }}
-              </li>
-            </ol>
-          </div>
-          -->
-        </div>
       </div>
-
-
     </div>
     <div class="col-12 col-md-3">
       <!-- Score -->
-      <div class="card border-0 mb-4 p-4 bg-highlight">
-        <h6 class="fw-medium mb-2">
-          <i class="bi bi-star me-2"></i>
-          Score
-        </h6>
-
-        <div class="text-center p-3">
-          <div class="fs-2 fw-black mb-2">
-            {{ game.roundPts }} / {{ game.nbRoundGames }}
-          </div>
-          <div class="text-muted">
-            Temps : {{ game.elapsedTime }}
-          </div>
-        </div>
-      </div>
+      <ScoreDisplay :game="game" />
 
       <!-- Historique -->
       <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
@@ -109,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import ScoreDisplay from '@/components/ScoreDisplay.vue'
 import { ref, onMounted, watch, computed, onBeforeUnmount } from 'vue'
 import GuessHistory from '@/components/GuessHistory.vue'
 import { useWikiGameStore } from '@/stores/wikiGame'

@@ -9,10 +9,10 @@ export function useGameLogic(storageKey: string) {
   const gameRounds = ref<GameRound[]>([])
   const roundPts = ref<number>(0)
   const totalPts = ref<number>(0)
-  const gamesPerRound = ref<number>(10)
+  const gamesPerRound = ref<number>(2)
   const nbRoundGames = ref<number>(0)
   const nbRounds = ref<number>(0)
-  const historyLimit = ref<number>(10)
+  const historyLimit = ref<number>(5)
   const loadingError = ref(false)
   const isSubmitted = ref(false)
   const isGood = ref(false)
@@ -22,8 +22,8 @@ export function useGameLogic(storageKey: string) {
   const typeAlert = ref<AlertType>('warning')
   const loadingNewGame = ref<boolean>(false)
   const elapsedTime = ref<string>('00:00')
-
   const startTime = ref<number>(0)
+  const timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
 
   function init() {
     gameRounds.value = []
@@ -37,10 +37,32 @@ export function useGameLogic(storageKey: string) {
     isLoading.value = false
     loadingError.value = false
     message.value = ''
+    initRound();
   }
 
   function startTimer() {
     startTime.value = new Date().getTime()
+    clearTimer()
+    timerInterval.value = setInterval(updateElapsedTime, 1000)
+  }
+
+  function clearTimer() {
+    if (timerInterval.value) {
+      clearInterval(timerInterval.value)
+      timerInterval.value = null
+    }
+  }
+
+  function updateElapsedTime() {
+    if (!startTime.value) {
+      elapsedTime.value = '00:00'
+      return
+    }
+    const now = new Date().getTime()
+    const diff = now - startTime.value
+    const seconds = Math.floor(diff / 1000) % 60
+    const minutes = Math.floor(diff / 1000 / 60)
+    elapsedTime.value = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
   }
 
   function incNbRoundGames() {
@@ -49,30 +71,6 @@ export function useGameLogic(storageKey: string) {
 
   function addRoundPts(points: number) {
     roundPts.value += points
-  }
-
-  function loadHistory(nb: number) {
-    historyLimit.value = nb
-
-    const saved = localStorage.getItem(storageKey)
-    if (saved) {
-      historyItems.value = JSON.parse(saved)
-      if (nb !== undefined) {
-        historyItems.value = historyItems.value.slice(0, nb)
-      }
-    }
-  }
-
-  function saveHistory() {
-    if (historyItems.value.length > 15) {
-      historyItems.value = historyItems.value.slice(0, 15)
-    }
-    localStorage.setItem(storageKey, JSON.stringify(historyItems.value))
-  }
-
-  function resetHistory() {
-    historyItems.value = []
-    saveHistory()
   }
 
   function getLevel() {
@@ -123,16 +121,28 @@ export function useGameLogic(storageKey: string) {
     historyItems.value = historyItems.value.slice(0, historyLimit.value)
   }
 
-  function updateElapsedTime() {
-    if (!startTime.value) {
-      elapsedTime.value = '00:00'
-      return
+  function loadHistory(nb: number) {
+    historyLimit.value = nb
+
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      historyItems.value = JSON.parse(saved)
+      if (nb !== undefined) {
+        historyItems.value = historyItems.value.slice(0, nb)
+      }
     }
-    const now = new Date().getTime()
-    const diff = now - startTime.value
-    const seconds = Math.floor(diff / 1000) % 60
-    const minutes = Math.floor(diff / 1000 / 60)
-    elapsedTime.value = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  }
+
+  function saveHistory() {
+    if (historyItems.value.length > 15) {
+      historyItems.value = historyItems.value.slice(0, 15)
+    }
+    localStorage.setItem(storageKey, JSON.stringify(historyItems.value))
+  }
+
+  function resetHistory() {
+    historyItems.value = []
+    saveHistory()
   }
 
   return {
@@ -152,6 +162,8 @@ export function useGameLogic(storageKey: string) {
     historyItems,
     startTimer,
     startTime,
+    timerInterval,
+    clearTimer,
     addToHistory,
     loadHistory,
     resetHistory,

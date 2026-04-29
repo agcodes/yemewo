@@ -114,18 +114,20 @@ const fetchWikipediaArticle = (title: string): Promise<WikipediaArticle | null> 
       })
       .then((data) => {
         const pages = data.query.pages
-        if (pages.length) {
+        const pageIds = Object.keys(pages)
+        if (pageIds.length === 0) {
           reject('Not found')
           return
         }
 
-        const pageId = Object.keys(pages)[0]
+        const pageId = pageIds[0]
 
         if (pageId === '-1') {
           resolve(null)
         } else {
           // Resolve with the article object
-          resolve(pages[pageId] as WikipediaArticle)
+          const page = pages[pageId as keyof typeof pages]
+          resolve(page as WikipediaArticle)
         }
       })
       .catch((error) => {
@@ -142,13 +144,15 @@ const shuffleWord = (word: string): string => {
   }
 
   const letters = word.split('')
-  const firstLetter = letters.shift() // Garde la première lettre
-  const lastLetter = letters.pop() // Garde la dernière lettre
+  const firstLetter = letters.shift() as string
+  const lastLetter = letters.pop() as string
 
   // Mélange les lettres du milieu
   for (let i = letters.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[letters[i], letters[j]] = [letters[j], letters[i]]
+    const temp = letters[i] as string
+    letters[i] = letters[j] as string
+    letters[j] = temp
   }
 
   return firstLetter + letters.join('') + lastLetter
@@ -193,7 +197,7 @@ export const getSuffleWords = (content: string, nbMax: number): string[] => {
   })
 
   // Trier les mots par fréquence décroissante
-  const sortedWords = Object.keys(frequencyMap).sort((a, b) => frequencyMap[b] - frequencyMap[a])
+  const sortedWords = Object.keys(frequencyMap).sort((a: string, b: string) => frequencyMap[b]! - frequencyMap[a]!)
 
   // Prendre les nbMax mots les plus fréquents
   const mostFrequentWords = sortedWords.slice(0, nbMax)
@@ -203,11 +207,13 @@ export const getSuffleWords = (content: string, nbMax: number): string[] => {
 }
 
 // Fonction pour mélanger les éléments d'un tableau
-export const shuffleStringsArray = (array: string[]): string[] => {
+export const shuffleStringsArray = <T>(array: T[]): T[] => {
   const newArray = [...array]
   for (let i = newArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
+    const temp = newArray[i] as T
+    newArray[i] = newArray[j] as T
+    newArray[j] = temp
   }
   return newArray
 }

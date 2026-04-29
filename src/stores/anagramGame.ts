@@ -68,10 +68,25 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
       found: true,
     }))
 
-    message.value = 'Réarrangez les lettres pour former le mot caché.'
+    if (nbRoundGames.value >= gamesPerRound.value) {
+      initRound()
+      message.value = `Début d'un nouveau round !`
+    } else {
+       message.value = 'Réarrangez les lettres pour former le mot caché.'
+    }
   }
 
   const {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     hintGuess,
     userGuess,
@@ -97,6 +112,16 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
   } = useWordGameLogic(initCallback, 'anagramhistoryItems', fetchRandomWord)
 
   return {
+    startTime,
+    updateElapsedTime,
+    elapsedTime,
+    initRound,
+    addRound,
+    roundPts,
+    nbRounds,
+    gameRounds,
+    nbRoundGames,
+    gamesPerRound,
     wordToGuess,
     scrambledWord,
     hintGuess,

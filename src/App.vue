@@ -3,7 +3,7 @@
     <div class="container-xl">
       <div class="row main-outline">
         <div class="col-md-12 col-12">
-          <div class="p-4">
+          <div class="p-2">
             <div class="stylish-border-bottom mb-4">
               <div class="row main-outline">
                 <div class="fs190 italic main-outline d-flex justify-content-between align-items-center">

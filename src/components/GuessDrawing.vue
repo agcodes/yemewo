@@ -1,11 +1,18 @@
 <template>
     <div class="row">
         <div class="col-12 col-md-9">
-            <div class="card border-0 mb-5 p-4">
-                <div class="card-title text-center mt-2 fs130 mb-2">
-                    Devinez le mot
-                </div>
-                <div class="card-body"> <!-- Lettres du mot -->
+            <div v-if="game.isLoading" class="card border-0 mb-5 p-3">
+                Chargement
+            </div>
+
+            <div  v-if="!game.isLoading" class="card border-0 mb-5 p-3">
+                <div class="card-body">
+                    <!-- game message -->
+                    <transition name="alert-transition">
+                        <div v-if="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
+                            {{ game.message }}
+                        </div>
+                    </transition>
                     <div class="d-flex justify-content-center gap-2 mb-3">
                         <div v-for="(letter, index) in game.wordToGuess" :key="index"
                             class="d-flex align-items-center text-black justify-content-center shadow-primary word-letter text-uppercase fs-4"
@@ -36,14 +43,8 @@
                                 @keyup.enter="game.checkGuessOnInput" />
                         </div>
                     </div>
-                    <!-- game message -->
-                    <transition name="alert-transition">
-                        <div v-if="game.message" class="alert mb-3" :class="`alert-${game.typeAlert}`">
-                            {{ game.message }}
-                        </div>
-                    </transition>
 
-                    <div id="container" class="mb-3"></div>
+                    <div id="container" class="card mb-3"></div>
 
                     <!-- hint -->
                     <div class="alert alert-light mb-3">
@@ -64,6 +65,7 @@
             </div>
         </div>
         <div class="col-12 col-md-3">
+            <ScoreDisplay :game="game" />
             <!-- Historique -->
             <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique des mots" />
         </div>
@@ -73,6 +75,7 @@
 </template>
 
 <script setup lang="ts">
+import ScoreDisplay from '@/components/ScoreDisplay.vue'
 import GuessHistory from '@/components/GuessHistory.vue'
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useGuessDrawingGameStore } from '@/stores/guessDrawingGame'
@@ -105,6 +108,7 @@ let animationId = 0
 let elements: Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement> = [];
 
 onMounted(async () => {
+    game.initRound();
     game.setFocusCallback(focusInput);
     initIcons().then(() => {
         initGame();
@@ -212,22 +216,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-#container {
-    border: 1px solid hsl(257, 21%, 85%);
-}
 
 
 /* Masquer le SVG et tous ses éléments initialement */
 #container svg,
 #container svg * {
     visibility: hidden;
-}
-
-.draw-path {
-    fill: none !important;
-    stroke: #000;
-    stroke-width: 1;
-    stroke-linecap: round;
-    stroke-linejoin: round;
 }
 </style>
