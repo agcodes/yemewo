@@ -5,7 +5,7 @@
                 Chargement
             </div>
 
-            <div  v-if="!game.isLoading" class="card border-0 mb-5 p-3">
+            <div v-if="!game.isLoading" class="card border-0 mb-5 p-3">
                 <div class="card-body">
                     <!-- game message -->
                     <transition name="alert-transition">
@@ -69,8 +69,6 @@
             <!-- Historique -->
             <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique des mots" />
         </div>
-
-        {{ game.wordToGuess }}
     </div>
 </template>
 
@@ -216,7 +214,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-
 
 /* Masquer le SVG et tous ses éléments initialement */
 #container svg,

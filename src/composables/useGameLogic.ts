@@ -9,7 +9,7 @@ export function useGameLogic(storageKey: string) {
   const gameRounds = ref<GameRound[]>([])
   const roundPts = ref<number>(0)
   const totalPts = ref<number>(0)
-  const gamesPerRound = ref<number>(2)
+  const gamesPerRound = ref<number>(10)
   const nbRoundGames = ref<number>(0)
   const nbRounds = ref<number>(0)
   const historyLimit = ref<number>(5)
