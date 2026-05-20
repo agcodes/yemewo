@@ -85,22 +85,16 @@ watch(
   { deep: true }
 );
 
-let timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
-
 onBeforeUnmount(() => {
-  if (timerInterval.value) {
-    clearInterval(timerInterval.value)
-  }
+ game.clearTimer();
 })
 
 async function loadQuiz() {
   try {
     game.loadGuess();
-    if (timerInterval.value) {
-      clearInterval(timerInterval.value)
-    }
+    game.clearTimer();
     game.updateElapsedTime();
-    timerInterval.value = setInterval(game.updateElapsedTime, 1000)
+   
     game.isLoading = false
   } catch (error) {
     game.isLoading = false
@@ -110,14 +104,10 @@ async function loadQuiz() {
 function initRound() {
   game.initRound()
   game.isLoading = true
-  if (timerInterval.value) {
-    clearInterval(timerInterval.value)
-    timerInterval.value = null
-  }
+  game.clearTimer();
 }
 
 onMounted(() => {
-  timerInterval.value = setInterval(game.updateElapsedTime, 1000)
   initRound();
   loadQuiz();
 })

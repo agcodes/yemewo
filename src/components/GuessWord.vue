@@ -58,13 +58,8 @@
 
             <!-- Actions -->
             <div class="mb-2">
-                <button class="btn btn-outline-primary me-2" @click="displayNewWord">
-                   Passer
-                </button>
-
-                <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"
-                    class="btn btn-warning me-2" @click="game.revealSolution">
-                    Solution
+               <button :disabled="game.loadingNewGame" class="btn btn-outline-secondary me-2" @click="game.revealSolution">
+                    Passer
                 </button>
 
                 <button v-if="game.loadingNewGame" class="btn btn-outline-secondary" @click="game.cancelAutoNext">

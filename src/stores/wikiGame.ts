@@ -21,6 +21,10 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
   }
 
   const {
+    startTimer,
+    startTime,
+    timerInterval,
+    clearTimer,
     gameRounds,
     message,
     typeAlert,
@@ -40,7 +44,6 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     timeOutNewWord,
     roundPts,
     addRoundPts,
-    startTime,
     randomArticle,
     selectedArticles,
     articles,
@@ -50,6 +53,10 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
   } = useWikiGameLogic('wikiHistoryItems')
 
   return {
+    startTimer,
+    startTime,
+    timerInterval,
+    clearTimer,
     message,
     gameRounds,
     typeAlert,
@@ -66,7 +73,6 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
     nbRounds,
     initRound,
     roundPts,
-    startTime,
     randomArticle,
     selectedArticles,
     articles,

@@ -12,7 +12,10 @@ export function useWordGameLogic(
   getWordFrom: () => Promise<Word>,
 ) {
   const {
+    gameId,
+    setGameId,
     startTime,
+    clearTimer,
     updateElapsedTime,
     elapsedTime,
     historyItems,
@@ -146,7 +149,8 @@ export function useWordGameLogic(
   }
 
   function revealSolution() {
-    discardWord(`La solution est : ${wordToGuess.value}. Nouveau mot dans 3 secondes...`)
+    incNbRoundGames()
+    discardWord(`La solution était ${wordToGuess.value}. Nouveau mot dans 3 secondes...`)
   }
 
   function discardWord(messageToShow: string) {
@@ -154,8 +158,8 @@ export function useWordGameLogic(
     typeAlert.value = 'warning'
     userGuess.value = wordToGuess.value
     wordFound.value = true
-    timeOutNewWord()
     addToHistory(wordToGuess.value, false)
+    timeOutNewWord()
   }
 
   function timeOutNewWord() {
@@ -223,6 +227,7 @@ export function useWordGameLogic(
     startTime,
     updateElapsedTime,
     elapsedTime,
+    clearTimer,
     initRound,
     addRound,
     roundPts,
@@ -241,6 +246,7 @@ export function useWordGameLogic(
     wordLetters,
     userLetters,
     nbGoodLetters,
+    gameId,
     triggerFocusCallBack,
     setFocusCallback,
     cancelGame,

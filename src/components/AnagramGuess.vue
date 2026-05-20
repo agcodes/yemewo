@@ -8,7 +8,7 @@
     </div>
 
     <!-- Carte principale -->
-    <div v-else class="card border-0 mb-5 p-3">
+    <div v-else class="card border-0 mb-4 p-3">
         <div class="card-body">
             <!-- Message -->
             <transition name="alert-transition">
@@ -68,13 +68,8 @@
 
             <!-- Actions -->
             <div class="gap-3 mb-2  btn-group">
-                <button class="btn btn-outline-primary" @click="displayNewWord">
+               <button :disabled="game.loadingNewGame" class="btn btn-outline-secondary me-2" @click="game.revealSolution">
                     Passer
-                </button>
-
-                <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"
-                    class="btn btn-warning" @click="game.revealAnagramSolution">
-                    Solution
                 </button>
 
                 <button v-if="game.loadingNewGame" class="btn btn-outline-secondary" @click="game.cancelAutoNext">

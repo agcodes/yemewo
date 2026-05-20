@@ -53,12 +53,8 @@
 
                     <!-- Actions -->
                     <div class="mb-3 btn-group">
-                        <button class="btn btn-outline-primary me-2" @click="displayNewWord">
+                        <button :disabled="game.loadingNewGame" class="btn btn-outline-secondary me-2" @click="game.revealSolution">
                             Passer
-                        </button>
-                        <button v-if="game.wordFound === false && !game.isLoading && !game.loadingNewGame"
-                            class="btn btn-warning me-2" @click="game.revealSolution">
-                            Solution
                         </button>
                     </div>
                 </div>
@@ -111,8 +107,12 @@ onMounted(async () => {
     initIcons().then(() => {
         initGame();
     });
-
     return;
+})
+
+onBeforeUnmount(() => {
+    game.clearTimer();
+    cancelAnimationFrame(animationId)
 })
 
 async function initSvg() {
@@ -201,16 +201,6 @@ async function drawSVGSequentially(svgId: string): Promise<void> {
     }
 }
 
-const displayNewWord = () => {
-    game.cancelGame()
-}
-
-/* =========================================================
-   CLEANUP
-========================================================= */
-onBeforeUnmount(() => {
-    cancelAnimationFrame(animationId)
-})
 </script>
 
 <style scoped>

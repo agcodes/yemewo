@@ -23,6 +23,7 @@ export function useGameLogic(storageKey: string) {
   const loadingNewGame = ref<boolean>(false)
   const elapsedTime = ref<string>('00:00')
   const startTime = ref<number>(0)
+  const gameId = ref<string>('')
   const timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
 
   function init() {
@@ -38,6 +39,10 @@ export function useGameLogic(storageKey: string) {
     loadingError.value = false
     message.value = ''
     initRound();
+  }
+  
+  function setGameId(){
+    gameId.value=`${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`
   }
 
   function startTimer() {
@@ -147,6 +152,8 @@ export function useGameLogic(storageKey: string) {
 
   return {
     init,
+    setGameId,
+    gameId,
     isSubmitted,
     isLoading,
     loadingError,
