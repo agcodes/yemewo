@@ -12,6 +12,7 @@ export function useWordGameLogic(
   getWordFrom: () => Promise<Word>,
 ) {
   const {
+    isGood,
     gameId,
     setGameId,
     startTime,
@@ -29,6 +30,7 @@ export function useWordGameLogic(
     addRoundPts,
     loadingNewGame,
     roundPts,
+    totalPts,
     gameEnd,
     initRound,
     addRound,
@@ -36,7 +38,7 @@ export function useWordGameLogic(
     gameRounds,
     nbRoundGames,
     gamesPerRound,
-    incNbRoundGames
+    incNbRoundGames,
   } = useGameLogic(storageKey)
 
   const wordSource = ref<string>('word-api')
@@ -103,6 +105,7 @@ export function useWordGameLogic(
           initCallback(randomWord)
 
           wordFound.value = false
+          isGood.value = false
           loadingNewGame.value = false
           triggerFocusCallBack()
         })
@@ -158,6 +161,7 @@ export function useWordGameLogic(
     typeAlert.value = 'warning'
     userGuess.value = wordToGuess.value
     wordFound.value = true
+    isGood.value = false
     addToHistory(wordToGuess.value, false)
     timeOutNewWord()
   }
@@ -182,12 +186,14 @@ export function useWordGameLogic(
       message.value = 'Bravo ! Vous avez trouvé le mot. Nouveau mot dans 3 secondes...'
       typeAlert.value = 'success'
       wordFound.value = true
+      isGood.value = true
       addRoundPts(1)
       addToHistory(wordToGuess.value, true)
       incNbRoundGames()
       timeOutNewWord()
       return true
     } else if (wordFound.value === false) {
+      isGood.value = false
       typeAlert.value = 'info'
       if (inputTry >= 200) {
         message.value = `Vous avez dépassé les 200 tentatives. Encore un petit effort !`
@@ -224,6 +230,7 @@ export function useWordGameLogic(
   loadHistory(8)
 
   return {
+    isGood,
     startTime,
     updateElapsedTime,
     elapsedTime,
@@ -231,6 +238,7 @@ export function useWordGameLogic(
     initRound,
     addRound,
     roundPts,
+    totalPts,
     nbRounds,
     gameRounds,
     nbRoundGames,
@@ -263,6 +271,6 @@ export function useWordGameLogic(
     typeAlert,
     baseHue,
     historyItems,
-    gameEnd
+    gameEnd,
   }
 }

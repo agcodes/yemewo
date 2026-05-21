@@ -13,7 +13,8 @@
                             {{ game.message }}
                         </div>
                     </transition>
-                    <div class="d-flex justify-content-center gap-2 mb-3">
+                    <div class="d-flex justify-content-center gap-2 mb-3"
+                        :class="{ 'word-found-animation': game.wordFound && game.isGood }">
                         <div v-for="(letter, index) in game.wordToGuess" :key="index"
                             class="d-flex align-items-center text-black justify-content-center shadow-primary word-letter text-uppercase fs-4"
                             :style="{
@@ -34,7 +35,7 @@
                     </div>
 
                     <!-- input text -->
-                    <div class="d-flex justify-content-center mb-3">
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
                         <div class="hidden" style="max-width: 300px;">
                             <input ref="guessInput" v-model="game.userGuess" type="text"
                                 class="form-control form-control-sm rounded-0 text-uppercase shadow-primary"
@@ -42,20 +43,18 @@
                                 :disabled="game.isLoading" @input="game.checkGuessOnInput"
                                 @keyup.enter="game.checkGuessOnInput" />
                         </div>
+                        <button :disabled="game.loadingNewGame" class="btn btn-outline-secondary"
+                            @click="game.revealSolution">
+                            Passer
+                        </button>
                     </div>
 
+                    <!-- drawing -->
                     <div id="container" class="card mb-3"></div>
 
                     <!-- hint -->
                     <div class="alert alert-light mb-3">
                         {{ game.hintGuess }}
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="mb-3 btn-group">
-                        <button :disabled="game.loadingNewGame" class="btn btn-outline-secondary me-2" @click="game.revealSolution">
-                            Passer
-                        </button>
                     </div>
                 </div>
             </div>
@@ -204,10 +203,31 @@ async function drawSVGSequentially(svgId: string): Promise<void> {
 </script>
 
 <style scoped>
-
 /* Masquer le SVG et tous ses éléments initialement */
 #container svg,
 #container svg * {
     visibility: hidden;
+}
+
+.word-found-animation {
+    animation: word-found-pulse 0.9s ease;
+    transform-origin: center;
+}
+
+@keyframes word-found-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 transparent;
+    }
+
+    50% {
+        transform: scale(1.03);
+        box-shadow: 0 0 0 12px rgba(76, 175, 80, 0.25);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 transparent;
+    }
 }
 </style>

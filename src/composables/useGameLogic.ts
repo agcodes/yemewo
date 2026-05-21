@@ -38,11 +38,11 @@ export function useGameLogic(storageKey: string) {
     isLoading.value = false
     loadingError.value = false
     message.value = ''
-    initRound();
+    initRound()
   }
-  
-  function setGameId(){
-    gameId.value=`${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`
+
+  function setGameId() {
+    gameId.value = `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`
   }
 
   function startTimer() {
@@ -76,6 +76,7 @@ export function useGameLogic(storageKey: string) {
 
   function addRoundPts(points: number) {
     roundPts.value += points
+    totalPts.value += points
   }
 
   function getLevel() {
@@ -106,7 +107,6 @@ export function useGameLogic(storageKey: string) {
 
   function initRound() {
     gameEnd.value = false
-    totalPts.value += roundPts.value
 
     // add previous round to history
     addRound()

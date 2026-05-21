@@ -18,7 +18,7 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
   }
 
   const initIcons = async (): Promise<void> => {
-     gameEnd.value = false
+    gameEnd.value = false
     return new Promise((resolve, reject) => {
       loadIcons()
         .then((icons) => {
@@ -34,21 +34,24 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
 
   const getWord = async (): Promise<Word> => {
     return new Promise((resolve, reject) => {
-      if (mdiIcons.value.length == 0){
-        reject("no words");
+      if (mdiIcons.value.length == 0) {
+        reject('no words')
         gameEnd.value = true
         message.value = `Fin du jeu !`
         typeAlert.value = 'info'
       }
+
       const word: Word = getRandomKeyword(mdiIcons.value)
       // Remove the icon if its value matches word.value
-      mdiIcons.value = mdiIcons.value.filter((icon) => icon.value !== word.value);
-      loadSvg(word.value).then((svgTxt: string) => {
-        svgString.value = svgTxt
-        resolve(word)
-      }).catch((error)  => {
-        reject(error)
-      })
+      mdiIcons.value = mdiIcons.value.filter((icon) => icon.value !== word.value)
+      loadSvg(word.value)
+        .then((svgTxt: string) => {
+          svgString.value = svgTxt
+          resolve(word)
+        })
+        .catch((error) => {
+          reject(error)
+        })
     })
   }
 
@@ -64,6 +67,8 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     initRound,
     addRound,
     roundPts,
+    totalPts,
+    isGood,
     nbRounds,
     gameRounds,
     nbRoundGames,
@@ -95,7 +100,7 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     typeAlert,
     baseHue,
     historyItems,
-    gameEnd
+    gameEnd,
   } = useWordGameLogic(initCallback, 'guessDrawingGamehistoryItems', getWord)
 
   return {
@@ -106,6 +111,8 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     initRound,
     addRound,
     roundPts,
+    totalPts,
+    isGood,
     nbRounds,
     gameRounds,
     nbRoundGames,
@@ -138,6 +145,6 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     initIcons,
     loadSvg,
     svgString,
-    gameEnd
+    gameEnd,
   }
 })

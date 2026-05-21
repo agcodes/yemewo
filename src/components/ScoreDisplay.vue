@@ -6,17 +6,17 @@
     </h6>
 
     <div class="text-center p-3">
-      <div class="fs-2 fw-black mb-2">
+      <div class="fs-2 fw-black mb-3">
         {{ game.roundPts }} / {{ game.nbRoundGames }}
       </div>
-      <div class="text-muted mb-2">
+      <div class="text-muted mb-3">
         Temps : {{ game.elapsedTime }}
       </div>
-      <div class="text-muted mb-4">
+      <div class="text-muted mb-3">
         Round {{ game.nbRounds }}
       </div>
 
-      <TransitionGroup name="round" tag="div" class="gap-2 d-flex justify-content-center">
+      <TransitionGroup name="round" tag="div" class="gap-2 mb-3 d-flex justify-content-center">
         <span v-for="(round, index) in game.gameRounds" :key="round.index">
           <i v-if="round.level === 1" title="bronze" class="fs180 bi bi-trophy-fill level-bronze"></i>
           <i v-else-if="round.level === 2" title="argent" class="fs180 bi bi-trophy-fill level-silver"></i>
@@ -24,6 +24,10 @@
           <i v-else class="fs180 bi bi-trophy-fill text-muted"></i>
         </span>
       </TransitionGroup>
+
+      <div class="text-muted mb-3">
+        Total points : {{ game.totalPts }}
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +41,7 @@ interface Game {
   nbRoundGames: number
   elapsedTime: string
   nbRounds: number
+  totalPts: number,
   gameRounds: GameRound[]
 }
 

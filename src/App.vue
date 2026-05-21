@@ -6,13 +6,17 @@
           <div class="p-2">
             <div class="stylish-border-bottom mb-4">
               <div class="row main-outline">
-                <div class="fs190 italic main-outline d-flex justify-content-between align-items-center">
-                  <router-link class="secondary-color mb-0" title="home" to="/">
+                <div class="italic main-outline d-flex justify align-items-center">
+                  <router-link class="secondary-color mb-0 me-4" title="home" to="/">
                     <img src="@/assets/yemewo.png" alt="Yemewo" width="200" />
-                  </router-link><button class="menu-button">
+                  </router-link>
+                  <button class="me-5 menu-button">
                     <router-link :to="{ name: 'home' }"><i class="secondary-color bi bi-house"></i></router-link>
                   </button>
-                  <ThemeToggleButton />
+                  <div class="me-5">
+                    <ThemeToggleButton />
+                  </div>
+
                 </div>
               </div>
             </div>
