@@ -221,8 +221,8 @@ async function drawSVGSequentially(svgId: string): Promise<void> {
     }
 
     50% {
-        transform: scale(1.03);
-        box-shadow: 0 0 0 12px rgba(76, 175, 80, 0.25);
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0.25);
     }
 
     100% {

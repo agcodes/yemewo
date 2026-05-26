@@ -12,6 +12,7 @@ export function useGameLogic(storageKey: string) {
   const gamesPerRound = ref<number>(10)
   const nbRoundGames = ref<number>(0)
   const nbRounds = ref<number>(0)
+  const nbGames  = ref<number>(0)
   const historyLimit = ref<number>(5)
   const loadingError = ref(false)
   const isSubmitted = ref(false)
@@ -77,6 +78,7 @@ export function useGameLogic(storageKey: string) {
   function addRoundPts(points: number) {
     roundPts.value += points
     totalPts.value += points
+    nbGames.value += 1
   }
 
   function getLevel() {
@@ -163,6 +165,7 @@ export function useGameLogic(storageKey: string) {
     gameEnd,
     totalPts,
     nbRounds,
+    nbGames,
     nbRoundGames,
     gameRounds,
     loadingNewGame,

@@ -9,6 +9,12 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
   const svgString = ref<string>('')
 
   const initCallback = () => {
+    nbRoundGames.value = 5;
+    roundPts.value = 5;
+    addRound();
+    nbRoundGames.value = 5;
+    roundPts.value = 5;
+    addRound();
     if (nbRoundGames.value >= gamesPerRound.value) {
       initRound()
       message.value = `Début d'un nouveau round !`
@@ -70,6 +76,7 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     totalPts,
     isGood,
     nbRounds,
+    nbGames,
     gameRounds,
     nbRoundGames,
     gamesPerRound,
@@ -114,6 +121,7 @@ export const useGuessDrawingGameStore = defineStore('guessDrawingGame', () => {
     totalPts,
     isGood,
     nbRounds,
+    nbGames,
     gameRounds,
     nbRoundGames,
     gamesPerRound,
