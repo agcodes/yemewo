@@ -149,6 +149,7 @@ export const useAnagramGameStore = defineStore('anagramGame', () => {
     getWordToGuessLetter,
     areLettersMatching,
     checkAnagramGuessOnInput,
+    revealSolution,
     typeAlert,
     baseHue,
     historyItems,

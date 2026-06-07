@@ -36,7 +36,7 @@ describe('wikiService', () => {
               articles: mockArticles
             }
           ]
-        }
+        } as { items: [{ articles: Article[] }] }
       })
 
       const yesterday = new Date()
@@ -45,15 +45,17 @@ describe('wikiService', () => {
       const result = await fetchTopWikipediaArticles(dateStr, 3, 100)
       
       expect(result).toHaveLength(2)
-      expect(result[0].article).toBe('Test Article')
-      expect(result[1].article).toBe('Short')
+      if (result.length >= 2) {
+        expect(result[0]?.article).toBe('Test Article')
+        expect(result[1]?.article).toBe('Short')
+      }
     })
 
     it('should sort articles by views in descending order', async () => {
-      const mockArticles = [
-        { article: 'Low Views', views: 10, originalTitle: 'Low Views' },
-        { article: 'Medium Views', views: 50, originalTitle: 'Medium Views' },
-        { article: 'High Views', views: 100, originalTitle: 'High Views' }
+      const mockArticles: Article[] = [
+        { article: 'Low Views', views: 10, originalTitle: 'Low Views', title: 'Low Views' },
+        { article: 'Medium Views', views: 50, originalTitle: 'Medium Views', title: 'Medium Views' },
+        { article: 'High Views', views: 100, originalTitle: 'High Views', title: 'High Views' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -63,23 +65,24 @@ describe('wikiService', () => {
               articles: mockArticles
             }
           ]
-        }
+        } as { items: [{ articles: Article[] }] }
       })
 
       const result = await fetchTopWikipediaArticles('20240601', 3, 100)
       expect(result).toHaveLength(3)
       const [first, second, third] = result
-      expect(first!.article).toBe('High Views')
-      expect(second!.article).toBe('Medium Views')
-      expect(third!.article).toBe('Low Views')
+      expect(first?.article).toBe('High Views')
+      expect(second?.article).toBe('Medium Views')
+      expect(third?.article).toBe('Low Views')
       
     })
 
     it('should limit results to nb parameter', async () => {
-      const mockArticles = Array.from({ length: 20 }, (_, i) => ({
+      const mockArticles: Article[] = Array.from({ length: 20 }, (_, i) => ({
         article: `Article ${i}`,
         views: 100 - i,
-        originalTitle: `Article ${i}`
+        originalTitle: `Article ${i}`,
+        title: `Article ${i}`
       }))
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -89,7 +92,7 @@ describe('wikiService', () => {
               articles: mockArticles
             }
           ]
-        }
+        } as { items: [{ articles: Article[] }] }
       })
 
       const result = await fetchTopWikipediaArticles('20240601', 5, 100)
@@ -98,8 +101,8 @@ describe('wikiService', () => {
     })
 
     it('should return fewer articles if not enough available', async () => {
-      const mockArticles = [
-        { article: 'Only One', views: 100, originalTitle: 'Only One' }
+      const mockArticles: Article[] = [
+        { article: 'Only One', views: 100, originalTitle: 'Only One', title: 'Only One' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -109,7 +112,7 @@ describe('wikiService', () => {
               articles: mockArticles
             }
           ]
-        }
+        } as { items: [{ articles: Article[] }] }
       })
 
       const result = await fetchTopWikipediaArticles('20240601', 10, 100)
@@ -126,8 +129,8 @@ describe('wikiService', () => {
 
   describe('getRandomArticle', () => {
     it('should return a random article with content', async () => {
-      const mockArticles = [
-        { article: 'Test Article', views: 100, originalTitle: 'Test Article' }
+      const mockArticles: Article[] = [
+        { article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -137,7 +140,7 @@ describe('wikiService', () => {
               articles: mockArticles
             }
           ]
-        }
+        } as { items: [{ articles: Article[] }] }
       })
 
       vi.spyOn(global, 'fetch').mockResolvedValue(
@@ -168,14 +171,16 @@ describe('wikiService', () => {
     })
 
     it('should return null when no articles available', async () => {
+      const mockArticles: Article[] = []
+
       vi.spyOn(axios, 'get').mockResolvedValue({
         data: {
           items: [
             {
-              articles: []
+              articles: mockArticles
             }
           ]
-        }
+        } as { items: [{ articles: Article[] }] }
       })
 
       const result = await getRandomArticle('20240601')
@@ -184,8 +189,8 @@ describe('wikiService', () => {
     })
 
     it('should handle fetch error for article content', async () => {
-      const mockArticles = [
-        { article: 'Test Article', views: 100, originalTitle: 'Test Article' }
+      const mockArticles: Article[] = [
+        { article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -195,7 +200,7 @@ describe('wikiService', () => {
               articles: mockArticles
             }
           ]
-        }
+        } as { items: [{ articles: Article[] }] }
       })
 
       vi.spyOn(global, 'fetch').mockRejectedValue(new Error('Fetch error'))
