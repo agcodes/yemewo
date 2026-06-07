@@ -219,16 +219,22 @@ export const shuffleStringsArray = <T>(array: T[]): T[] => {
 }
 
 export const maskTitleWordsInContent = (content: string, title: string): string => {
+  if (!title || title.trim() === '') {
+    return content
+  }
+
   title = title.replace(/!/g, '')
 
   let maskedContent = content.replace(/!/g, '.').replace(new RegExp(title, 'g'), '[?]')
 
-  title = title.replace(/[.,/#!$%^&*;:{}=_`~()]/g, '')
+  title = title.replace(/[.,/#!$%^&*;:{}=\`~()]/g, '')
   const words = title.split(' ')
 
   words.forEach((word) => {
-    const regex = new RegExp(word, 'gi')
-    maskedContent = maskedContent.replace(regex, '[?]')
+    if (word) {
+      const regex = new RegExp(word, 'gi')
+      maskedContent = maskedContent.replace(regex, '[?]')
+    }
   })
   return maskedContent
 }

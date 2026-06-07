@@ -1,0 +1,42 @@
+name: Build, Test & Deploy to OVH
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout le code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Configurer Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Installer les dependances
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Build
+      - name: Build
+        run: npm run build
+
+      # 5. Tests
+      - name: Tests
+        run: npm run test
+
+      # 6. Deploiement sur OVH (FTP)
+      - name: Deploy to OVH via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ftp://enrevant@ftp.cluster115.hosting.ovh.net
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /yemewo-cd/

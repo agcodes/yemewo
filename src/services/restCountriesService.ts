@@ -35,13 +35,8 @@ class RestCountriesService {
               const country = new Country(result)
               countries.push(country)
             }
-
-            if (countries && countries.length > 0) {
-              resolve(countries)
-              return
-            }
           }
-          reject("Erreur de chargement des pays")
+          resolve(countries)
         });
       })
       .catch((error) => {
