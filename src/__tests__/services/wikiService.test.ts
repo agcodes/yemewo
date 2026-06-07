@@ -22,11 +22,11 @@ describe('wikiService', () => {
   })
   describe('fetchTopWikipediaArticles', () => {
     it('should fetch and filter articles successfully', async () => {
-      const mockArticles = [
-        { article: 'Test Article', views: 100, originalTitle: 'Test Article' },
-        { article: 'Short', views: 50, originalTitle: 'Short' },
-        { article: 'Article:With:Colons', views: 75, originalTitle: 'Article:With:Colons' },
-        { article: 'Décès de quelqu\'un', views: 200, originalTitle: 'Décès de quelqu\'un' }
+      const mockArticles: Article[] = [
+        { article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' },
+        { article: 'Short', views: 50, originalTitle: 'Short', title: 'Short' },
+        { article: 'Article:With:Colons', views: 75, originalTitle: 'Article:With:Colons', title: 'Article:With:Colons' },
+        { article: 'Décès de quelqu\'un', views: 200, originalTitle: 'Décès de quelqu\'un', title: 'Décès de quelqu\'un' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -41,7 +41,7 @@ describe('wikiService', () => {
 
       const yesterday = new Date()
       yesterday.setDate(yesterday.getDate() - 1)
-      const dateStr = yesterday.toISOString().split('T')[0].replace(/-/g, '')
+      const dateStr = yesterday.toISOString().split('T')[0]!.replace(/-/g, '')
       const result = await fetchTopWikipediaArticles(dateStr, 3, 100)
       
       expect(result).toHaveLength(2)
@@ -67,10 +67,12 @@ describe('wikiService', () => {
       })
 
       const result = await fetchTopWikipediaArticles('20240601', 3, 100)
+      expect(result).toHaveLength(3)
+      const [first, second, third] = result
+      expect(first!.article).toBe('High Views')
+      expect(second!.article).toBe('Medium Views')
+      expect(third!.article).toBe('Low Views')
       
-      expect(result[0].article).toBe('High Views')
-      expect(result[1].article).toBe('Medium Views')
-      expect(result[2].article).toBe('Low Views')
     })
 
     it('should limit results to nb parameter', async () => {
@@ -138,28 +140,31 @@ describe('wikiService', () => {
         }
       })
 
-      vi.spyOn(global, 'fetch').mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({
-          query: {
-            pages: {
-              '123': {
-                pageid: '123',
-                ns: 0,
-                title: 'Test Article',
-                extract: 'This is test content'
+      vi.spyOn(global, 'fetch').mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            query: {
+              pages: {
+                '123': {
+                  pageid: '123',
+                  ns: 0,
+                  title: 'Test Article',
+                  extract: 'This is test content'
+                }
               }
             }
-          }
-        })
-      })
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      )
 
       const result = await getRandomArticle('20240601')
       
       expect(result).not.toBeNull()
-      expect(result?.article).toBe('Test Article')
-      expect(result?.content).toBe('This is test content')
-      expect(result?.title).toBe('Test Article')
+      const article = result!
+      expect(article.article).toBe('Test Article')
+      expect(article.content!).toBe('This is test content')
+      expect(article.title).toBe('Test Article')
     })
 
     it('should return null when no articles available', async () => {
@@ -203,53 +208,60 @@ describe('wikiService', () => {
     it('should return article with sanitized content and title', async () => {
       const article: Article = {
         article: 'Test',
+        title:'Test',
         views: 100,
         originalTitle: 'Test'
       }
 
-      vi.spyOn(global, 'fetch').mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({
-          query: {
-            pages: {
-              '123': {
-                pageid: '123',
-                ns: 0,
-                title: '<script>alert("xss")</script>Test',
-                extract: '<p>Content with tag</p>'
+      vi.spyOn(global, 'fetch').mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            query: {
+              pages: {
+                '123': {
+                  pageid: '123',
+                  ns: 0,
+                  title: '<script>alert("xss")</script>Test',
+                  extract: '<p>Content with tag</p>'
+                }
               }
             }
-          }
-        })
-      })
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      )
 
       const result = await getArticle(article)
       
       expect(result).not.toBeNull()
-      expect(result?.title).toBe('Test') // Script tags and their content are removed by DOMPurify
-      expect(result?.content).toBe('<p>Content with tag</p>')
+      const articleResult = result!
+      expect(articleResult.title).toBe('Test')
+      expect(articleResult.content!).toBe('<p>Content with tag</p>')
     })
 
     it('should return null when article not found', async () => {
       const article: Article = {
         article: 'Nonexistent',
+        title:'Nonexistent',
         views: 100,
         originalTitle: 'Nonexistent'
       }
 
-      vi.spyOn(global, 'fetch').mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({
-          query: {
-            pages: {
-              '-1': {
-                pageid: '-1',
-                ns: 0
+      vi.spyOn(global, 'fetch').mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            query: {
+              pages: {
+                '-1': {
+                  pageid: '-1',
+                  ns: 0
+                }
               }
             }
-          }
-        })
-      })
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      )
 
       const result = await getArticle(article)
       
@@ -259,6 +271,7 @@ describe('wikiService', () => {
     it('should reject on fetch error', async () => {
       const article: Article = {
         article: 'Test',
+        title:  'Test',
         views: 100,
         originalTitle: 'Test'
       }

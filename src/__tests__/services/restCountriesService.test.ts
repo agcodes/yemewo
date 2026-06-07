@@ -67,8 +67,9 @@ describe('RestCountriesService', () => {
 
       const countries = await service.getCountries()
       expect(countries).toHaveLength(2)
-      expect(countries[0].name).toBe('France')
-      expect(countries[1].name).toBe('Germany')
+      const countryList = countries as Country[]
+      expect(countryList[0].name).toBe('France')
+      expect(countryList[1].name).toBe('Germany')
       expect(global.fetch).toHaveBeenCalledWith(mockBaseUrl)
     })
 
