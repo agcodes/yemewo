@@ -66,3 +66,7 @@ sauvegarde local des scores
 mieux gérer loading wikipedia - ok transition
 
 favicon
+
+
+
+ ### docker compose --profile dev up

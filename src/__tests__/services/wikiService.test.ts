@@ -23,10 +23,10 @@ describe('wikiService', () => {
   describe('fetchTopWikipediaArticles', () => {
     it('should fetch and filter articles successfully', async () => {
       const mockArticles: Article[] = [
-        { article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' },
-        { article: 'Short', views: 50, originalTitle: 'Short', title: 'Short' },
-        { article: 'Article:With:Colons', views: 75, originalTitle: 'Article:With:Colons', title: 'Article:With:Colons' },
-        { article: 'Décès de quelqu\'un', views: 200, originalTitle: 'Décès de quelqu\'un', title: 'Décès de quelqu\'un' }
+        { article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article', good:false },
+        { article: 'Short', views: 50, originalTitle: 'Short', title: 'Short', good:false },
+        { article: 'Article:With:Colons', views: 75, originalTitle: 'Article:With:Colons', title: 'Article:With:Colons', good:false },
+        { article: 'Décès de quelqu\'un', views: 200, originalTitle: 'Décès de quelqu\'un', title: 'Décès de quelqu\'un', good:false }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -53,9 +53,9 @@ describe('wikiService', () => {
 
     it('should sort articles by views in descending order', async () => {
       const mockArticles: Article[] = [
-        { article: 'Low Views', views: 10, originalTitle: 'Low Views', title: 'Low Views' },
-        { article: 'Medium Views', views: 50, originalTitle: 'Medium Views', title: 'Medium Views' },
-        { article: 'High Views', views: 100, originalTitle: 'High Views', title: 'High Views' }
+        { article: 'Low Views', views: 10, originalTitle: 'Low Views', title: 'Low Views', good:false },
+        { article: 'Medium Views', views: 50, originalTitle: 'Medium Views', title: 'Medium Views', good:false },
+        { article: 'High Views', views: 100, originalTitle: 'High Views', title: 'High Views', good:false }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -80,7 +80,8 @@ describe('wikiService', () => {
     it('should limit results to nb parameter', async () => {
       const mockArticles: Article[] = Array.from({ length: 20 }, (_, i) => ({
         article: `Article ${i}`,
-        views: 100 - i,
+        views: 100 - i, 
+        good:false,
         originalTitle: `Article ${i}`,
         title: `Article ${i}`
       }))
@@ -102,7 +103,7 @@ describe('wikiService', () => {
 
     it('should return fewer articles if not enough available', async () => {
       const mockArticles: Article[] = [
-        { article: 'Only One', views: 100, originalTitle: 'Only One', title: 'Only One' }
+        { good:false, article: 'Only One', views: 100, originalTitle: 'Only One', title: 'Only One' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -130,7 +131,7 @@ describe('wikiService', () => {
   describe('getRandomArticle', () => {
     it('should return a random article with content', async () => {
       const mockArticles: Article[] = [
-        { article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' }
+        { good:false, article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -190,7 +191,7 @@ describe('wikiService', () => {
 
     it('should handle fetch error for article content', async () => {
       const mockArticles: Article[] = [
-        { article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' }
+        { good:false, article: 'Test Article', views: 100, originalTitle: 'Test Article', title: 'Test Article' }
       ]
 
       vi.spyOn(axios, 'get').mockResolvedValue({
@@ -212,6 +213,7 @@ describe('wikiService', () => {
   describe('getArticle', () => {
     it('should return article with sanitized content and title', async () => {
       const article: Article = {
+        good:false,
         article: 'Test',
         title:'Test',
         views: 100,
@@ -246,6 +248,7 @@ describe('wikiService', () => {
 
     it('should return null when article not found', async () => {
       const article: Article = {
+        good:false,
         article: 'Nonexistent',
         title:'Nonexistent',
         views: 100,
@@ -275,6 +278,7 @@ describe('wikiService', () => {
 
     it('should reject on fetch error', async () => {
       const article: Article = {
+        good:false,
         article: 'Test',
         title:  'Test',
         views: 100,
