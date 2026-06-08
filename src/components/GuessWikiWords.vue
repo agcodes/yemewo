@@ -11,12 +11,11 @@
         </div>
       </div>
 
-      <div v-if="game.isLoading" class="card border-0 mb-5 p-3">
-        Chargement
-      </div>
-
-      <div class="mb-4" v-if="game.randomArticle">
-        <div v-if="!game.isLoading">
+      <transition name="fade" mode="out-in">
+        <div v-if="game.isLoading" key="loading" class="card border-0 mb-5 p-5">
+          Chargement
+        </div>
+        <div v-else-if="game.randomArticle" key="content" class="mb-4">
           <div v-if="game.words" class="mb-4 d-flex flex-wrap">
             <div class="card border-0 mb-4 p-4">
               <div class="card-title text-center mt-2 fs130 mb-3">
@@ -36,6 +35,11 @@
                 </div>
 
                 <div v-if="!game.isLoading" class="mb-4">
+                 <transition name="alert-transition" mode="out-in">
+                  <div v-if="game.message" :key="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
+                    {{ game.message }}
+                  </div>
+                </transition>
                   <div class="btn-group d-flex flex-wrap">
                     <button v-for="(article, index) in game.selectedArticles" :key="index"
                       class="btn btn btn-outline-info m-2 btn-expressive" @click="game.submit(article)">
@@ -43,21 +47,14 @@
                     </button>
                   </div>
                 </div>
-
-                <transition name="alert-transition" mode="out-in">
-                  <div v-if="game.message" :key="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
-                    {{ game.message }}
-                  </div>
-                </transition>
-
                 <div class="mb-2">
                   <button class="btn btn-outline-primary me-2" @click="loadQuiz">Passer</button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
       </div>
+      </transition>
     </div>
     <div class="col-12 col-md-3">
       <!-- Score -->
@@ -123,5 +120,14 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

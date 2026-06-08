@@ -63,8 +63,8 @@ trophées : speed si x secondes
 
 sauvegarde local des scores
 
-mieux gérer loading pendu
+mieux gérer loading wikipedia
 
 favicon
 
-bug 32
+encadré timer

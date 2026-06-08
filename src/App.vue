@@ -4,19 +4,18 @@
       <div class="row main-outline">
         <div class="col-md-12 col-12">
           <div class="p-2">
-            <div class="stylish-border-bottom mb-4">
+            <div class="stylish-border-bottom mb-4 pb-2 pt-2">
               <div class="row main-outline">
-                <div class="italic main-outline d-flex justify align-items-center">
-                  <router-link class="secondary-color mb-0 me-4" title="home" to="/">
-                    <img src="@/assets/yemewo.png" alt="Yemewo" width="200" />
-                  </router-link>
-                  <button class="me-5 menu-button">
-                    <router-link :to="{ name: 'home' }"><i class="secondary-color bi bi-house"></i></router-link>
-                  </button>
-                  <div class="me-5">
-                    <ThemeToggleButton />
+                <div class=" main-outline d-flex justify-content-between ">
+                  <div class="d-flex align-middle">
+                    <router-link class=" font-titilliumWeb-regular secondary-color fs-3 me-4 " title="Yemewo Home" to="/">
+                      yemewo
+                    </router-link>
+                    <button class="me-4 menu-button secondary-color">
+                      <router-link :to="{ name: 'home' }"><i class="bi bi-house"></i></router-link>
+                    </button>
                   </div>
-
+                  <ThemeToggleButton />
                 </div>
               </div>
             </div>

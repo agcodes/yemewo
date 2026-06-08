@@ -1,33 +1,70 @@
 <template>
-  <div>
-    <p class="mb-6 mt-6 fs130">A vous de jouer</p>
-    <ul class="list-group expressive-menu fs120">
-      <li class="expressive-menu-item mb-1">
-        <router-link :to="{ name: 'guess-word-letters' }"><i
-            class="expressive-menu-item-bi bi bi-alphabet-uppercase"></i> Jeu du
-          pendu</router-link>
-      </li>
-      <li class="expressive-menu-item mb-1">
-        <router-link :to="{ name: 'anagram' }"><i class="expressive-menu-item-bi bi bi-shuffle"></i> Trouver
-          l'anagramme</router-link>
-      </li>
-      <li class="expressive-menu-item mb-1">
-        <router-link :to="{ name: 'guess-word' }"><i class="expressive-menu-item-bi bi bi-question-lg"></i> Deviner le
-          mot</router-link>
-      </li>
-      <li class="expressive-menu-item mb-1">
-        <router-link :to="{ name: 'flags-quiz' }"><i class="expressive-menu-item-bi bi bi-flag mr-5"></i> Trouver le
-          drapeau</router-link>
-      </li>
-      <li class="expressive-menu-item mb-1">
-        <router-link :to="{ name: 'guess-wiki-words' }"><i class="expressive-menu-item-bi bi bi-wikipedia mr-5"></i>
-          Deviner l'article Wikipédia</router-link>
-      </li>
-
-      <li class="expressive-menu-item mb-1">
-        <router-link :to="{ name: 'guess-drawing' }"><i class="expressive-menu-item-bi bi bi-pencil mr-5"></i>
-          Deviner le dessin (anglais)</router-link>
-      </li>
-    </ul>
+  <div class="container mt-4 p-2">
+    <h2 class="mb-4 fs140">À vous de jouer</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-5">
+      <div class="col expressive-menu-item">
+        <router-link :to="{ name: 'guess-word-letters' }" class="text-decoration-none">
+          <div class="card bg-transparent border-0 h-100 ">
+            <div class="text-center p-5">
+              <i class="bi bi-alphabet-uppercase fs-1 text-primary"></i>
+              <h5 class="card-title mt-3 mb-0">Jeu du pendu</h5>
+            </div>
+          </div>
+        </router-link>
+      </div>
+     <div class="col expressive-menu-item">
+        <router-link :to="{ name: 'anagram' }" class="text-decoration-none">
+          <div class="card bg-transparent border-0 h-100 ">
+            <div class="text-center p-5">
+              <i class="bi bi-shuffle fs-1 text-primary"></i>
+              <h5 class="card-title mt-3 mb-0">Trouver l'anagramme</h5>
+            </div>
+          </div>
+        </router-link>
+      </div>
+     <div class="col expressive-menu-item">
+        <router-link :to="{ name: 'guess-word' }" class="text-decoration-none">
+          <div class="card bg-transparent border-0 h-100 ">
+            <div class="text-center p-5">
+              <i class="bi bi-question-lg fs-1 text-primary"></i>
+              <h5 class="card-title mt-3 mb-0">Deviner le mot</h5>
+            </div>
+          </div>
+        </router-link>
+      </div>
+     <div class="col expressive-menu-item">
+        <router-link :to="{ name: 'flags-quiz' }" class="text-decoration-none">
+         <div class="card bg-transparent border-0 h-100 ">
+            <div class="text-center p-5">
+              <i class="bi bi-flag fs-1 text-primary"></i>
+              <h5 class="card-title mt-3 mb-0">Trouver le drapeau</h5>
+            </div>
+          </div>
+        </router-link>
+      </div>
+      <div class="col expressive-menu-item">
+        <router-link :to="{ name: 'guess-wiki-words' }" class="text-decoration-none">
+          <div class="card bg-transparent border-0 h-100 ">
+            <div class="text-center p-5">
+              <i class="bi bi-wikipedia fs-1 text-primary"></i>
+              <h5 class="card-title mt-3 mb-0">Deviner l'article Wikipédia</h5>
+            </div>
+          </div>
+        </router-link>
+      </div>
+    <div class="col expressive-menu-item">
+        <router-link :to="{ name: 'guess-drawing' }" class="text-decoration-none">
+          <div class="card bg-transparent border-0 h-100 ">
+           <div class="text-center p-5">
+              <i class="bi bi-pencil fs-1 text-primary"></i>
+              <h5 class="card-title mt-3 mb-0">Deviner le dessin en anglais</h5>
+            </div>
+          </div>
+        </router-link>
+      </div>
+    </div>
+    <div>
+    </div>
   </div>
+
 </template>
