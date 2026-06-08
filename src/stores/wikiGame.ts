@@ -4,16 +4,19 @@ import type { Article } from '@/services/wikiService'
 
 export const useWikiGameStore = defineStore('wikiGame', () => {
   function submit(article: Article) {
+    isSubmitted.value = true;
     if (randomArticle.value) {
       incNbRoundGames()
       if (randomArticle.value.article === article.article) {
         message.value = `Correct ! ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
         typeAlert.value = 'success'
+        isGood.value = true;
         addToHistory(randomArticle.value.title, true)
         addRoundPts(1)
       } else {
         message.value = `Incorrect ! Solution : ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
         typeAlert.value = 'warning'
+        isGood.value = false;
         addToHistory(randomArticle.value.title, false)
       }
       timeOutNewWord()

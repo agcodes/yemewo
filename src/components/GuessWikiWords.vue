@@ -39,10 +39,18 @@
                   <div v-if="game.message" :key="game.message" class="alert mb-4" :class="`alert-${game.typeAlert}`">
                     {{ game.message }}
                   </div>
+
                 </transition>
+
+
                   <div class="btn-group d-flex flex-wrap">
                     <button v-for="(article, index) in game.selectedArticles" :key="index"
+                       :class="{
+                        good: game.isSubmitted && game.isGood && article.good,
+                        bad: game.isSubmitted && !game.isGood && article.good
+                      }"
                       class="btn btn btn-outline-info m-2 btn-expressive" @click="game.submit(article)">
+                      
                       {{ article.title }}
                     </button>
                   </div>
@@ -88,20 +96,17 @@ onBeforeUnmount(() => {
 
 async function loadQuiz() {
   try {
-    game.loadGuess();
-    game.clearTimer();
-    game.updateElapsedTime();
-   
-    game.isLoading = false
+    game.loadGuess()
+    game.clearTimer()
+    game.updateElapsedTime()
   } catch (error) {
-    game.isLoading = false
+    
   }
 }
 
 function initRound() {
   game.initRound()
-  game.isLoading = true
-  game.clearTimer();
+  game.clearTimer()
 }
 
 onMounted(() => {
@@ -129,5 +134,14 @@ onMounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.good {
+  border: 1px solid green;
+  font-style: italic;
+}
+.bad {
+  border: 1px solid orange;
+  font-style: italic;
 }
 </style>

@@ -63,8 +63,6 @@ trophées : speed si x secondes
 
 sauvegarde local des scores
 
-mieux gérer loading wikipedia
+mieux gérer loading wikipedia - ok transition
 
 favicon
-
-encadré timer

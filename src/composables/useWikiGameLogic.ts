@@ -38,6 +38,8 @@ export function useWikiGameLogic(storageKey: string) {
   const loadGuess = async () => {
     loadingError.value = false
     isLoading.value = true
+    isSubmitted.value = false;
+    isGood.value = false;
     
     if (nbRoundGames.value >= gamesPerRound.value) {
       initRound()
@@ -115,7 +117,8 @@ export function useWikiGameLogic(storageKey: string) {
               article.scrambledContent = scrambleArticleContent(article.content)
 
               randomArticle.value = article
-
+              randomArticle.value.good = true;
+              
               // remove article
               articles.value.splice(randomIndex, 1)
               article.originalTitle = article.title
