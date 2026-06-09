@@ -6,17 +6,24 @@
           <div class="p-2">
             <div class="stylish-border-bottom mb-4 pb-2 pt-2">
               <div class="row main-outline">
-                <div class=" main-outline d-flex justify-content-between ">
-                  <div class="d-flex align-middle">
-                    <router-link class=" font-titilliumWeb-regular secondary-color fs-3 me-4 " title="Yemewo Home"
-                      to="/">
+                <div class="main-outline d-flex justify-content-between align-items-baseline">
+
+                  <div class="d-flex align-items-baseline">
+
+                    <router-link class="font-titilliumWeb-regular secondary-color fs-3 me-4" title="Yemewo Home" to="/">
                       yemewo
                     </router-link>
+
                     <button class="me-4 menu-button">
-                      <router-link :to="{ name: 'home' }"><i class="bi bi-house  secondary-color"></i></router-link>
+                      <router-link :to="{ name: 'home' }">
+                        <i class="bi bi-house secondary-color"></i>
+                      </router-link>
                     </button>
+
                   </div>
+
                   <ThemeToggleButton />
+
                 </div>
               </div>
             </div>
