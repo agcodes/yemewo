@@ -8,11 +8,12 @@
               <div class="row main-outline">
                 <div class=" main-outline d-flex justify-content-between ">
                   <div class="d-flex align-middle">
-                    <router-link class=" font-titilliumWeb-regular secondary-color fs-3 me-4 " title="Yemewo Home" to="/">
+                    <router-link class=" font-titilliumWeb-regular secondary-color fs-3 me-4 " title="Yemewo Home"
+                      to="/">
                       yemewo
                     </router-link>
-                    <button class="me-4 menu-button secondary-color">
-                      <router-link :to="{ name: 'home' }"><i class="bi bi-house"></i></router-link>
+                    <button class="me-4 menu-button">
+                      <router-link :to="{ name: 'home' }"><i class="bi bi-house  secondary-color"></i></router-link>
                     </button>
                   </div>
                   <ThemeToggleButton />

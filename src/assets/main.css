@@ -76,8 +76,8 @@ img {
 }
 
 .text-primary {
-  color:hsl(237, 76%, 59%)!important;
-} 
+  color: hsl(237, 76%, 59%) !important;
+}
 @keyframes gradient-move {
   0% {
     background-position: 0% 30%;
@@ -141,7 +141,7 @@ h1 {
 }
 
 body.dark-theme .secondary-color {
-  color: hsl(237, 58%, 45%);
+  color: hsl(237, 58%, 65%);
 }
 
 body.dark-theme .secondary-color:hover {
@@ -252,12 +252,7 @@ body.dark-theme .stylish-border-bottom::after {
 }
 
 .menu-button i {
-  color: hsl(237, 78%, 45%);
   font-size: 1.5rem;
-}
-
-body.dark-theme .menu-button i {
-  color:hsl(237, 40%, 50%);
 }
 
 .flag-img {
@@ -514,7 +509,6 @@ body.dark-theme {
   color: white;
 }
 
-
 body.dark-theme .expressive-menu-item a {
   background: linear-gradient(135deg, hsl(237, 40%, 20%) 0%, hsl(237, 40%, 30%) 100%);
   color: hsl(0, 0%, 90%);
@@ -534,22 +528,14 @@ body.dark-theme .expressive-menu-item a:hover {
 body.dark-theme .btn-expressive {
   color: hsl(0, 0%, 85%);
 
-  background: linear-gradient(
-    135deg,
-    hsl(250, 30%, 20%) 0%,
-    hsl(250, 30%, 25%) 100%
-  );
+  background: linear-gradient(135deg, hsl(250, 30%, 20%) 0%, hsl(250, 30%, 25%) 100%);
 }
 
 body.dark-theme .btn-expressive:focus,
 body.dark-theme .btn-expressive:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(
-    135deg,
-    hsl(250, 30%, 30%) 0%,
-    hsl(218, 40%, 35%) 100%
-  )
+  background: linear-gradient(135deg, hsl(250, 30%, 30%) 0%, hsl(218, 40%, 35%) 100%);
 }
 
 body.dark-theme .card {
@@ -579,8 +565,6 @@ body.dark-theme .expressive-menu-item-bi {
 body.dark-theme .menu-button {
   background: linear-gradient(135deg, hsl(225, 50%, 7%) 0%, hsl(230, 52%, 10%) 100%);
 }
-
-
 
 /* État "Bonne réponse" */
 body.dark-theme .flag-border.good {
