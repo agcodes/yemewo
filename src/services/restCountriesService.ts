@@ -8,11 +8,11 @@ class Country {
   alreadyUsed?: boolean
 
   constructor(data: any) {
-    this.name = data.name?.common || ''
-    this.localName = data.translations?.fra.common || ''
+    this.name = data.names?.common || ''
+    this.localName = data.names?.translations?.fra.common || ''
     this.capitals = data.capital || []
-    this.flagPng = data.flags?.png || ''
-    this.flagSvg = data.flags?.svg || ''
+    this.flagPng = data.flag?.url_png || ''
+    this.flagSvg = data.flag?.url_svg || ''
     this.flagDescription = data.flags?.alt || ''
     this.alreadyUsed = false
   }
@@ -20,23 +20,53 @@ class Country {
 
 class RestCountriesService {
   private baseUrl: string
+  private apiKey: string
 
-  constructor(url: string, mockAPI: boolean) {
+  constructor(url: string, apiKey: string, mockAPI: boolean) {
     this.baseUrl = url
+    this.apiKey = apiKey
   }
 
   async getCountries(): Promise<Country[]> {
+    const STORAGE_KEY = 'restCountriesCache'
+    const cached = localStorage.getItem(STORAGE_KEY)
+    if (cached) {
+      const parsed = JSON.parse(cached)
+      return parsed.map((c: any) => {
+        const country = new Country({})
+        country.name = c.name
+        country.localName = c.localName
+        country.capitals = c.capitals
+        country.flagPng = c.flagPng
+        country.flagSvg = c.flagSvg
+        country.flagDescription = c.flagDescription
+        country.alreadyUsed = c.alreadyUsed
+        return country
+      }).filter((c: { flagSvg: any }) => c.flagSvg)
+    }
+
     return new Promise((resolve, reject) => {
-      fetch(this.baseUrl).then((response) => {
+      fetch(this.baseUrl, {
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`
+        }
+      }).then((response) => {
         response.json().then((results) => {
           const countries: Country[] = []
           if (results) {
-            for (const result of results) {
+            for (const result of results.data.objects) {
               const country = new Country(result)
               countries.push(country)
             }
           }
-          resolve(countries)
+          if (countries.length==0){
+            reject("error");
+            return;
+          }
+          console.log(countries);
+          const filtered = countries.filter(c => c.flagSvg)
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered))
+          resolve(filtered)
         });
       })
       .catch((error) => {

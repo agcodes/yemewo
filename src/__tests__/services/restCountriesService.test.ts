@@ -41,7 +41,7 @@ describe('RestCountriesService', () => {
   let service: RestCountriesService
 
   beforeEach(() => {
-    service = new RestCountriesService(mockBaseUrl, false)
+    service = new RestCountriesService(mockBaseUrl, "", false)
   })
 
   describe('getCountries', () => {

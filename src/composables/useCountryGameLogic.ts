@@ -45,7 +45,7 @@ export function useCountryGameLogic(storageKey: string) {
     return new Promise((resolve, reject) => {
       loadingError.value = false
 
-      const service = new RestCountriesService(API_CONFIG.REST_COUNTRIES_URL, false)
+      const service = new RestCountriesService(API_CONFIG.REST_COUNTRIES_URL, API_CONFIG.REST_COUNTRIES_API_KEY, false)
       service
         .getCountries()
         .then((randomCountries) => {
