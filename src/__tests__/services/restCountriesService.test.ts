@@ -4,12 +4,16 @@ import { Country, RestCountriesService } from '@/services/restCountriesService'
 describe('Country', () => {
   it('should create a Country instance with all properties', () => {
     const data = {
-      name: { common: 'France' },
-      translations: { fra: { common: 'France' } },
+      names: { 
+        common: 'France',
+        translations: { fra: { common: 'France' } }
+      },
       capital: ['Paris'],
+      flag: {
+        url_png: 'france.png',
+        url_svg: 'france.svg'
+      },
       flags: {
-        png: 'france.png',
-        svg: 'france.svg',
         alt: 'Drapeau français'
       }
     }
@@ -41,25 +45,36 @@ describe('RestCountriesService', () => {
   let service: RestCountriesService
 
   beforeEach(() => {
+    localStorage.clear()
     service = new RestCountriesService(mockBaseUrl, "", false)
   })
 
   describe('getCountries', () => {
     it('should resolve with countries on successful fetch', async () => {
-      const mockData = [
-        {
-          name: { common: 'France' },
-          translations: { fra: { common: 'France' } },
-          capital: ['Paris'],
-          flags: { png: 'fr.png', svg: 'fr.svg', alt: 'French flag' }
-        },
-        {
-          name: { common: 'Germany' },
-          translations: { fra: { common: 'Allemagne' } },
-          capital: ['Berlin'],
-          flags: { png: 'de.png', svg: 'de.svg', alt: 'German flag' }
+      const mockData = {
+        data: {
+          objects: [
+            {
+              names: { 
+                common: 'France',
+                translations: { fra: { common: 'France' } }
+              },
+              capital: ['Paris'],
+              flag: { url_png: 'fr.png', url_svg: 'fr.svg' },
+              flags: { alt: 'French flag' }
+            },
+            {
+              names: { 
+                common: 'Germany',
+                translations: { fra: { common: 'Allemagne' } }
+              },
+              capital: ['Berlin'],
+              flag: { url_png: 'de.png', url_svg: 'de.svg' },
+              flags: { alt: 'German flag' }
+            }
+          ]
         }
-      ]
+      }
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockData)
@@ -70,7 +85,9 @@ describe('RestCountriesService', () => {
       expect(countries).toHaveLength(2)
       expect(countries![0]!.name).toBe('France')
       expect(countries![1]!.name).toBe('Germany')
-      expect(global.fetch).toHaveBeenCalledWith(mockBaseUrl)
+      expect(global.fetch).toHaveBeenCalledWith(mockBaseUrl, {
+        headers: { 'Authorization': 'Bearer ' }
+      })
       
     })
 
@@ -80,27 +97,33 @@ describe('RestCountriesService', () => {
       await expect(service.getCountries()).rejects.toThrow('Network error')
     })
 
-    it('should return empty array when no results are returned', async () => {
+    it('should reject with error when no results are returned', async () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(null)
       })
 
-      const countries = await service.getCountries()
-      expect(countries).toEqual([])
+      await expect(service.getCountries()).rejects.toBe('error')
     })
   })
 
   describe('getCountry', () => {
     it('should return a country by name', async () => {
-      const mockData = [
-        {
-          name: { common: 'France' },
-          translations: { fra: { common: 'France' } },
-          capital: ['Paris'],
-          flags: { png: 'fr.png', svg: 'fr.svg', alt: 'French flag' }
+      const mockData = {
+        data: {
+          objects: [
+            {
+              names: { 
+                common: 'France',
+                translations: { fra: { common: 'France' } }
+              },
+              capital: ['Paris'],
+              flag: { url_png: 'fr.png', url_svg: 'fr.svg' },
+              flags: { alt: 'French flag' }
+            }
+          ]
         }
-      ]
+      }
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockData)
@@ -111,14 +134,21 @@ describe('RestCountriesService', () => {
     })
 
     it('should return empty Country when not found', async () => {
-      const mockData = [
-        {
-          name: { common: 'France' },
-          translations: { fra: { common: 'France' } },
-          capital: ['Paris'],
-          flags: { png: 'fr.png', svg: 'fr.svg', alt: 'French flag' }
+      const mockData = {
+        data: {
+          objects: [
+            {
+              names: { 
+                common: 'France',
+                translations: { fra: { common: 'France' } }
+              },
+              capital: ['Paris'],
+              flag: { url_png: 'fr.png', url_svg: 'fr.svg' },
+              flags: { alt: 'French flag' }
+            }
+          ]
         }
-      ]
+      }
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockData)
@@ -131,20 +161,30 @@ describe('RestCountriesService', () => {
 
   describe('getRandomCountry', () => {
     it('should return a random country from the list', async () => {
-      const mockData = [
-        {
-          name: { common: 'France' },
-          translations: { fra: { common: 'France' } },
-          capital: ['Paris'],
-          flags: { png: 'fr.png', svg: 'fr.svg', alt: 'French flag' }
-        },
-        {
-          name: { common: 'Germany' },
-          translations: { fra: { common: 'Allemagne' } },
-          capital: ['Berlin'],
-          flags: { png: 'de.png', svg: 'de.svg', alt: 'German flag' }
+      const mockData = {
+        data: {
+          objects: [
+            {
+              names: { 
+                common: 'France',
+                translations: { fra: { common: 'France' } }
+              },
+              capital: ['Paris'],
+              flag: { url_png: 'fr.png', url_svg: 'fr.svg' },
+              flags: { alt: 'French flag' }
+            },
+            {
+              names: { 
+                common: 'Germany',
+                translations: { fra: { common: 'Allemagne' } }
+              },
+              capital: ['Berlin'],
+              flag: { url_png: 'de.png', url_svg: 'de.svg' },
+              flags: { alt: 'German flag' }
+            }
+          ]
         }
-      ]
+      }
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockData)
@@ -160,14 +200,18 @@ describe('RestCountriesService', () => {
       Math.random = originalRandom
     })
 
-    it('should return empty Country when no countries available', async () => {
+    it('should reject with error when no countries available', async () => {
+      const mockData = {
+        data: {
+          objects: []
+        }
+      }
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve([])
+        json: () => Promise.resolve(mockData)
       })
 
-      const country = await service.getRandomCountry()
-      expect(country.name).toBe('')
+      await expect(service.getRandomCountry()).rejects.toThrow()
     })
   })
 })
