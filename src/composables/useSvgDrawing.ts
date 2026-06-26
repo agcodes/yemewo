@@ -1,30 +1,30 @@
 export function preparePath(path: SVGPathElement): void {
-    path.style.visibility = 'visible';
-    const length = path.getTotalLength();
-    path.classList.add("draw-path");
-    path.style.strokeDasharray = length.toString();
-    path.style.strokeDashoffset = length.toString();
+  path.style.visibility = 'visible'
+  const length = path.getTotalLength()
+  path.classList.add('draw-path')
+  path.style.strokeDasharray = length.toString()
+  path.style.strokeDashoffset = length.toString()
 }
 
 export function prepareCircle(circle: SVGCircleElement): void {
-    circle.style.visibility = 'visible';
-    const r = circle.getAttribute("r");
-    if (r) circle.dataset.finalRadius = r;
-    circle.setAttribute("r", "0");
-    circle.style.opacity = "1";
+  circle.style.visibility = 'visible'
+  const r = circle.getAttribute('r')
+  if (r) circle.dataset.finalRadius = r
+  circle.setAttribute('r', '0')
+  circle.style.opacity = '1'
 }
 
 export function rectToPath(rect: SVGRectElement): SVGPathElement {
-    const x = parseFloat(rect.getAttribute("x") || "0")
-    const y = parseFloat(rect.getAttribute("y") || "0")
-    const w = parseFloat(rect.getAttribute("width") || "0")
-    const h = parseFloat(rect.getAttribute("height") || "0")
-    const rx = parseFloat(rect.getAttribute("rx") || "0")
-    const ry = parseFloat(rect.getAttribute("ry") || rx.toString())
+  const x = parseFloat(rect.getAttribute('x') || '0')
+  const y = parseFloat(rect.getAttribute('y') || '0')
+  const w = parseFloat(rect.getAttribute('width') || '0')
+  const h = parseFloat(rect.getAttribute('height') || '0')
+  const rx = parseFloat(rect.getAttribute('rx') || '0')
+  const ry = parseFloat(rect.getAttribute('ry') || rx.toString())
 
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path")
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
-    const d = `
+  const d = `
         M${x + rx},${y}
         H${x + w - rx}
         Q${x + w},${y} ${x + w},${y + ry}
@@ -37,62 +37,136 @@ export function rectToPath(rect: SVGRectElement): SVGPathElement {
         Z
     `
 
-    path.setAttribute("d", d);
-    path.setAttribute("fill", rect.getAttribute("fill") || "none");
-    path.setAttribute("stroke", rect.getAttribute("stroke") || "#000");
-    path.setAttribute("stroke-width", rect.getAttribute("stroke-width") || "2");
-    path.style.visibility = 'visible';
+  path.setAttribute('d', d)
+  path.setAttribute('fill', rect.getAttribute('fill') || 'none')
+  path.setAttribute('stroke', rect.getAttribute('stroke') || '#000')
+  path.setAttribute('stroke-width', rect.getAttribute('stroke-width') || '2')
+  path.style.visibility = 'visible'
 
-    rect.replaceWith(path)
-    return path
+  rect.replaceWith(path)
+  return path
 }
 
 export function animatePath(path: SVGPathElement, duration = 700): Promise<void> {
-    return new Promise(resolve => {
-        const length = path.getTotalLength();
-        let start: number | null = null;
+  return new Promise((resolve) => {
+    const length = path.getTotalLength()
+    let start: number | null = null
 
-        function frame(time: number) {
-            if (start === null) start = time;
-            const progress = Math.min((time - start) / duration, 1);
-            path.style.strokeDashoffset = (length * (1 - progress)).toString();
-            if (progress < 1) requestAnimationFrame(frame);
-            else resolve();
-        }
+    function frame(time: number) {
+      if (start === null) start = time
+      const progress = Math.min((time - start) / duration, 1)
+      path.style.strokeDashoffset = (length * (1 - progress)).toString()
+      if (progress < 1) requestAnimationFrame(frame)
+      else resolve()
+    }
 
-        requestAnimationFrame(frame);
-    });
+    requestAnimationFrame(frame)
+  })
 }
 
 export function animateCircle(circle: SVGCircleElement, duration = 300): Promise<void> {
-    return new Promise(resolve => {
-        const finalR = parseFloat(circle.dataset.finalRadius || "0");
-        let start: number | null = null;
+  return new Promise((resolve) => {
+    const finalR = parseFloat(circle.dataset.finalRadius || '0')
+    let start: number | null = null
 
-        function frame(time: number) {
-            if (start === null) start = time;
-            const progress = Math.min((time - start) / duration, 1);
-            circle.setAttribute("r", (finalR * progress).toString());
-            if (progress < 1) requestAnimationFrame(frame);
-            else resolve();
-        }
+    function frame(time: number) {
+      if (start === null) start = time
+      const progress = Math.min((time - start) / duration, 1)
+      circle.setAttribute('r', (finalR * progress).toString())
+      if (progress < 1) requestAnimationFrame(frame)
+      else resolve()
+    }
 
-        requestAnimationFrame(frame);
-    });
+    requestAnimationFrame(frame)
+  })
 }
 
 export function animateOpacity(el: SVGElement, duration = 300): Promise<void> {
-    return new Promise(resolve => {
-        el.style.opacity = '0';
-        el.style.visibility = 'visible';
-        let start: number | null = null;
-        function frame(time: number) {
-            if (start === null) start = time;
-            const progress = Math.min((time - start) / duration, 1);
-            el.style.opacity = progress.toString();
-            if (progress < 1) requestAnimationFrame(frame);
-            else resolve();
-        }
-        requestAnimationFrame(frame);
-    });
+  return new Promise((resolve) => {
+    el.style.opacity = '0'
+    el.style.visibility = 'visible'
+    let start: number | null = null
+    function frame(time: number) {
+      if (start === null) start = time
+      const progress = Math.min((time - start) / duration, 1)
+      el.style.opacity = progress.toString()
+      if (progress < 1) requestAnimationFrame(frame)
+      else resolve()
+    }
+    requestAnimationFrame(frame)
+  })
+}
+
+export function extractSvgElements(
+  svg: SVGSVGElement,
+): Array<
+  | SVGGElement
+  | SVGPathElement
+  | SVGCircleElement
+  | SVGRectElement
+  | SVGLineElement
+  | SVGPolylineElement
+  | SVGPolygonElement
+> {
+  let elements: Array<
+    | SVGGElement
+    | SVGPathElement
+    | SVGCircleElement
+    | SVGRectElement
+    | SVGLineElement
+    | SVGPolylineElement
+    | SVGPolygonElement
+  > = []
+  elements = [
+    ...Array.from(svg.querySelectorAll<SVGGElement>('g')),
+    ...Array.from(svg.querySelectorAll<SVGPathElement>('path')),
+    ...Array.from(svg.querySelectorAll<SVGCircleElement>('circle')),
+    ...Array.from(svg.querySelectorAll<SVGRectElement>('rect')),
+    ...Array.from(svg.querySelectorAll<SVGLineElement>('line')),
+    ...Array.from(svg.querySelectorAll<SVGPolylineElement>('polyline')),
+    ...Array.from(svg.querySelectorAll<SVGPolygonElement>('polygon')),
+  ]
+  return elements
+}
+
+export async function drawSvgElement(
+  el:
+    | SVGGElement
+    | SVGPathElement
+    | SVGRectElement
+    | SVGCircleElement
+    | SVGPolygonElement
+    | SVGLineElement
+    | SVGPolylineElement,
+): Promise<void> {
+  if (el.tagName === 'path') {
+    preparePath(el as SVGPathElement)
+    await animatePath(el as SVGPathElement, 400)
+  }
+
+  if (el.tagName === 'rect') {
+    const path = rectToPath(el as SVGRectElement)
+    preparePath(path)
+    await animatePath(path, 400)
+  }
+
+  if (el.tagName === 'circle') {
+    prepareCircle(el as SVGCircleElement)
+    await animateCircle(el as SVGCircleElement, 400)
+  }
+
+  if (el.tagName === 'line' || el.tagName === 'polyline') {
+    preparePath(el as unknown as SVGPathElement)
+    await animatePath(el as unknown as SVGPathElement, 400)
+  }
+
+  if (el.tagName === 'polygon') {
+    await animateOpacity(el as SVGPolygonElement, 400)
+  }
+
+  if (el.tagName === 'g') {
+    const group = el as SVGGElement
+    group.style.visibility = 'visible'
+    await animateOpacity(group, 400)
+  }
 }
