@@ -73,16 +73,12 @@ import GuessHistory from '@/components/GuessHistory.vue'
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useGuessDrawingGameStore } from '@/stores/guessDrawingGame'
 import {
-    preparePath,
-    prepareCircle,
-    rectToPath,
-    animatePath,
-    animateCircle,
-    animateOpacity
+    extractSvgElements,
+    drawSvgElement
 } from '@/composables/useSvgDrawing'
 
 const game = useGuessDrawingGameStore()
-const { initIcons, mdiIcons, initGame } = game
+const { initIcons, initGame } = game
 const guessInput = ref<HTMLElement | null>(null)
 
 let previousSvgString: string | null = null
@@ -98,7 +94,7 @@ const focusInput = () => {
 const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 let animationId = 0
-let elements: Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement> = [];
+
 
 onMounted(async () => {
     game.initRound();
@@ -147,56 +143,22 @@ async function initSvg() {
 
     if (svg) {
         svg.style.visibility = 'hidden';
-        elements = [
-            ...Array.from(svg.querySelectorAll<SVGPathElement>("path")),
-            ...Array.from(svg.querySelectorAll<SVGCircleElement>("circle")),
-            ...Array.from(svg.querySelectorAll<SVGRectElement>("rect")),
-            ...Array.from(svg.querySelectorAll<SVGLineElement>("line")),
-            ...Array.from(svg.querySelectorAll<SVGPolylineElement>("polyline")),
-            ...Array.from(svg.querySelectorAll<SVGPolygonElement>("polygon"))
-        ];
-        await drawSVGSequentially(previousSvgString);
+        await drawSVGSequentially(previousSvgString, extractSvgElements(svg));
 
         svgDiv.innerHTML = svgText
         svg.style.visibility = 'visible';
     }
 }
 
-async function drawSVGSequentially(svgId: string): Promise<void> {
+async function drawSVGSequentially(svgId: string, elements: Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement | SVGGElement>): Promise<void> {
     for (const el of elements) {
-        if (el.tagName === "path") {
-            preparePath(el as SVGPathElement);
-            await animatePath(el as SVGPathElement, 400);
-            //el.classList.remove("draw-path");
-        }
-
-        if (el.tagName === "rect") {
-            const path = rectToPath(el as SVGRectElement);
-            preparePath(path);
-            await animatePath(path, 400);
-            //path.classList.remove("draw-path");
-        }
-
-        if (el.tagName === "circle") {
-            prepareCircle(el as SVGCircleElement);
-            await animateCircle(el as SVGCircleElement, 400);
-        }
-
-        if (el.tagName === "line" || el.tagName === "polyline") {
-            preparePath(el as unknown as SVGPathElement);
-            await animatePath(el as unknown as SVGPathElement, 400);
-            //el.classList.remove("draw-path");
-        }
-
-        if (el.tagName === "polygon") {
-            await animateOpacity(el as SVGPolygonElement, 400);
-        }
+        await drawSvgElement(el);
+        await delay(1000);
 
         if (svgId !== previousSvgString) {
             // svg has changed during animation, stop drawing
             return;
         }
-        await delay(1000);
     }
 }
 

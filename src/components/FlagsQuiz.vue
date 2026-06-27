@@ -11,7 +11,7 @@
       <div v-if="game.isLoading" class="card border-0 mb-5 p-3">
         Chargement
       </div>
-      
+
       <div v-if="game.savedCountry" class="card border-0 mb-5 p-3">
         <div class="card-body">
           <transition name="alert-transition" mode="out-in">
@@ -43,7 +43,7 @@
             {{ game.savedCountry.localName }}
           </h2>
 
-          <!-- Choix des drapeaux -->
+          <!-- flags choice -->
           <div class="row">
             <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
               <div :class="{
