@@ -163,9 +163,10 @@ async function initSvg() {
        // let flagSvg = "https://flags.restcountries.com/v5/svg/np.svg";
         //let flagSvg = "https://flags.restcountries.com/v5/svg/es.svg";
         let flagSvg = game.savedCountry.flagSvg// "https://flags.restcountries.com/v5/svg/ar.svg";
-        const flagUrl = flagSvg.startsWith(API_CONFIG.REST_COUNTRIES_FLAGS_BASE_URL)
-            ? `${API_CONFIG.REST_COUNTRIES_FLAGS_PROXY_PATH}${flagSvg.substring(API_CONFIG.REST_COUNTRIES_FLAGS_BASE_URL.length)}`
-            : flagSvg
+
+        console.log(flagSvg);
+
+        const flagUrl = flagSvg
 
         //console.log(flagSvg);
         const response = await fetch(flagUrl)
