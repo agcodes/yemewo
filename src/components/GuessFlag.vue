@@ -164,7 +164,6 @@ async function initSvg() {
         //let flagSvg = "https://flags.restcountries.com/v5/svg/es.svg";
         let flagSvg = game.savedCountry.flagSvg// "https://flags.restcountries.com/v5/svg/ar.svg";
 
-        console.log(flagSvg);
 
         const flagUrl = flagSvg
 
