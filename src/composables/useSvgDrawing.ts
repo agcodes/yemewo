@@ -1,9 +1,11 @@
 export function preparePath(path: SVGPathElement): void {
-  path.style.visibility = 'visible'
-  const length = path.getTotalLength()
-  path.classList.add('draw-path')
-  path.style.strokeDasharray = length.toString()
-  path.style.strokeDashoffset = length.toString()
+  path.style.visibility = 'visible';
+  const length = path.getTotalLength();
+
+
+  path.classList.add('draw-path');
+  path.style.strokeDasharray = length.toString();
+  path.style.strokeDashoffset = length.toString();
 }
 
 export function prepareCircle(circle: SVGCircleElement): void {
@@ -97,38 +99,29 @@ export function animateOpacity(el: SVGElement, duration = 300): Promise<void> {
   })
 }
 
-export function extractSvgElements(
-  svg: SVGSVGElement,
-): Array<
-  | SVGGElement
-  | SVGPathElement
-  | SVGCircleElement
-  | SVGRectElement
-  | SVGLineElement
-  | SVGPolylineElement
-  | SVGPolygonElement
-> {
-  let elements: Array<
-    | SVGGElement
-    | SVGPathElement
-    | SVGCircleElement
-    | SVGRectElement
-    | SVGLineElement
-    | SVGPolylineElement
-    | SVGPolygonElement
-  > = []
-  elements = [
-    ...Array.from(svg.querySelectorAll<SVGGElement>('g')),
-    ...Array.from(svg.querySelectorAll<SVGPathElement>('path')),
-    ...Array.from(svg.querySelectorAll<SVGCircleElement>('circle')),
-    ...Array.from(svg.querySelectorAll<SVGRectElement>('rect')),
-    ...Array.from(svg.querySelectorAll<SVGLineElement>('line')),
-    ...Array.from(svg.querySelectorAll<SVGPolylineElement>('polyline')),
-    ...Array.from(svg.querySelectorAll<SVGPolygonElement>('polygon')),
-  ]
-  return elements
-}
+export function extractSvgElements(svg: SVGSVGElement):
+  Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement | SVGGElement> {
+  const elements = Array.from(svg.querySelectorAll<SVGElement>(
+    'g, path, circle, rect, line, polyline, polygon, use'
+  ));
 
+  // Remplace les <use> par leurs références clônées
+  elements.forEach(el => {
+    if (el.tagName === 'use') {
+      const href = el.getAttribute('xlink:href') || el.getAttribute('href');
+      if (href) {
+        const ref = svg.querySelector(href);
+        if (ref) {
+          const clone = ref.cloneNode(true) as SVGElement;
+          el.replaceWith(clone);
+          elements.push(clone);
+        }
+      }
+    }
+  });
+
+ return elements as Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement | SVGGElement>;
+}
 export async function drawSvgElement(
   el:
     | SVGGElement
@@ -140,6 +133,7 @@ export async function drawSvgElement(
     | SVGPolylineElement,
 ): Promise<void> {
   if (el.tagName === 'path') {
+    if (!el.getAttribute('d')) return; 
     preparePath(el as SVGPathElement)
     await animatePath(el as SVGPathElement, 400)
   }
@@ -165,8 +159,7 @@ export async function drawSvgElement(
   }
 
   if (el.tagName === 'g') {
-    const group = el as SVGGElement
-    group.style.visibility = 'visible'
-    await animateOpacity(group, 400)
+    el.style.visibility = 'visible';
+    await animateOpacity(el, 400);
   }
 }

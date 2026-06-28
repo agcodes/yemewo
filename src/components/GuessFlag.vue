@@ -41,7 +41,7 @@
                     </transition>
 
                     <!-- drawing -->
-                    <div id="container" class="card mb-3"></div>
+                    <div id="container" class="card mb-3 bg-highlight"></div>
 
                     <!-- countries choice -->
                     <div class="row">
@@ -63,7 +63,6 @@
         <div class="col-12 col-md-3">
             <ScoreDisplay :game="game" />
 
-            <!-- History -->
             <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
         </div>
     </div>
@@ -71,9 +70,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
-import { useFlagCountryStore } from '@/stores/flagCountryGame'
+import { createFlagCountryStore } from '@/stores/flagCountryGame'
 import { API_CONFIG } from '@/config/apiConfig'
-const game = useFlagCountryStore()
+const useFlagStore = createFlagCountryStore('flagHistoryItems_2')
+const game = useFlagStore()
 
 import GuessHistory from '@/components/GuessHistory.vue'
 import ScoreDisplay from '@/components/ScoreDisplay.vue'
@@ -152,20 +152,22 @@ function newQuiz() {
     loadQuiz(false)
 }
 
-
 async function initSvg() {
     let svgString = "";
 
     //https://flags.restcountries.com/v5/svg/ad.svg
 
-
     if (game.savedCountry && game.savedCountry.flagSvg) {
-        let flagSvg = "https://flags.restcountries.com/v5/svg/ad.svg";
+        //let flagSvg = "https://flags.restcountries.com/v5/svg/cx.svg";
+        //let flagSvg = "https://flags.restcountries.com/v5/svg/fr.svg";
+       // let flagSvg = "https://flags.restcountries.com/v5/svg/np.svg";
+        //let flagSvg = "https://flags.restcountries.com/v5/svg/es.svg";
+        let flagSvg = game.savedCountry.flagSvg// "https://flags.restcountries.com/v5/svg/ar.svg";
         const flagUrl = flagSvg.startsWith(API_CONFIG.REST_COUNTRIES_FLAGS_BASE_URL)
             ? `${API_CONFIG.REST_COUNTRIES_FLAGS_PROXY_PATH}${flagSvg.substring(API_CONFIG.REST_COUNTRIES_FLAGS_BASE_URL.length)}`
             : flagSvg
 
-        console.log(flagSvg);
+        //console.log(flagSvg);
         const response = await fetch(flagUrl)
         if (!response.ok) {
             throw new Error(`Unable to load SVG: ${response.status} ${response.statusText}`)
@@ -176,10 +178,9 @@ async function initSvg() {
     const containerEl = document.getElementById("container");
     if (!containerEl || !svgString) return
 
-    // Adapter le SVG à la taille du conteneur
     const rect = containerEl.getBoundingClientRect()
-    const width: number = Math.floor(rect.width) || 400
-    const height: number = 400
+    const width: number = Math.floor(rect.width)
+    const height: number = Math.floor(rect.width)
 
     if (previousSvgId) {
         const oldSvg = document.getElementById(previousSvgId)
@@ -192,8 +193,6 @@ async function initSvg() {
 
     const svgDiv = document.createElement('div')
     svgDiv.id = previousSvgId
-    svgDiv.style.width = `${width}px`
-    svgDiv.style.height = `${height}px`
     svgDiv.style.overflow = 'hidden'
     svgDiv.style.display = 'flex'
     svgDiv.style.justifyContent = 'center'
@@ -201,12 +200,31 @@ async function initSvg() {
 
     let svgText = svgString.replace(/<svg([^>]*?)>/i, (match, attrs) => {
         let newAttrs = attrs
-        if (!/viewBox=/i.test(attrs)) {
-            const widthMatch = attrs.match(/width="([^"]+)"/i)
-            const heightMatch = attrs.match(/height="([^"]+)"/i)
 
-            const widthValue = widthMatch ? parseFloat(widthMatch[1]) : NaN
-            const heightValue = heightMatch ? parseFloat(heightMatch[1]) : NaN
+        const widthMatch = attrs.match(/width="([^"]+)"/i)
+        const heightMatch = attrs.match(/height="([^"]+)"/i)
+        const widthValue = widthMatch ? parseFloat(widthMatch[1]) : 600
+        const heightValue = heightMatch ? parseFloat(heightMatch[1]) : 400
+
+        const ratioWH = widthValue/heightValue;
+
+        if (width > 400){
+            const rectHeight: number = 400
+            const rectWidth: number = rectHeight*ratioWH;
+        
+            svgDiv.style.width = `${rectWidth}px`
+            svgDiv.style.height = `${rectHeight}px`
+        }
+        else {
+            const rectWidth: number = width;
+            const rectHeight: number = rectWidth/ratioWH
+        
+            svgDiv.style.width = `${rectWidth}px`
+            svgDiv.style.height = `${rectHeight}px`
+        }
+
+
+        if (!/viewBox=/i.test(attrs)) {
             if (!Number.isNaN(widthValue) && !Number.isNaN(heightValue)) {
                 newAttrs += ` viewBox="0 0 ${widthValue} ${heightValue}"`
             }
@@ -216,29 +234,26 @@ async function initSvg() {
         }
         return `<svg${newAttrs}>`
     })
-    svgText = svgText
-        .replace(/width="[^"]*"/g, 'width="100%"')
-        .replace(/height="[^"]*"/g, 'height="100%"')
-
+    
     svgDiv.innerHTML = svgText
     containerEl.appendChild(svgDiv);
-    const svg = document.querySelector<SVGSVGElement>(`#${previousSvgId}`);
+    const svg = svgDiv.querySelector<SVGSVGElement>('svg');
 
     if (svg) {
         svg.style.visibility = 'hidden';
         await drawSVGSequentially(previousSvgId, extractSvgElements(svg));
-
         svgDiv.innerHTML = svgText
         svg.style.visibility = 'visible';
     }
 }
 
 async function drawSVGSequentially(svgId: string, elements: Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement | SVGGElement>): Promise<void> {
+    let index=0;
     for (const el of elements) {
         await drawSvgElement(el);
         await delay(1000);
-
-        if (svgId !== previousSvgId) {
+        index++;
+        if (svgId !== previousSvgId || index > 4) {
             // svg has changed during animation, stop drawing
             return;
         }
@@ -251,13 +266,18 @@ async function drawSVGSequentially(svgId: string, elements: Array<SVGPathElement
 #container,
 #container>div {
     overflow: hidden;
+        display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #container svg {
+    margin: auto; 
     width: auto;
     height: 100%;
     max-width: 100%;
     max-height: 100%;
     display: block;
+    object-fit: contain;
 }
 </style>

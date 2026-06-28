@@ -70,8 +70,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
-import { useFlagCountryStore } from '@/stores/flagCountryGame'
-const game = useFlagCountryStore()
+import { createFlagCountryStore } from '@/stores/flagCountryGame'
+const useFlagStore = createFlagCountryStore('flagHistoryItems_1')
+const game = useFlagStore()
 
 import GuessHistory from '@/components/GuessHistory.vue'
 import ScoreDisplay from '@/components/ScoreDisplay.vue'

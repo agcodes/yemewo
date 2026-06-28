@@ -105,6 +105,7 @@ export function useCountryGameLogic(storageKey: string) {
       // Shuffle the countries and take the first 'nb' countries for the current game
       const shuffled = [...countries.value].sort(() => 0.5 - Math.random())
       const filteredCountries = shuffled.filter((a) => a.alreadyUsed == false)
+     
       // Save the first country of the current game to display its flag and use it for validation
       savedCountry.value = filteredCountries[0]!
       savedCountry.value.alreadyUsed = true
