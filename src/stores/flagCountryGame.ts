@@ -32,6 +32,7 @@ export function createFlagCountryStore(storageKey: string) {
       } else {
         message.value = 'Mauvaise réponse.'
         typeAlert.value = 'danger'
+        addRoundPts(0)
       }
       
       addToHistory(savedCountry.value.localName, isGood.value)

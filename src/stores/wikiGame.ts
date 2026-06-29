@@ -17,6 +17,7 @@ export const useWikiGameStore = defineStore('wikiGame', () => {
         message.value = `Incorrect ! Solution : ${randomArticle.value.originalTitle}. Chargement d'un nouvel article...`
         typeAlert.value = 'warning'
         isGood.value = false;
+        addRoundPts(0)
         addToHistory(randomArticle.value.title, false)
       }
       timeOutNewWord()

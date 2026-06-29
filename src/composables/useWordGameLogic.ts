@@ -195,6 +195,7 @@ export function useWordGameLogic(
       return true
     } else if (wordFound.value === false) {
       isGood.value = false
+      addRoundPts(0)
       typeAlert.value = 'info'
       if (inputTry >= 200) {
         message.value = `Vous avez dépassé les 200 tentatives. Encore un petit effort !`
