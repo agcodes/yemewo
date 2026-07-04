@@ -40,6 +40,21 @@ export function useCountryGameLogic(storageKey: string) {
   const currentCountries = ref<Country[]>([])
   const savedCountry = ref<Country | null>(null)
   const previousCountry = ref<Country | null>(null)
+  const svgFlag = ref<string>("")
+
+  async function getSvgFlag(country: Country): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const service = new RestCountriesService(API_CONFIG.REST_COUNTRIES_URL, API_CONFIG.REST_COUNTRIES_API_KEY, false)
+      service
+        .getSvgFlag(country)
+        .then((svgString) => {
+          resolve(svgString)
+        })
+        .catch((error) => {
+          reject("")
+        })
+    })
+  }
 
   async function loadCountries(): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -72,6 +87,7 @@ export function useCountryGameLogic(storageKey: string) {
   async function defineNewGame(
     nb: number,
     reload: boolean,
+    loadSvg: boolean
   ): Promise<{ label: string; value: string }[]> {
     isSubmitted.value = false
     isGood.value = false
@@ -124,6 +140,19 @@ export function useCountryGameLogic(storageKey: string) {
       isLoading.value = false
       
       message.value = 'Devinez le pays à partir de son drapeau'
+
+      if (loadSvg){
+        svgFlag.value = "";
+        let svgString = await getSvgFlag(savedCountry.value)
+        if (svgString == ""){
+          loadingError.value = true
+          message.value = 'Erreur lors de la récupération du drapeau'
+        }
+        else {
+          svgFlag.value = svgString;
+        }
+      }
+
       return currentCountries.value.map((country) => ({
         label: country.localName,
         value: country.flagSvg,
@@ -140,6 +169,7 @@ export function useCountryGameLogic(storageKey: string) {
 
   return {
     init,
+    svgFlag,
     message,
     typeAlert,
     isSubmitted,

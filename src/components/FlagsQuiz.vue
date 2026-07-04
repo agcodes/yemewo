@@ -109,7 +109,7 @@ function initRound() {
 
 async function loadQuiz(reload: boolean) {
   try {
-    choices.value = await game.defineNewGame(4, reload);
+    choices.value = await game.defineNewGame(4, reload, false);
     if (choices.value.length > 0) {
       game.isLoading = false
       game.startTimer();

@@ -84,6 +84,30 @@ class RestCountriesService {
     return new Country({})
   }
 
+  async getSvgFlag(country: Country) : Promise<string> {
+    let svgString: string = "";
+     if (country && country.flagSvg) {
+        //let flagSvg = "https://flags.restcountries.com/v5/svg/cx.svg";
+        //let flagSvg = "https://flags.restcountries.com/v5/svg/fr.svg";
+       // let flagSvg = "https://flags.restcountries.com/v5/svg/np.svg";
+        //let flagSvg = "https://flags.restcountries.com/v5/svg/es.svg";
+        let flagSvg = country.flagSvg// "https://flags.restcountries.com/v5/svg/ar.svg";
+
+        const flagUrl = flagSvg
+
+        try {
+            const response = await fetch(flagUrl)
+            if (response.ok) {
+                svgString = await response.text()
+            }
+        }
+        catch (ex){
+            svgString = "";
+        }
+        return svgString ?? "";
+    }
+    return "";
+  }
   async getRandomCountry(): Promise<Country> {
     const countries = await this.getCountries()
     if (countries.length > 0) {

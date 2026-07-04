@@ -12,7 +12,7 @@
                 Chargement
             </div>
 
-            <div v-if="game.savedCountry" class="card border-0 mb-5 p-3">
+            <div v-if="game.savedCountry && game.svgFlag" class="card border-0 mb-5 p-3">
                 <div class="card-body">
                     <transition name="alert-transition" mode="out-in">
                         <div class="mb-4" :key="alertKey">
@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
 import { createFlagCountryStore } from '@/stores/flagCountryGame'
-import { API_CONFIG } from '@/config/apiConfig'
+
 const useFlagStore = createFlagCountryStore('flagHistoryItems_2')
 const game = useFlagStore()
 
@@ -117,11 +117,11 @@ function initRound() {
 
 async function loadQuiz(reload: boolean) {
     try {
-        choices.value = await game.defineNewGame(4, reload);
-        if (choices.value.length > 0) {
+        choices.value = await game.defineNewGame(4, reload, true);
+        if (!game.loadingError && choices.value.length > 0 && game.savedCountry) {
             game.isLoading = false
-            initSvg()
-            game.startTimer();
+            initSvg(game.svgFlag);
+           
         }
     } catch (error) {
         game.isLoading = false
@@ -152,29 +152,7 @@ function newQuiz() {
     loadQuiz(false)
 }
 
-async function initSvg() {
-    let svgString = "";
-
-    //https://flags.restcountries.com/v5/svg/ad.svg
-
-    if (game.savedCountry && game.savedCountry.flagSvg) {
-        //let flagSvg = "https://flags.restcountries.com/v5/svg/cx.svg";
-        //let flagSvg = "https://flags.restcountries.com/v5/svg/fr.svg";
-       // let flagSvg = "https://flags.restcountries.com/v5/svg/np.svg";
-        //let flagSvg = "https://flags.restcountries.com/v5/svg/es.svg";
-        let flagSvg = game.savedCountry.flagSvg// "https://flags.restcountries.com/v5/svg/ar.svg";
-
-
-        const flagUrl = flagSvg
-
-        //console.log(flagSvg);
-        const response = await fetch(flagUrl)
-        if (!response.ok) {
-            throw new Error(`Unable to load SVG: ${response.status} ${response.statusText}`)
-        }
-        svgString = await response.text()
-    }
-
+async function initSvg(svgString: string) {
     const containerEl = document.getElementById("container");
     if (!containerEl || !svgString) return
 
@@ -222,7 +200,6 @@ async function initSvg() {
             svgDiv.style.width = `${rectWidth}px`
             svgDiv.style.height = `${rectHeight}px`
         }
-
 
         if (!/viewBox=/i.test(attrs)) {
             if (!Number.isNaN(widthValue) && !Number.isNaN(heightValue)) {

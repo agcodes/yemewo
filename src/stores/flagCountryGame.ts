@@ -86,6 +86,7 @@ export function createFlagCountryStore(storageKey: string) {
       clearTimer,
       elapsedTime,
       updateElapsedTime,
+      svgFlag
     } = useCountryGameLogic(storageKey)
 
     return {
@@ -117,6 +118,7 @@ export function createFlagCountryStore(storageKey: string) {
       timerInterval,
       clearTimer,
       elapsedTime,
+      svgFlag,
       updateElapsedTime,
     }
   })
