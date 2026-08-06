@@ -38,7 +38,7 @@ jobs:
       - name: Tests
         run: npm run test
 
-      # Deploiement sur OVH (FTP)
+      # Deploiement sur OVH (by FTP)
       - name: Deploy to OVH via FTP
         if: github.ref == 'refs/heads/main'  # ⬅ Condition : déploiement uniquement sur main
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
