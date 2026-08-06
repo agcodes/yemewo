@@ -11,7 +11,7 @@
       <div v-if="game.isLoading" class="card border-0 mb-5 p-3">
         Chargement
       </div>
-      
+
       <div v-if="game.savedCountry" class="card border-0 mb-5 p-3">
         <div class="card-body">
           <transition name="alert-transition" mode="out-in">
@@ -43,7 +43,7 @@
             {{ game.savedCountry.localName }}
           </h2>
 
-          <!-- Choix des drapeaux -->
+          <!-- flags choice -->
           <div class="row">
             <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
               <div :class="{
@@ -70,8 +70,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
-import { useFlagCountryStore } from '@/stores/flagCountryGame'
-const game = useFlagCountryStore()
+import { createFlagCountryStore } from '@/stores/flagCountryGame'
+const useFlagStore = createFlagCountryStore('flagHistoryItems_1')
+const game = useFlagStore()
 
 import GuessHistory from '@/components/GuessHistory.vue'
 import ScoreDisplay from '@/components/ScoreDisplay.vue'
@@ -108,7 +109,7 @@ function initRound() {
 
 async function loadQuiz(reload: boolean) {
   try {
-    choices.value = await game.defineNewGame(4, reload);
+    choices.value = await game.defineNewGame(4, reload, false);
     if (choices.value.length > 0) {
       game.isLoading = false
       game.startTimer();

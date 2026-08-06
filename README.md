@@ -63,8 +63,10 @@ trophées : speed si x secondes
 
 sauvegarde local des scores
 
-mieux gérer loading pendu
+mieux gérer loading wikipedia - ok transition
 
 favicon
 
-bug 32
+
+
+ ### docker compose --profile dev up

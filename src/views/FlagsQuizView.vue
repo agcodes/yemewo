@@ -1,5 +1,6 @@
 <template>
- <FlagsQuiz />
+    <FlagsQuiz />
+   
 </template>
 
 <script setup lang="ts">

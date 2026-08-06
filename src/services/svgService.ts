@@ -1,11 +1,12 @@
 import type { Word } from '@/composables/Word'
+import { API_CONFIG } from '@/config/apiConfig'
 
 export const iconType = 'openmoji'
 
 export const allowedCategories = ['Animals Nature', 'Objects', 'Food Drink', 'Activities']
 
 export const buildSvgUrl = (keyword: string): string =>
-  `https://api.iconify.design/${iconType}:${keyword}.svg`
+  `${API_CONFIG.ICONIFY_API_BASE_URL}/${iconType}:${keyword}.svg`
 
 export const getRandomKeyword = (icons: Word[]): Word => {
   //return { value: 'falafel', category: 'Objects' }
@@ -25,7 +26,7 @@ export const loadSvg = async (keyword: string): Promise<string> => {
 
 export const loadIcons = async (): Promise<Word[]> => {
   try {
-    const response = await fetch(`https://api.iconify.design/collection?prefix=${iconType}`)
+    const response = await fetch(`${API_CONFIG.ICONIFY_API_BASE_URL}/collection?prefix=${iconType}`)
     const data = await response.json()
     const words: Word[] = []
 

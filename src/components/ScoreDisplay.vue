@@ -6,12 +6,14 @@
     </h6>
 
     <div class="text-center p-3">
-      <div class="fs-2 bold mb-2">
+      <div class="fs-2 bold mb-3">
         {{ game.roundPts }} / {{ game.nbRoundGames }}
       </div>
+      
       <div class="mb-3">
-          <span class="fs-5 badge bg-transparent border text-secondary border-info">Temps : {{ game.elapsedTime }}</span>
+          <span class="fs-5 badge bg-transparent border text-secondary border-secondary">Temps : {{ game.elapsedTime }}</span>
       </div>
+
       <div class="bold text-muted mb-3">
         Round {{ game.nbRounds }}
       </div>

@@ -2,12 +2,12 @@
 import axios from 'axios'
 import DOMPurify from 'dompurify'
 
-// Définir le type pour un article
 export interface Article {
   article: string
   views: number
   originalTitle: string
   title: string
+  good: boolean
   content?: string
   scrambledContent?: string
 }
@@ -76,8 +76,6 @@ export const getRandomArticle = async (date: string): Promise<Article | null> =>
     throw error
   }
 }
-
-// Fonction pour obtenir un article aléatoire
 
 export const getArticle = (article: Article): Promise<Article | null> => {
   return new Promise((resolve, reject) => {

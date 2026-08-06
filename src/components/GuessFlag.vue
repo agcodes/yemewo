@@ -1,0 +1,260 @@
+<template>
+    <div class="row">
+        <div class="col-12 col-md-9">
+            <div v-if="game.loadingError" class="alert mb-5" :class="`alert-${game.typeAlert}`">
+                <p class="mb-4">{{ game.message }}</p>
+                <button class="btn btn-outline-secondary" @click="initRound">
+                    Recharger
+                </button>
+            </div>
+
+            <div v-if="game.isLoading" class="card border-0 mb-5 p-3">
+                Chargement
+            </div>
+
+            <div v-if="game.savedCountry && game.svgFlag" class="card border-0 mb-5 p-3">
+                <div class="card-body">
+                    <transition name="alert-transition" mode="out-in">
+                        <div class="mb-4" :key="alertKey">
+                            <div v-if="game.gameEnd === true" class="card rounded-0 mb-5 p-4">
+                                <div class="alert alert-info mb-4">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Fin du jeu ! Votre score est {{ game.roundPts }} / {{ game.nbRoundGames }}
+                                </div>
+
+                                <button class="btn btn-outline-primary" @click="initRound">
+                                    Nouveau jeu
+                                </button>
+                            </div>
+
+                            <div v-if="game.previousCountry && game.message" :class="`alert-${game.typeAlert}`"
+                                class="alert">
+                                <i v-if="game.typeAlert == 'danger'" class="bi bi-x-circle me-2"></i>
+                                <i v-if="game.typeAlert == 'success'" class="bi bi-check-circle me-2"></i>
+                                {{ game.message }}
+                            </div>
+
+                            <div v-else-if="!game.isLoading" class="alert alert-info">
+                                {{ game.message }}
+                            </div>
+                        </div>
+                    </transition>
+
+                    <!-- drawing -->
+                    <div id="container" class="card mb-3 bg-highlight"></div>
+
+                    <!-- countries choice -->
+                    <div class="row">
+                        <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
+                            <div :class="{
+                                good: game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
+                                bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg,
+                                selected: game.isSubmitted && choice.value === selected
+                            }" class="card p-3 bg-highlight flag-border" role="button"
+                                @click="clickFlag(choice.value)">
+                                {{ choice.label }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <ScoreDisplay :game="game" />
+
+            <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
+import { createFlagCountryStore } from '@/stores/flagCountryGame'
+
+const useFlagStore = createFlagCountryStore('flagHistoryItems_2')
+const game = useFlagStore()
+
+import GuessHistory from '@/components/GuessHistory.vue'
+import ScoreDisplay from '@/components/ScoreDisplay.vue'
+import {
+    extractSvgElements,
+    drawSvgElement
+} from '@/composables/useSvgDrawing'
+
+let previousSvgId: string | null = null
+
+const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+const choices = ref<{ label: string; value: string }[]>([])
+const selected = ref<string>('')
+
+let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+
+onMounted(() => {
+    game.init()
+    game.startTimer()
+    initRound();
+})
+
+onBeforeUnmount(() => {
+    game.clearTimer()
+})
+
+const alertKey = ref(0);
+watch(
+    () => [game.isGood, game.previousCountry],
+    () => {
+        alertKey.value++;
+    },
+    { deep: true }
+);
+
+function initRound() {
+    game.initRound()
+    game.clearTimer()
+    loadQuiz(true)
+}
+
+async function loadQuiz(reload: boolean) {
+    try {
+        choices.value = await game.defineNewGame(4, reload, true);
+        if (!game.loadingError && choices.value.length > 0 && game.savedCountry) {
+            game.isLoading = false
+            initSvg(game.svgFlag);
+           
+        }
+    } catch (error) {
+        game.isLoading = false
+    }
+}
+
+function clickFlag(choice: string) {
+    selected.value = choice;
+    submit();
+}
+
+function submit() {
+    if (game.isSubmitted) return
+    game.submit(selected.value)
+
+    if (game.gameEnd) {
+        return
+    }
+
+    autoNextTimer.value = setTimeout(() => {
+        newQuiz()
+    }, 3000)
+}
+
+function newQuiz() {
+    choices.value = []
+    selected.value = ''
+    loadQuiz(false)
+}
+
+async function initSvg(svgString: string) {
+    const containerEl = document.getElementById("container");
+    if (!containerEl || !svgString) return
+
+    const rect = containerEl.getBoundingClientRect()
+    const width: number = Math.floor(rect.width)
+    const height: number = Math.floor(rect.width)
+
+    if (previousSvgId) {
+        const oldSvg = document.getElementById(previousSvgId)
+        if (oldSvg) {
+            containerEl.removeChild(oldSvg);
+        }
+    }
+
+    previousSvgId = `drawing-svg${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`
+
+    const svgDiv = document.createElement('div')
+    svgDiv.id = previousSvgId
+    svgDiv.style.overflow = 'hidden'
+    svgDiv.style.display = 'flex'
+    svgDiv.style.justifyContent = 'center'
+    svgDiv.style.alignItems = 'center'
+
+    let svgText = svgString.replace(/<svg([^>]*?)>/i, (match, attrs) => {
+        let newAttrs = attrs
+
+        const widthMatch = attrs.match(/width="([^"]+)"/i)
+        const heightMatch = attrs.match(/height="([^"]+)"/i)
+        const widthValue = widthMatch ? parseFloat(widthMatch[1]) : 600
+        const heightValue = heightMatch ? parseFloat(heightMatch[1]) : 400
+
+        const ratioWH = widthValue/heightValue;
+
+        if (width > 400){
+            const rectHeight: number = 400
+            const rectWidth: number = rectHeight*ratioWH;
+        
+            svgDiv.style.width = `${rectWidth}px`
+            svgDiv.style.height = `${rectHeight}px`
+        }
+        else {
+            const rectWidth: number = width;
+            const rectHeight: number = rectWidth/ratioWH
+        
+            svgDiv.style.width = `${rectWidth}px`
+            svgDiv.style.height = `${rectHeight}px`
+        }
+
+        if (!/viewBox=/i.test(attrs)) {
+            if (!Number.isNaN(widthValue) && !Number.isNaN(heightValue)) {
+                newAttrs += ` viewBox="0 0 ${widthValue} ${heightValue}"`
+            }
+        }
+        if (!/preserveAspectRatio=/i.test(newAttrs)) {
+            newAttrs += ' preserveAspectRatio="xMidYMid meet"'
+        }
+        return `<svg${newAttrs}>`
+    })
+    
+    svgDiv.innerHTML = svgText
+    containerEl.appendChild(svgDiv);
+    const svg = svgDiv.querySelector<SVGSVGElement>('svg');
+
+    if (svg) {
+        svg.style.visibility = 'hidden';
+        await drawSVGSequentially(previousSvgId, extractSvgElements(svg));
+        svgDiv.innerHTML = svgText
+        svg.style.visibility = 'visible';
+    }
+}
+
+async function drawSVGSequentially(svgId: string, elements: Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement | SVGGElement>): Promise<void> {
+    let index=0;
+    for (const el of elements) {
+        await drawSvgElement(el);
+        await delay(1000);
+        index++;
+        if (svgId !== previousSvgId || index > 4) {
+            // svg has changed during animation, stop drawing
+            return;
+        }
+    }
+}
+
+</script>
+
+<style scoped>
+#container,
+#container>div {
+    overflow: hidden;
+        display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#container svg {
+    margin: auto; 
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: contain;
+}
+</style>

@@ -29,7 +29,7 @@
 
         <!-- Actions -->
         <div class="d-flex justify-content-end mt-4">
-            <button class="btn btn-outline-danger" @click="onReset">
+            <button class="btn btn-outline-warning" @click="onReset">
                 <i class="bi bi-trash me-1"></i>
                 Tout effacer
             </button>

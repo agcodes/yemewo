@@ -1,7 +1,7 @@
 <template>
   <button @click="toggleTheme" class="menu-button">
-    <i title="light mode" v-if="isDarkMode" class="bi bi-sun-fill"></i>
-    <i title="dark mode" v-else class="bi bi-moon-stars-fill"></i>
+    <i title="light mode" v-if="isDarkMode" class="bi secondary-color  bi-sun-fill"></i>
+    <i title="dark mode" v-else class="bi secondary-color bi-moon-stars-fill"></i>
   </button>
 </template>
 
