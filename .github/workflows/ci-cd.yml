@@ -27,7 +27,10 @@ jobs:
       - name: Security Audit (npm audit)
         run: npm audit --audit-level=critical
 
-      # Build
+      - name: Auto-fix vulnerabilities
+        run: npm audit fix
+      
+        # Build
       - name: Build
         run: npm run build
 
