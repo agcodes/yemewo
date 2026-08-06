@@ -49,3 +49,9 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: /yemewo/
+
+      - name: Measure pipeline duration
+        run: |
+          echo "Pipeline duration: ${{ steps.pipeline_duration.outputs.time }}" >> metrics.txt
+          echo "::set-output name=duration::${{ steps.pipeline_duration.outputs.time }}"
+        id: pipeline_duration
