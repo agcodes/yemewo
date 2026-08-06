@@ -45,28 +45,5 @@ npm run build
 
 ```sh
 npm run test:unit
-```
-
-\*\*\* todo
-
-trouver un autre nom à pendu
-
-gérer transitions
-
-afficher timer
-
-afficher score sur tous les jeux
-
-historique des scores
-
-trophées : speed si x secondes
-
-sauvegarde local des scores
-
-mieux gérer loading wikipedia - ok transition
-
-favicon
-
-
 
  ### docker compose --profile dev up
