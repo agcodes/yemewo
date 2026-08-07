@@ -47,3 +47,6 @@ npm run build
 npm run test:unit
 
  ### docker compose --profile dev up
+
+
+![CI](https://github.com/agcodes/yemewo/actions/workflows/ci-cd.yml/badge.svg)
