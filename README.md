@@ -45,10 +45,19 @@ npm run build
 
 ```sh
 npm run test:unit
+```
 
- ### docker compose --profile dev up
+## Docker
+
+cf docker/nginx.conf
+
+Run docker :
+
+```sh
+docker compose --profile dev up
+```
 
 
-# Status
+## Status
 
 [![CI](https://github.com/agcodes/yemewo/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/agcodes/yemewo/actions/workflows/ci-cd.yml)
