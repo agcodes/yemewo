@@ -57,6 +57,6 @@ Run docker :
 docker compose --profile dev up
 ```
 
-## Status
+## CI/CD Status
 
 [![CI](https://github.com/agcodes/yemewo/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/agcodes/yemewo/actions/workflows/ci-cd.yml)

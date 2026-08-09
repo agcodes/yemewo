@@ -7,4 +7,5 @@ export const API_CONFIG = {
   ICONIFY_API_BASE_URL: 'https://api.iconify.design',
   REST_COUNTRIES_FLAGS_BASE_URL: 'https://flags.restcountries.com/v5/svg',
   REST_COUNTRIES_FLAGS_PROXY_PATH: '/api/flags',
+  YEMEWO_SYNONYM_URL: 'https://yemewo-server.fly.dev/synonym',
 }

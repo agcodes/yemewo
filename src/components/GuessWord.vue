@@ -62,6 +62,10 @@
                     Passer
                 </button>
 
+                <button :disabled="game.loadingNewGame || game.isLoading" class="btn btn-outline-secondary me-2" @click="game.askSynonym">
+                    Demander un synonyme
+                </button>
+
                 <button v-if="game.loadingNewGame" class="btn btn-outline-secondary" @click="game.cancelAutoNext">
                     Annuler
                 </button>

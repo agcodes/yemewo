@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useWordGameLogic } from '@/composables/useWordGameLogic'
 import { fetchRandomWord } from '@/services/wordService'
+import { getSynonym } from '@/services/yemewoService'
 import type { Word } from '@/composables/Word'
 
 export const useGameStore = defineStore('guessWordGame', () => {
@@ -51,6 +52,26 @@ export const useGameStore = defineStore('guessWordGame', () => {
     historyItems,
   } = useWordGameLogic(initCallback, 'historyItems', fetchRandomWord)
 
+  const askSynonym = async () => {
+    try {
+      isLoading.value = true
+      const response = await getSynonym(wordToGuess.value)
+      if (response.success && response.synonyms.length > 0) {
+        message.value = `Synonymes : ${response.synonyms.join(', ')}`
+        typeAlert.value = 'info'
+      } else {
+        message.value = 'Aucun synonyme trouvé'
+        typeAlert.value = 'warning'
+      }
+    } catch (error) {
+      message.value = "Erreur lors de la récupération des synonymes"
+      typeAlert.value = 'danger'
+      console.error('Error fetching synonym:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     startTime,
     updateElapsedTime,
@@ -86,5 +107,6 @@ export const useGameStore = defineStore('guessWordGame', () => {
     typeAlert,
     baseHue,
     historyItems,
+    askSynonym,
   }
 })
