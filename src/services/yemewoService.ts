@@ -10,7 +10,7 @@ export interface SynonymResponse {
 export async function getSynonym(word: string): Promise<SynonymResponse> {
   try {
     const response = await axios.post<SynonymResponse>(API_CONFIG.YEMEWO_SYNONYM_URL, {
-      word: word
+      word: word,
     })
     return response.data
   } catch (error) {

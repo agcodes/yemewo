@@ -1,5 +1,4 @@
 export interface Word {
-    value: string
-    category:  string
+  value: string
+  category: string
 }
-  

@@ -12,7 +12,7 @@ export function useGameLogic(storageKey: string) {
   const gamesPerRound = ref<number>(10)
   const nbRoundGames = ref<number>(0)
   const nbRounds = ref<number>(0)
-  const nbGames  = ref<number>(0)
+  const nbGames = ref<number>(0)
   const historyLimit = ref<number>(5)
   const loadingError = ref(false)
   const isSubmitted = ref(false)
@@ -65,9 +65,9 @@ export function useGameLogic(storageKey: string) {
       return
     }
     const now = new Date().getTime()
-    const diff = now - startTime.value
-    const seconds = Math.floor(diff / 1000) % 60
-    const minutes = Math.floor(diff / 1000 / 60)
+    const diff: number = now - startTime.value
+    const seconds: number = Math.floor(diff / 1000) % 60
+    const minutes: number = Math.floor(diff / 1000 / 60)
     elapsedTime.value = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
   }
 
@@ -118,7 +118,7 @@ export function useGameLogic(storageKey: string) {
   }
 
   function addToHistory(name: string, success: boolean) {
-    const timeSpent = Math.floor((new Date().getTime() - startTime.value) / 1000)
+    const timeSpent: number = Math.floor((new Date().getTime() - startTime.value) / 1000)
     historyItems.value.unshift({
       name,
       timeSpent,

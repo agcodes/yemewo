@@ -42,7 +42,6 @@ export function useWordGameLogic(
     incNbRoundGames,
   } = useGameLogic(storageKey)
 
-  const wordSource = ref<string>('word-api')
   const wordToGuess = ref<string>('')
   const hintGuess = ref<string>('')
   const userGuess = ref<string>('')

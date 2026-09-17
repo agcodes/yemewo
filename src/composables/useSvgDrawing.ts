@@ -1,11 +1,10 @@
 export function preparePath(path: SVGPathElement): void {
-  path.style.visibility = 'visible';
-  const length = path.getTotalLength();
+  path.style.visibility = 'visible'
+  const length: number = path.getTotalLength()
 
-
-  path.classList.add('draw-path');
-  path.style.strokeDasharray = length.toString();
-  path.style.strokeDashoffset = length.toString();
+  path.classList.add('draw-path')
+  path.style.strokeDasharray = length.toString()
+  path.style.strokeDashoffset = length.toString()
 }
 
 export function prepareCircle(circle: SVGCircleElement): void {
@@ -17,12 +16,12 @@ export function prepareCircle(circle: SVGCircleElement): void {
 }
 
 export function rectToPath(rect: SVGRectElement): SVGPathElement {
-  const x = parseFloat(rect.getAttribute('x') || '0')
-  const y = parseFloat(rect.getAttribute('y') || '0')
-  const w = parseFloat(rect.getAttribute('width') || '0')
-  const h = parseFloat(rect.getAttribute('height') || '0')
-  const rx = parseFloat(rect.getAttribute('rx') || '0')
-  const ry = parseFloat(rect.getAttribute('ry') || rx.toString())
+  const x: number = parseFloat(rect.getAttribute('x') || '0')
+  const y: number = parseFloat(rect.getAttribute('y') || '0')
+  const w: number = parseFloat(rect.getAttribute('width') || '0')
+  const h: number = parseFloat(rect.getAttribute('height') || '0')
+  const rx: number = parseFloat(rect.getAttribute('rx') || '0')
+  const ry: number = parseFloat(rect.getAttribute('ry') || rx.toString())
 
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
@@ -51,12 +50,12 @@ export function rectToPath(rect: SVGRectElement): SVGPathElement {
 
 export function animatePath(path: SVGPathElement, duration = 700): Promise<void> {
   return new Promise((resolve) => {
-    const length = path.getTotalLength()
+    const length: number = path.getTotalLength()
     let start: number | null = null
 
     function frame(time: number) {
       if (start === null) start = time
-      const progress = Math.min((time - start) / duration, 1)
+      const progress: number = Math.min((time - start) / duration, 1)
       path.style.strokeDashoffset = (length * (1 - progress)).toString()
       if (progress < 1) requestAnimationFrame(frame)
       else resolve()
@@ -68,12 +67,12 @@ export function animatePath(path: SVGPathElement, duration = 700): Promise<void>
 
 export function animateCircle(circle: SVGCircleElement, duration = 300): Promise<void> {
   return new Promise((resolve) => {
-    const finalR = parseFloat(circle.dataset.finalRadius || '0')
+    const finalR: number = parseFloat(circle.dataset.finalRadius || '0')
     let start: number | null = null
 
     function frame(time: number) {
       if (start === null) start = time
-      const progress = Math.min((time - start) / duration, 1)
+      const progress: number = Math.min((time - start) / duration, 1)
       circle.setAttribute('r', (finalR * progress).toString())
       if (progress < 1) requestAnimationFrame(frame)
       else resolve()
@@ -99,28 +98,45 @@ export function animateOpacity(el: SVGElement, duration = 300): Promise<void> {
   })
 }
 
-export function extractSvgElements(svg: SVGSVGElement):
-  Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement | SVGGElement> {
-  const elements = Array.from(svg.querySelectorAll<SVGElement>(
-    'g, path, circle, rect, line, polyline, polygon, use'
-  ));
+export function extractSvgElements(
+  svg: SVGSVGElement,
+): Array<
+  | SVGPathElement
+  | SVGCircleElement
+  | SVGRectElement
+  | SVGLineElement
+  | SVGPolylineElement
+  | SVGPolygonElement
+  | SVGGElement
+> {
+  const elements = Array.from(
+    svg.querySelectorAll<SVGElement>('g, path, circle, rect, line, polyline, polygon, use'),
+  )
 
   // Remplace les <use> par leurs références clônées
-  elements.forEach(el => {
+  elements.forEach((el) => {
     if (el.tagName === 'use') {
-      const href = el.getAttribute('xlink:href') || el.getAttribute('href');
+      const href = el.getAttribute('xlink:href') || el.getAttribute('href')
       if (href) {
-        const ref = svg.querySelector(href);
+        const ref = svg.querySelector(href)
         if (ref) {
-          const clone = ref.cloneNode(true) as SVGElement;
-          el.replaceWith(clone);
-          elements.push(clone);
+          const clone = ref.cloneNode(true) as SVGElement
+          el.replaceWith(clone)
+          elements.push(clone)
         }
       }
     }
-  });
+  })
 
- return elements as Array<SVGPathElement | SVGCircleElement | SVGRectElement | SVGLineElement | SVGPolylineElement | SVGPolygonElement | SVGGElement>;
+  return elements as Array<
+    | SVGPathElement
+    | SVGCircleElement
+    | SVGRectElement
+    | SVGLineElement
+    | SVGPolylineElement
+    | SVGPolygonElement
+    | SVGGElement
+  >
 }
 export async function drawSvgElement(
   el:
@@ -133,7 +149,7 @@ export async function drawSvgElement(
     | SVGPolylineElement,
 ): Promise<void> {
   if (el.tagName === 'path') {
-    if (!el.getAttribute('d')) return; 
+    if (!el.getAttribute('d')) return
     preparePath(el as SVGPathElement)
     await animatePath(el as SVGPathElement, 400)
   }
@@ -159,7 +175,7 @@ export async function drawSvgElement(
   }
 
   if (el.tagName === 'g') {
-    el.style.visibility = 'visible';
-    await animateOpacity(el, 400);
+    el.style.visibility = 'visible'
+    await animateOpacity(el, 400)
   }
 }

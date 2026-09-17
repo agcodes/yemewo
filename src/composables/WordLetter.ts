@@ -1,5 +1,4 @@
 export interface WordLetter {
-    letter: string
-    found: boolean
+  letter: string
+  found: boolean
 }
-  

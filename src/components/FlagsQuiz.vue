@@ -3,14 +3,10 @@
     <div class="col-12 col-md-9">
       <div v-if="game.loadingError" class="alert mb-5" :class="`alert-${game.typeAlert}`">
         <p class="mb-4">{{ game.message }}</p>
-        <button class="btn btn-outline-secondary" @click="initRound">
-          Recharger
-        </button>
+        <button class="btn btn-outline-secondary" @click="initRound">Recharger</button>
       </div>
 
-      <div v-if="game.isLoading" class="card border-0 mb-5 p-3">
-        Chargement
-      </div>
+      <div v-if="game.isLoading" class="card border-0 mb-5 p-3">Chargement</div>
 
       <div v-if="game.savedCountry" class="card border-0 mb-5 p-3">
         <div class="card-body">
@@ -22,12 +18,14 @@
                   Fin du jeu ! Votre score est {{ game.roundPts }} / {{ game.nbRoundGames }}
                 </div>
 
-                <button class="btn btn-outline-primary" @click="initRound">
-                  Nouveau jeu
-                </button>
+                <button class="btn btn-outline-primary" @click="initRound">Nouveau jeu</button>
               </div>
 
-              <div v-if="game.previousCountry && game.message" :class="`alert-${game.typeAlert}`" class="alert">
+              <div
+                v-if="game.previousCountry && game.message"
+                :class="`alert-${game.typeAlert}`"
+                class="alert"
+              >
                 <i v-if="game.typeAlert == 'danger'" class="bi bi-x-circle me-2"></i>
                 <i v-if="game.typeAlert == 'success'" class="bi bi-check-circle me-2"></i>
                 {{ game.message }}
@@ -46,11 +44,18 @@
           <!-- flags choice -->
           <div class="row">
             <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
-              <div :class="{
-                good: game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
-                bad: game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg,
-                selected: game.isSubmitted && choice.value === selected
-              }" class="card p-3 bg-highlight flag-border" role="button" @click="clickFlag(choice.value)">
+              <div
+                :class="{
+                  good:
+                    game.isSubmitted && game.isGood && choice.value === game.savedCountry.flagSvg,
+                  bad:
+                    game.isSubmitted && !game.isGood && choice.value === game.savedCountry.flagSvg,
+                  selected: game.isSubmitted && choice.value === selected,
+                }"
+                class="card p-3 bg-highlight flag-border"
+                role="button"
+                @click="clickFlag(choice.value)"
+              >
                 <img :src="choice.value" class="img-fluid rounded bg-highlight flag-img" />
               </div>
             </div>
@@ -63,7 +68,11 @@
       <ScoreDisplay :game="game" />
 
       <!-- History -->
-      <GuessHistory :historyItems="game.historyItems" :onReset="game.resetHistory" title="Historique" />
+      <GuessHistory
+        :historyItems="game.historyItems"
+        :onReset="game.resetHistory"
+        title="Historique"
+      />
     </div>
   </div>
 </template>
@@ -85,21 +94,21 @@ let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 onMounted(() => {
   game.init()
   game.startTimer()
-  initRound();
+  initRound()
 })
 
 onBeforeUnmount(() => {
   game.clearTimer()
 })
 
-const alertKey = ref(0);
+const alertKey = ref(0)
 watch(
   () => [game.isGood, game.previousCountry],
   () => {
-    alertKey.value++;
+    alertKey.value++
   },
-  { deep: true }
-);
+  { deep: true },
+)
 
 function initRound() {
   game.initRound()
@@ -109,10 +118,10 @@ function initRound() {
 
 async function loadQuiz(reload: boolean) {
   try {
-    choices.value = await game.defineNewGame(4, reload, false);
+    choices.value = await game.defineNewGame(4, reload, false)
     if (choices.value.length > 0) {
       game.isLoading = false
-      game.startTimer();
+      game.startTimer()
     }
   } catch (error) {
     game.isLoading = false
@@ -120,8 +129,8 @@ async function loadQuiz(reload: boolean) {
 }
 
 function clickFlag(choice: string) {
-  selected.value = choice;
-  submit();
+  selected.value = choice
+  submit()
 }
 
 function submit() {

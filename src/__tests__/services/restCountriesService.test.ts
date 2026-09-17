@@ -46,7 +46,7 @@ describe('RestCountriesService', () => {
 
   beforeEach(() => {
     localStorage.clear()
-    service = new RestCountriesService(mockBaseUrl, "", false)
+    service = new RestCountriesService(mockBaseUrl, "")
   })
 
   describe('getCountries', () => {

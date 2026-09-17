@@ -1,9 +1,9 @@
 import type { Word } from '@/composables/Word'
 import { API_CONFIG } from '@/config/apiConfig'
 
-export const iconType = 'openmoji'
+export const iconType: string = 'openmoji'
 
-export const allowedCategories = ['Animals Nature', 'Objects', 'Food Drink', 'Activities']
+export const allowedCategories: string[] = ['Animals Nature', 'Objects', 'Food Drink', 'Activities']
 
 export const buildSvgUrl = (keyword: string): string =>
   `${API_CONFIG.ICONIFY_API_BASE_URL}/${iconType}:${keyword}.svg`

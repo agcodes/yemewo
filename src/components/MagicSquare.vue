@@ -49,8 +49,6 @@
         </div>
       </div>
     </div>
-
-    
   </section>
 </template>
 
@@ -125,12 +123,12 @@ function generateNewSquare() {
     generateMagicSquare4()
   }
 
-  const size = nb.value === 3 ? 9 : 16
-  const numHidden = 5
+  const size : number = nb.value === 3 ? 9 : 16
+  const numHidden :number = 5
 
   hiddenIndices.value = []
   while (hiddenIndices.value.length < numHidden) {
-    const idx = Math.floor(Math.random() * size)
+    const idx:number = Math.floor(Math.random() * size)
     if (!hiddenIndices.value.includes(idx)) {
       hiddenIndices.value.push(idx)
     }
@@ -166,7 +164,6 @@ function updateDisplay() {
         square.value[i] = 0;
       }
     }
-    console.log(square);
   } else {
     for (let i = 0; i < 16; i++) {
       if (!hiddenIndices.value.includes(i) || isRevealed.value == true) {

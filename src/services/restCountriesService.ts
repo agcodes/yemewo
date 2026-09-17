@@ -1,29 +1,15 @@
-class Country {
-  name: string
-  localName: string
-  capitals: string[]
-  flagPng: string
-  flagSvg: string
-  flagDescription: string
-  alreadyUsed?: boolean
-
-  constructor(data: any) {
-    this.name = data.names?.common || ''
-    this.localName = data.names?.translations?.fra.common || ''
-    this.capitals = data.capital || []
-    this.flagPng = data.flag?.url_png || ''
-    this.flagSvg = data.flag?.url_svg || ''
-    this.flagDescription = data.flags?.alt || ''
-    this.alreadyUsed = false
-  }
-}
+import { API_CONFIG } from '@/config/apiConfig'
+import { Country } from './Country'
 
 class RestCountriesService {
   private baseUrl: string
   private apiKey: string
 
-  constructor(url: string, apiKey: string, mockAPI: boolean) {
-    this.baseUrl = url
+  constructor(
+    baseUrl: string = API_CONFIG.REST_COUNTRIES_URL,
+    apiKey: string = API_CONFIG.REST_COUNTRIES_API_KEY
+  ) {
+    this.baseUrl = baseUrl
     this.apiKey = apiKey
   }
 
@@ -32,86 +18,112 @@ class RestCountriesService {
     const cached = localStorage.getItem(STORAGE_KEY)
     if (cached) {
       const parsed = JSON.parse(cached)
-      return parsed.map((c: any) => {
-        const country = new Country({})
-        country.name = c.name
-        country.localName = c.localName
-        country.capitals = c.capitals
-        country.flagPng = c.flagPng
-        country.flagSvg = c.flagSvg
-        country.flagDescription = c.flagDescription
-        country.alreadyUsed = c.alreadyUsed
-        return country
-      }).filter((c: { flagSvg: any }) => c.flagSvg)
+      return parsed
+        .map((c: any) => {
+          const country = new Country({})
+          country.name = c.name
+          country.localName = c.localName
+          country.capitals = c.capitals
+          country.flagPng = c.flagPng
+          country.flagSvg = c.flagSvg
+          country.flagDescription = c.flagDescription
+          country.alreadyUsed = c.alreadyUsed
+          return country
+        })
+        .filter((c: { flagSvg: any }) => c.flagSvg)
     }
 
     return new Promise((resolve, reject) => {
       fetch(this.baseUrl, {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`
-        }
-      }).then((response) => {
-        response.json().then((results) => {
-          const countries: Country[] = []
-          if (results) {
-            for (const result of results.data.objects) {
-              const country = new Country(result)
-              countries.push(country)
-            }
-          }
-          if (countries.length==0){
-            reject("error");
-            return;
-          }
-          console.log(countries);
-          const filtered = countries.filter(c => c.flagSvg)
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered))
-          resolve(filtered)
-        });
+          Authorization: `Bearer ${this.apiKey}`,
+        },
       })
-      .catch((error) => {
-        reject(error);
-      });
+        .then((response) => {
+          response.json().then((results) => {
+            const countries: Country[] = []
+            if (results) {
+              for (const result of results.data.objects) {
+                const country: Country = new Country(result)
+                countries.push(country)
+              }
+            }
+            if (countries.length == 0) {
+              reject('error')
+              return
+            }
+            const filtered: Country[] = countries.filter((c) => c.flagSvg)
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered))
+            resolve(filtered)
+          })
+        })
+        .catch((error) => {
+          reject(error)
+        })
     })
   }
 
   async getCountry(name: string): Promise<Country> {
-    const countries = await this.getCountries()
-    const foundIndex = countries.findIndex((country) => country.name === name)
+    const countries: Country[] = await this.getCountries()
+    const foundIndex: number = countries.findIndex((country) => country.name === name)
     if (foundIndex >= 0) {
       return countries[foundIndex]!
     }
     return new Country({})
   }
 
-  async getSvgFlag(country: Country) : Promise<string> {
-    let svgString: string = "";
-     if (country && country.flagSvg) {
-        //let flagSvg = "https://flags.restcountries.com/v5/svg/cx.svg";
-        //let flagSvg = "https://flags.restcountries.com/v5/svg/fr.svg";
-       // let flagSvg = "https://flags.restcountries.com/v5/svg/np.svg";
-        //let flagSvg = "https://flags.restcountries.com/v5/svg/es.svg";
-        let flagSvg = country.flagSvg// "https://flags.restcountries.com/v5/svg/ar.svg";
+  async getSvgFlag(country: Country): Promise<string> {
+    let svgString: string = ''
+    if (country && country.flagSvg) {
+      let flagSvg: string = country.flagSvg
+      const flagUrl: string = flagSvg
 
-        const flagUrl = flagSvg
-
-        try {
-            const response = await fetch(flagUrl)
-            if (response.ok) {
-                svgString = await response.text()
-            }
+      try {
+        const response = await fetch(API_CONFIG.PROXY_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url: flagUrl }),
+        })
+        if (response.ok) {
+          svgString = await response.text()
         }
-        catch (ex){
-            svgString = "";
-        }
-        return svgString ?? "";
+      } catch (ex) {
+        svgString = ''
+      }
+      return svgString ?? ''
     }
-    return "";
+    return ''
+  }
+
+  async getSvgFlag_(country: Country): Promise<string> {
+    let svgString: string = ''
+    if (country && country.flagSvg) {
+      //let flagSvg = "https://flags.restcountries.com/v5/svg/cx.svg";
+      //let flagSvg = "https://flags.restcountries.com/v5/svg/fr.svg";
+      // let flagSvg = "https://flags.restcountries.com/v5/svg/np.svg";
+      //let flagSvg = "https://flags.restcountries.com/v5/svg/es.svg";
+      let flagSvg: string = country.flagSvg // "https://flags.restcountries.com/v5/svg/ar.svg";
+
+      const flagUrl: string = flagSvg
+
+      try {
+        const response = await fetch(flagUrl)
+        if (response.ok) {
+          svgString = await response.text()
+        }
+      } catch (ex) {
+        svgString = ''
+      }
+      return svgString ?? ''
+    }
+    return ''
   }
   async getRandomCountry(): Promise<Country> {
-    const countries = await this.getCountries()
+    const countries: Country[] = await this.getCountries()
     if (countries.length > 0) {
-      const randomIndex = Math.floor(Math.random() * countries.length)
+      const randomIndex: number = Math.floor(Math.random() * countries.length)
       return countries[randomIndex]!
     }
     return new Country({})

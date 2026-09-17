@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { useGameLogic } from '@/composables/useGameLogic'
-import { Country, RestCountriesService } from '@/services/restCountriesService'
-import { API_CONFIG } from '@/config/apiConfig'
+import { RestCountriesService } from '@/services/restCountriesService'
+import { Country } from '@/services/Country'
 
 export function useCountryGameLogic(storageKey: string) {
   const {
@@ -40,18 +40,18 @@ export function useCountryGameLogic(storageKey: string) {
   const currentCountries = ref<Country[]>([])
   const savedCountry = ref<Country | null>(null)
   const previousCountry = ref<Country | null>(null)
-  const svgFlag = ref<string>("")
+  const svgFlag = ref<string>('')
 
   async function getSvgFlag(country: Country): Promise<string> {
     return new Promise((resolve, reject) => {
-      const service = new RestCountriesService(API_CONFIG.REST_COUNTRIES_URL, API_CONFIG.REST_COUNTRIES_API_KEY, false)
+      const service: RestCountriesService = new RestCountriesService()
       service
         .getSvgFlag(country)
         .then((svgString) => {
           resolve(svgString)
         })
         .catch((error) => {
-          reject("")
+          reject('')
         })
     })
   }
@@ -60,10 +60,10 @@ export function useCountryGameLogic(storageKey: string) {
     return new Promise((resolve, reject) => {
       loadingError.value = false
 
-      const service = new RestCountriesService(API_CONFIG.REST_COUNTRIES_URL, API_CONFIG.REST_COUNTRIES_API_KEY, false)
+      const service: RestCountriesService = new RestCountriesService()
       service
         .getCountries()
-        .then((randomCountries) => {
+        .then((randomCountries: Country[]) => {
           countries.value = randomCountries
           resolve(true)
         })
@@ -77,7 +77,7 @@ export function useCountryGameLogic(storageKey: string) {
   }
 
   function isEndOfGame(): boolean {
-    if (countries.value.filter((a) => a.alreadyUsed == false).length == 0) {
+    if (countries.value.filter((a: Country) => a.alreadyUsed == false).length == 0) {
       gameEnd.value = true
       return true
     }
@@ -87,7 +87,7 @@ export function useCountryGameLogic(storageKey: string) {
   async function defineNewGame(
     nb: number,
     reload: boolean,
-    loadSvg: boolean
+    loadSvg: boolean,
   ): Promise<{ label: string; value: string }[]> {
     isSubmitted.value = false
     isGood.value = false
@@ -119,18 +119,20 @@ export function useCountryGameLogic(storageKey: string) {
 
     if (countries.value.length > 0) {
       // Shuffle the countries and take the first 'nb' countries for the current game
-      const shuffled = [...countries.value].sort(() => 0.5 - Math.random())
-      const filteredCountries = shuffled.filter((a) => a.alreadyUsed == false)
-     
+      const shuffled: Country[] = [...countries.value].sort(() => 0.5 - Math.random())
+      const filteredCountries: Country[] = shuffled.filter((a) => a.alreadyUsed == false)
+
       // Save the first country of the current game to display its flag and use it for validation
       savedCountry.value = filteredCountries[0]!
       savedCountry.value.alreadyUsed = true
-      const index = countries.value.findIndex((a) => a.name == savedCountry.value?.name)
+      const index: number = countries.value.findIndex(
+        (a: Country) => a.name == savedCountry.value?.name,
+      )
       if (index > 0 && countries.value[index]) {
         countries.value[index].alreadyUsed = true
       }
 
-      const selectedCountries = shuffled
+      const selectedCountries: Country[] = shuffled
         .filter((a) => a.name != savedCountry.value?.name)
         .slice(0, nb - 1)
 
@@ -138,22 +140,21 @@ export function useCountryGameLogic(storageKey: string) {
       currentCountries.value.push(savedCountry.value)
       currentCountries.value = [...currentCountries.value].sort(() => 0.5 - Math.random())
       isLoading.value = false
-      
+
       message.value = 'Devinez le pays à partir de son drapeau'
 
-      if (loadSvg){
-        svgFlag.value = "";
-        let svgString = await getSvgFlag(savedCountry.value)
-        if (svgString == ""){
+      if (loadSvg) {
+        svgFlag.value = ''
+        let svgString: string = await getSvgFlag(savedCountry.value)
+        if (svgString == '') {
           loadingError.value = true
           message.value = 'Erreur lors de la récupération du drapeau'
-        }
-        else {
-          svgFlag.value = svgString;
+        } else {
+          svgFlag.value = svgString
         }
       }
 
-      return currentCountries.value.map((country) => ({
+      return currentCountries.value.map((country: Country) => ({
         label: country.localName,
         value: country.flagSvg,
       }))

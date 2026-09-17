@@ -27,8 +27,8 @@ export const fetchTopWikipediaArticles = async (
 ): Promise<Article[]> => {
   try {
     const response = await axios.get(`${API_URL}/fr.wikipedia/all-access/${date}`)
-    const articles = response.data.items[0].articles
-    const filteredArticles = articles.filter((article: Article) => {
+    const articles: Article[] = response.data.items[0].articles
+    const filteredArticles: Article[] = articles.filter((article: Article) => {
       return (
         article.article.length <= nbMaxCharacters &&
         article.article.indexOf(':') < 0 &&
@@ -37,7 +37,9 @@ export const fetchTopWikipediaArticles = async (
     })
 
     // Trier les articles par nombre de vues en ordre décroissant
-    const sortedArticles = filteredArticles.sort((a: Article, b: Article) => b.views - a.views)
+    const sortedArticles: Article[] = filteredArticles.sort(
+      (a: Article, b: Article) => b.views - a.views,
+    )
 
     if (sortedArticles.length < nb) {
       return sortedArticles
@@ -53,13 +55,13 @@ export const fetchTopWikipediaArticles = async (
 // Fonction pour obtenir un article aléatoire
 export const getRandomArticle = async (date: string): Promise<Article | null> => {
   try {
-    const articles = await fetchTopWikipediaArticles(date, 50, 25)
+    const articles: Article[] = await fetchTopWikipediaArticles(date, 50, 25)
     if (articles.length === 0) {
       return null // Retourne null si la liste est vide
     }
 
-    const randomIndex = Math.floor(Math.random() * articles.length)
-    const randomArticle = articles[randomIndex]
+    const randomIndex: number = Math.floor(Math.random() * articles.length)
+    const randomArticle: Article | undefined = articles[randomIndex]
     if (randomArticle) {
       // Récupérer le contenu de l'article
       const data = await fetchWikipediaArticle(randomArticle.article)
@@ -141,14 +143,14 @@ const shuffleWord = (word: string): string => {
     return word // Retourne le mot tel quel s'il a 2 lettres ou moins
   }
 
-  const letters = word.split('')
-  const firstLetter = letters.shift() as string
-  const lastLetter = letters.pop() as string
+  const letters: string[] = word.split('')
+  const firstLetter: string = letters.shift() as string
+  const lastLetter: string = letters.pop() as string
 
   // Mélange les lettres du milieu
   for (let i = letters.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    const temp = letters[i] as string
+    const j: number = Math.floor(Math.random() * (i + 1))
+    const temp: string = letters[i] as string
     letters[i] = letters[j] as string
     letters[j] = temp
   }
@@ -172,13 +174,13 @@ export const scrambleArticleContent = (content: string): string => {
 // Fonction pour mélanger les mots dans le contenu et supprimer les mots de moins de 4 caractères
 export const getSuffleWords = (content: string, nbMax: number): string[] => {
   // Divise le contenu en mots et nettoie les caractères spéciaux
-  const words = content
+  const words: string[] = content
     .replace(new RegExp('[?]', 'g'), '[?]')
     .replace(/[.,/#!$%^&*;:{}=_`~()]/g, '')
     .split(/\s+/)
 
   // Filtre les mots pour ne garder que ceux de 4 caractères ou plus
-  const filteredWords = words.filter(
+  const filteredWords: string[] = words.filter(
     (word) =>
       word.length >= 5 &&
       word.indexOf(']') === -1 &&
@@ -190,12 +192,14 @@ export const getSuffleWords = (content: string, nbMax: number): string[] => {
   // Compter la fréquence de chaque mot
   const frequencyMap: { [key: string]: number } = {}
   filteredWords.forEach((word) => {
-    const lowerWord = word.toLowerCase()
+    const lowerWord: string = word.toLowerCase()
     frequencyMap[lowerWord] = (frequencyMap[lowerWord] || 0) + 1
   })
 
   // Trier les mots par fréquence décroissante
-  const sortedWords = Object.keys(frequencyMap).sort((a: string, b: string) => frequencyMap[b]! - frequencyMap[a]!)
+  const sortedWords = Object.keys(frequencyMap).sort(
+    (a: string, b: string) => frequencyMap[b]! - frequencyMap[a]!,
+  )
 
   // Prendre les nbMax mots les plus fréquents
   const mostFrequentWords = sortedWords.slice(0, nbMax)
@@ -223,14 +227,14 @@ export const maskTitleWordsInContent = (content: string, title: string): string 
 
   title = title.replace(/!/g, '')
 
-  let maskedContent = content.replace(/!/g, '.').replace(new RegExp(title, 'g'), '[?]')
+  let maskedContent: string = content.replace(/!/g, '.').replace(new RegExp(title, 'g'), '[?]')
 
   title = title.replace(/[.,/#!$%^&*;:{}=\`~()]/g, '')
-  const words = title.split(' ')
+  const words: string[] = title.split(' ')
 
   words.forEach((word) => {
     if (word) {
-      const regex = new RegExp(word, 'gi')
+      const regex: RegExp = new RegExp(word, 'gi')
       maskedContent = maskedContent.replace(regex, '[?]')
     }
   })
