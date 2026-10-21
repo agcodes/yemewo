@@ -7,10 +7,12 @@
             <div class="stylish-border-bottom mb-4 pb-2 pt-2">
               <div class="row main-outline">
                 <div class="main-outline d-flex justify-content-between align-items-baseline">
-
                   <div class="d-flex align-items-baseline">
-
-                    <router-link class="font-titilliumWeb-regular secondary-color fs-3 me-4" title="Yemewo Home" to="/">
+                    <router-link
+                      class="font-titilliumWeb-regular secondary-color fs-3 me-4"
+                      title="Yemewo Home"
+                      to="/"
+                    >
                       yemewo
                     </router-link>
 
@@ -19,11 +21,9 @@
                         <i class="bi bi-house secondary-color"></i>
                       </router-link>
                     </button>
-
                   </div>
 
                   <ThemeToggleButton />
-
                 </div>
               </div>
             </div>
@@ -36,50 +36,50 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch, computed } from "vue";
-import { useThemeStore } from "./stores/theme";
-import ThemeToggleButton from "@/components/ThemeToggleButton.vue";
+import { defineComponent, onMounted, watch, computed } from 'vue'
+import { useThemeStore } from './stores/theme'
+import ThemeToggleButton from '@/components/ThemeToggleButton.vue'
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
     ThemeToggleButton,
   },
   setup() {
-    const themeStore = useThemeStore();
+    const themeStore = useThemeStore()
 
     // Function to apply the theme class to the body
     const applyThemeToBody = () => {
       if (themeStore.isDarkMode) {
-        document.body.classList.add("dark-theme");
-        document.body.classList.remove("light-theme");
+        document.body.classList.add('dark-theme')
+        document.body.classList.remove('light-theme')
       } else {
-        document.body.classList.add("light-theme");
-        document.body.classList.remove("dark-theme");
+        document.body.classList.add('light-theme')
+        document.body.classList.remove('dark-theme')
       }
-    };
+    }
 
     onMounted(() => {
-      themeStore.initializeTheme();
-      applyThemeToBody();
-    });
+      themeStore.initializeTheme()
+      applyThemeToBody()
+    })
 
     const themeClass = computed(() => ({
-      "dark-theme": themeStore.isDarkMode,
-      "light-theme": !themeStore.isDarkMode,
-    }));
+      'dark-theme': themeStore.isDarkMode,
+      'light-theme': !themeStore.isDarkMode,
+    }))
 
     // Watch for changes in the theme and apply the appropriate class to the body
     watch(
       () => themeStore.isDarkMode,
       (newVal) => {
-        applyThemeToBody();
-      }
-    );
+        applyThemeToBody()
+      },
+    )
     return {
       themeStore,
       themeClass,
-    };
+    }
   },
-});
+})
 </script>
