@@ -6,7 +6,7 @@ export const iconType: string = 'openmoji'
 export const allowedCategories: string[] = ['Animals Nature', 'Objects', 'Food Drink', 'Activities']
 
 export const buildSvgUrl = (keyword: string): string =>
-  `${API_CONFIG.ICONIFY_API_BASE_URL}/${iconType}:${keyword}.svg`
+  `${API_CONFIG.ICONIFY_API_BASE_URL}/${iconType}/${keyword}.svg`
 
 export const getRandomKeyword = (icons: Word[]): Word => {
   //return { value: 'falafel', category: 'Objects' }
