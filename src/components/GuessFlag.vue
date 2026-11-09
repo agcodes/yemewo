@@ -6,9 +6,12 @@
         <button class="btn btn-outline-secondary" @click="initRound">Recharger</button>
       </div>
 
-      <div v-if="game.isLoading" class="card border-0 mb-5 p-3">Chargement</div>
+      <div v-if="game.isLoading" class="card border-0 mb-5 p-3">Chargement...</div>
 
-      <div v-if="game.savedCountry && game.svgFlag" class="card border-0 mb-5 p-3">
+      <div
+        v-if="game.savedCountry && game.svgFlag && !game.isLoading"
+        class="card border-0 mb-5 p-3"
+      >
         <div class="card-body">
           <transition name="alert-transition" mode="out-in">
             <div class="mb-4" :key="alertKey">
@@ -123,8 +126,8 @@ async function loadQuiz(reload: boolean) {
   try {
     choices.value = await game.defineNewGame(4, reload, true)
     if (!game.loadingError && choices.value.length > 0 && game.savedCountry) {
-      game.isLoading = false
-      initSvg(game.svgFlag)
+      game.isLoading = true
+      await initSvg(game.svgFlag)
     }
   } catch (error) {
     game.isLoading = false
@@ -156,12 +159,12 @@ function newQuiz() {
 }
 
 async function initSvg(svgString: string) {
+  const maxHeight: number = 475
   const containerEl = document.getElementById('container')
   if (!containerEl || !svgString) return
 
   const rect = containerEl.getBoundingClientRect()
   const width: number = Math.floor(rect.width)
-  const height: number = Math.floor(rect.width)
 
   if (previousSvgId) {
     const oldSvg = document.getElementById(previousSvgId)
@@ -189,8 +192,8 @@ async function initSvg(svgString: string) {
 
     const ratioWH = widthValue / heightValue
 
-    if (width > 400) {
-      const rectHeight: number = 400
+    if (width > maxHeight) {
+      const rectHeight: number = maxHeight
       const rectWidth: number = rectHeight * ratioWH
 
       svgDiv.style.width = `${rectWidth}px`
@@ -211,6 +214,7 @@ async function initSvg(svgString: string) {
     if (!/preserveAspectRatio=/i.test(newAttrs)) {
       newAttrs += ' preserveAspectRatio="xMidYMid meet"'
     }
+    game.isLoading = false
     return `<svg${newAttrs}>`
   })
 

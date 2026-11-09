@@ -43,7 +43,7 @@
 
           <!-- flags choice -->
           <div class="row">
-            <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
+            <div v-for="(choice, index) in choices" :key="index" class="col-6 mb-4">
               <div
                 :class="{
                   good:

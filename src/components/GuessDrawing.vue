@@ -132,7 +132,7 @@ async function initSvg() {
   // Adapter le SVG à la taille du conteneur
   const rect = containerEl.getBoundingClientRect()
   const width: number = Math.floor(rect.width) || 400
-  const height: number = 400
+  const height: number = 550
 
   if (previousSvgId) {
     const oldSvg: HTMLElement | null = document.getElementById(previousSvgId)
