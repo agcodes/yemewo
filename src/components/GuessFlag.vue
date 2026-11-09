@@ -123,7 +123,7 @@ async function loadQuiz(reload: boolean) {
   try {
     choices.value = await game.defineNewGame(4, reload, true)
     if (!game.loadingError && choices.value.length > 0 && game.savedCountry) {
-      flagLoaded.value = true
+      flagLoaded.value = false
       await initSvg(game.svgFlag)
     }
   } catch (error) {
@@ -218,7 +218,7 @@ async function initSvg(svgString: string) {
   containerEl.appendChild(svgDiv)
   const svg = svgDiv.querySelector<SVGSVGElement>('svg')
 
-  //flagLoaded.value = true
+  flagLoaded.value = true
   if (svg) {
     svg.style.visibility = 'hidden'
     await drawSVGSequentially(previousSvgId, extractSvgElements(svg))
