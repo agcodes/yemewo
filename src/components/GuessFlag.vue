@@ -6,7 +6,9 @@
         <button class="btn btn-outline-secondary" @click="initRound">Recharger</button>
       </div>
 
-      <div v-if="game.isLoading && !flagLoaded" class="card border-0 mb-5 p-3">Chargement...</div>
+      <div v-if="game.isLoading || !flagLoaded" class="card border-0 mb-5 p-5">
+        <div class="card-body">Chargement...</div>
+      </div>
 
       <div v-if="game.savedCountry && !game.isLoading" class="card border-0 mb-5 p-3">
         <div class="card-body">
@@ -41,7 +43,7 @@
           <div id="container" class="card mb-3 bg-highlight"></div>
 
           <!-- countries choice -->
-          <div class="row">
+          <div class="row" :class="{ 'hidden d-none': !flagLoaded }">
             <div v-for="(choice, index) in choices" :key="index" class="col-12 col-sm-6 mb-4">
               <div
                 :class="{
