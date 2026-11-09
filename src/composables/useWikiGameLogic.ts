@@ -59,29 +59,39 @@ export function useWikiGameLogic(storageKey: string) {
 
       if (!articles.value || articles.value.length < 10) {
         initGuess()
-        const today = new Date()
-        const yesterday = new Date(today)
-        yesterday.setDate(today.getDate() - 2)
-        const year = yesterday.getFullYear()
-        const month = String(yesterday.getMonth() + 1).padStart(2, '0')
-        const day = String(yesterday.getDate()).padStart(2, '0')
-
-        const formattedDate = `${year}/${month}/${day}`
-
-        fetchTopWikipediaArticles(formattedDate, 500, 30)
-          .then((topArticles) => {
-            articles.value = topArticles
-            loadArticles(0)
-          })
-          .catch((error) => {
-            loadingError.value = true
-          })
+        // start with yesterday
+        loadToArticles(-1)
       } else {
         loadArticles(0)
       }
     } catch (error) {
       loadingError.value = true
     }
+  }
+
+  const loadToArticles = (index: number) => {
+    console.log('load', index)
+    const today = new Date()
+    const yesterday = new Date(today)
+    yesterday.setDate(today.getDate() + index)
+    const year: number = yesterday.getFullYear()
+    const month: string = String(yesterday.getMonth() + 1).padStart(2, '0')
+    const day: string = String(yesterday.getDate()).padStart(2, '0')
+
+    const formattedDate = `${year}/${month}/${day}`
+
+    fetchTopWikipediaArticles(formattedDate, 500, 30)
+      .then((topArticles) => {
+        articles.value = topArticles
+        loadArticles(0)
+      })
+      .catch(() => {
+        if (index < -2) {
+          loadingError.value = true
+        } else {
+          loadToArticles(index - 1)
+        }
+      })
   }
 
   const loadArticles = (index: number) => {

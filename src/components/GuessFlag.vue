@@ -6,12 +6,9 @@
         <button class="btn btn-outline-secondary" @click="initRound">Recharger</button>
       </div>
 
-      <div v-if="game.isLoading" class="card border-0 mb-5 p-3">Chargement...</div>
+      <div v-if="game.isLoading && !flagLoaded" class="card border-0 mb-5 p-3">Chargement...</div>
 
-      <div
-        v-if="game.savedCountry && game.svgFlag && !game.isLoading"
-        class="card border-0 mb-5 p-3"
-      >
+      <div v-if="game.savedCountry && !game.isLoading" class="card border-0 mb-5 p-3">
         <div class="card-body">
           <transition name="alert-transition" mode="out-in">
             <div class="mb-4" :key="alertKey">
@@ -94,7 +91,7 @@ let previousSvgId: string | null = null
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
 const choices = ref<{ label: string; value: string }[]>([])
 const selected = ref<string>('')
-
+const flagLoaded = ref<boolean>(false)
 let autoNextTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 
 onMounted(() => {
@@ -126,11 +123,11 @@ async function loadQuiz(reload: boolean) {
   try {
     choices.value = await game.defineNewGame(4, reload, true)
     if (!game.loadingError && choices.value.length > 0 && game.savedCountry) {
-      game.isLoading = true
+      flagLoaded.value = true
       await initSvg(game.svgFlag)
     }
   } catch (error) {
-    game.isLoading = false
+    flagLoaded.value = false
   }
 }
 
@@ -214,7 +211,6 @@ async function initSvg(svgString: string) {
     if (!/preserveAspectRatio=/i.test(newAttrs)) {
       newAttrs += ' preserveAspectRatio="xMidYMid meet"'
     }
-    game.isLoading = false
     return `<svg${newAttrs}>`
   })
 
@@ -222,6 +218,7 @@ async function initSvg(svgString: string) {
   containerEl.appendChild(svgDiv)
   const svg = svgDiv.querySelector<SVGSVGElement>('svg')
 
+  //flagLoaded.value = true
   if (svg) {
     svg.style.visibility = 'hidden'
     await drawSVGSequentially(previousSvgId, extractSvgElements(svg))

@@ -47,7 +47,6 @@ export const fetchTopWikipediaArticles = async (
 
     return sortedArticles.slice(0, nb)
   } catch (error) {
-    console.error('Error fetching top Wikipedia articles:', error)
     throw error
   }
 }
